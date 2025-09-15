@@ -33,7 +33,7 @@ app.get('/', async (c) => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+              <button onclick="app.showSignIn()" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
                 Sign In
               </button>
             </div>
@@ -52,10 +52,10 @@ app.get('/', async (c) => {
             Study anytime, anywhere with our mobile-first platform.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors">
+            <button onclick="window.location.href='/dashboard'" className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer">
               Start Learning Now
             </button>
-            <button className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-colors">
+            <button onclick="app.showDemo()" className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-colors cursor-pointer">
               View Demo
             </button>
           </div>
@@ -125,10 +125,10 @@ app.get('/', async (c) => {
           <h3 className="text-3xl font-bold mb-4">Ready to Excel in Your O-Levels?</h3>
           <p className="text-xl mb-6 opacity-90">Join thousands of students already using Study Buddy to achieve their academic goals.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors">
+            <button onclick="window.location.href='/dashboard'" className="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors cursor-pointer">
               Get Started Free
             </button>
-            <button className="border border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-colors">
+            <button onclick="app.showLearnMore()" className="border border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-colors cursor-pointer">
               Learn More
             </button>
           </div>
@@ -366,6 +366,288 @@ app.post('/api/init-db', async (c) => {
   } catch (error) {
     return c.json({ success: false, error: 'Failed to initialize database' }, 500)
   }
+})
+
+// Learning Dashboard route
+app.get('/dashboard', async (c) => {
+  const { env } = c
+  
+  // Get subjects for the dashboard
+  let subjects = []
+  try {
+    const { results } = await env.DB.prepare(`
+      SELECT id, code, name, description, icon, color, is_active 
+      FROM subjects 
+      WHERE is_active = 1 
+      ORDER BY name
+    `).all()
+    subjects = results || []
+  } catch (error) {
+    console.error('Failed to fetch subjects:', error)
+  }
+
+  return c.render(
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl">SB</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Study Buddy</h1>
+                <p className="text-sm text-gray-500">Learning Dashboard</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button onclick="window.location.href='/'" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium cursor-pointer">
+                Home
+              </button>
+              <button onclick="app.showProfile()" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+                Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Dashboard Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Welcome to Your Learning Journey! 🚀</h2>
+              <p className="text-gray-600 mt-2">Choose a subject below to start your O-Level studies</p>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600" id="total-progress">0%</div>
+              <div className="text-sm text-gray-500">Overall Progress</div>
+            </div>
+          </div>
+          
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">8</div>
+              <div className="text-sm text-gray-600">Subjects Available</div>
+            </div>
+            <div className="text-center p-4 bg-green-50 rounded-lg">
+              <div className="text-2xl font-bold text-green-600" id="completed-lessons">0</div>
+              <div className="text-sm text-gray-600">Lessons Completed</div>
+            </div>
+            <div className="text-center p-4 bg-purple-50 rounded-lg">
+              <div className="text-2xl font-bold text-purple-600" id="quiz-score">0%</div>
+              <div className="text-sm text-gray-600">Average Quiz Score</div>
+            </div>
+            <div className="text-center p-4 bg-yellow-50 rounded-lg">
+              <div className="text-2xl font-bold text-yellow-600" id="study-time">0h</div>
+              <div className="text-sm text-gray-600">Time Studied</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Subjects Grid */}
+        <div className="mb-8">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">Choose Your Subject</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="dashboard-subjects-grid">
+            ${subjects.map(subject => `
+              <div class="subject-card cursor-pointer" 
+                   style="--subject-color: ${subject.color}; --subject-color-dark: ${subject.color};" 
+                   onclick="app.openSubject('${subject.id}', '${subject.name}')">
+                <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 border-2 border-transparent hover:border-blue-300 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-lg flex items-center justify-center text-2xl" style="background: linear-gradient(135deg, ${subject.color} 0%, ${subject.color}dd 100%);">
+                      ${subject.icon}
+                    </div>
+                    <span class="text-xs font-medium px-2 py-1 rounded-full" style="background-color: ${subject.color}20; color: ${subject.color};">
+                      ${subject.code}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-lg text-gray-900 mb-2">${subject.name}</h4>
+                    <p class="text-sm text-gray-600 mb-4 line-clamp-2">${subject.description || 'Comprehensive O-Level curriculum'}</p>
+                  </div>
+                  <div class="mt-4">
+                    <div class="flex justify-between items-center mb-2">
+                      <span class="text-xs text-gray-500">Progress</span>
+                      <span class="text-xs font-medium text-gray-700" id="progress-${subject.id}">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 0%; background: linear-gradient(90deg, ${subject.color} 0%, ${subject.color}cc 100%);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h3>
+          <div id="recent-activity" className="space-y-3">
+            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-blue-600 text-sm">📚</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-gray-900">Welcome to Study Buddy!</p>
+                <p className="text-xs text-gray-500">Choose a subject above to start learning</p>
+              </div>
+              <span className="text-xs text-gray-400">Just now</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+})
+
+// Subject detail route
+app.get('/subject/:subjectId', async (c) => {
+  const { env } = c
+  const subjectId = c.req.param('subjectId')
+  
+  let subject = null
+  let topics = []
+  
+  try {
+    // Get subject details
+    const subjectResult = await env.DB.prepare(`
+      SELECT * FROM subjects WHERE id = ? AND is_active = 1
+    `).bind(subjectId).first()
+    
+    if (!subjectResult) {
+      return c.redirect('/dashboard')
+    }
+    
+    subject = subjectResult
+    
+    // Get topics for this subject
+    const topicsResult = await env.DB.prepare(`
+      SELECT t.*, 
+             COUNT(c.id) as content_count,
+             COUNT(CASE WHEN c.content_type = 'quiz' THEN 1 END) as quiz_count
+      FROM topics t
+      LEFT JOIN content c ON t.id = c.topic_id AND c.is_active = 1
+      WHERE t.subject_id = ? AND t.is_active = 1
+      GROUP BY t.id
+      ORDER BY t.order_index, t.title
+    `).bind(subjectId).all()
+    
+    topics = topicsResult.results || []
+  } catch (error) {
+    console.error('Failed to fetch subject data:', error)
+    return c.redirect('/dashboard')
+  }
+
+  return c.render(
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-3">
+              <button onclick="window.location.href='/dashboard'" className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer transition-colors">
+                <span className="text-gray-600">←</span>
+              </button>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl" style={`background: linear-gradient(135deg, ${subject.color} 0%, ${subject.color}dd 100%);`}>
+                {subject.icon}
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">{subject.name}</h1>
+                <p className="text-sm text-gray-500">{subject.description}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button onclick="window.location.href='/dashboard'" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium cursor-pointer">
+                Back to Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Subject Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Subject Overview */}
+        <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold text-gray-900">Learning Path</h2>
+            <div className="text-center">
+              <div className="text-2xl font-bold" style={`color: ${subject.color};`}>0%</div>
+              <div className="text-sm text-gray-500">Subject Progress</div>
+            </div>
+          </div>
+          <p className="text-gray-600 mb-4">{subject.description}</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="text-center p-3 bg-gray-50 rounded-lg">
+              <div className="text-lg font-bold text-gray-900">{topics.length}</div>
+              <div className="text-sm text-gray-600">Topics</div>
+            </div>
+            <div className="text-center p-3 bg-gray-50 rounded-lg">
+              <div className="text-lg font-bold text-gray-900">{topics.reduce((sum, topic) => sum + (topic.content_count || 0), 0)}</div>
+              <div className="text-sm text-gray-600">Lessons</div>
+            </div>
+            <div className="text-center p-3 bg-gray-50 rounded-lg">
+              <div className="text-lg font-bold text-gray-900">{topics.reduce((sum, topic) => sum + (topic.quiz_count || 0), 0)}</div>
+              <div className="text-sm text-gray-600">Quizzes</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Topics List */}
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold text-gray-900">Topics</h3>
+          {topics.map((topic, index) => `
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer" 
+                 onclick="app.openTopic('${topic.id}', '${topic.title}')">
+              <div class="flex items-start justify-between">
+                <div class="flex items-start space-x-4 flex-1">
+                  <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" 
+                       style="background-color: ${subject.color};">
+                    ${index + 1}
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">${topic.title}</h4>
+                    <p class="text-gray-600 mb-3">${topic.description || 'Learn the fundamentals and build your understanding step by step.'}</p>
+                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                      <span>📚 ${topic.content_count || 0} lessons</span>
+                      ${topic.quiz_count ? `<span>🧩 ${topic.quiz_count} quizzes</span>` : ''}
+                      <span>⏱️ ${topic.estimated_duration || 30} min</span>
+                      <span class="px-2 py-1 rounded-full text-xs font-medium" 
+                            style="background-color: ${topic.difficulty_level === 'beginner' ? '#dbeafe' : topic.difficulty_level === 'intermediate' ? '#fef3c7' : '#fecaca'}; 
+                                   color: ${topic.difficulty_level === 'beginner' ? '#1d4ed8' : topic.difficulty_level === 'intermediate' ? '#d97706' : '#dc2626'};">
+                        ${topic.difficulty_level || 'beginner'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-medium text-gray-700 mb-1">0% Complete</div>
+                  <div class="w-20 h-2 bg-gray-200 rounded-full">
+                    <div class="h-full bg-gradient-to-r rounded-full" 
+                         style="width: 0%; background: linear-gradient(90deg, ${subject.color} 0%, ${subject.color}cc 100%);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        
+        ${topics.length === 0 ? `
+          <div class="text-center py-12">
+            <div class="text-6xl mb-4">📚</div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Content Coming Soon</h3>
+            <p class="text-gray-600">We're preparing amazing content for this subject. Check back soon!</p>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  )
 })
 
 export default app
