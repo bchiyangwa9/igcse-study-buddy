@@ -453,35 +453,35 @@ app.get('/dashboard', async (c) => {
         <div className="mb-8">
           <h3 className="text-2xl font-bold text-gray-900 mb-6">Choose Your Subject</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="dashboard-subjects-grid">
-            ${subjects.map(subject => `
-              <div class="subject-card cursor-pointer" 
-                   style="--subject-color: ${subject.color}; --subject-color-dark: ${subject.color};" 
-                   onclick="app.openSubject('${subject.id}', '${subject.name}')">
-                <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 border-2 border-transparent hover:border-blue-300 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
-                  <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 rounded-lg flex items-center justify-center text-2xl" style="background: linear-gradient(135deg, ${subject.color} 0%, ${subject.color}dd 100%);">
-                      ${subject.icon}
+            {subjects.map(subject => (
+              <div key={subject.id} className="subject-card cursor-pointer" 
+                   style={{"--subject-color": subject.color, "--subject-color-dark": subject.color}} 
+                   onclick={`app.openSubject('${subject.id}', '${subject.name}')`}>
+                <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 border-2 border-transparent hover:border-blue-300 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl" style={{background: `linear-gradient(135deg, ${subject.color} 0%, ${subject.color}dd 100%)`}}>
+                      {subject.icon}
                     </div>
-                    <span class="text-xs font-medium px-2 py-1 rounded-full" style="background-color: ${subject.color}20; color: ${subject.color};">
-                      ${subject.code}
+                    <span className="text-xs font-medium px-2 py-1 rounded-full" style={{backgroundColor: `${subject.color}20`, color: subject.color}}>
+                      {subject.code}
                     </span>
                   </div>
                   <div>
-                    <h4 class="font-bold text-lg text-gray-900 mb-2">${subject.name}</h4>
-                    <p class="text-sm text-gray-600 mb-4 line-clamp-2">${subject.description || 'Comprehensive O-Level curriculum'}</p>
+                    <h4 className="font-bold text-lg text-gray-900 mb-2">{subject.name}</h4>
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">{subject.description || 'Comprehensive O-Level curriculum'}</p>
                   </div>
-                  <div class="mt-4">
-                    <div class="flex justify-between items-center mb-2">
-                      <span class="text-xs text-gray-500">Progress</span>
-                      <span class="text-xs font-medium text-gray-700" id="progress-${subject.id}">0%</span>
+                  <div className="mt-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs text-gray-500">Progress</span>
+                      <span className="text-xs font-medium text-gray-700" id={`progress-${subject.id}`}>0%</span>
                     </div>
-                    <div class="progress-bar">
-                      <div class="progress-fill" style="width: 0%; background: linear-gradient(90deg, ${subject.color} 0%, ${subject.color}cc 100%);"></div>
+                    <div className="progress-bar">
+                      <div className="progress-fill" style={{width: '0%', background: `linear-gradient(90deg, ${subject.color} 0%, ${subject.color}cc 100%)`}}></div>
                     </div>
                   </div>
                 </div>
               </div>
-            `).join('')}
+            ))}
           </div>
         </div>
 
@@ -554,7 +554,7 @@ app.get('/subject/:subjectId', async (c) => {
               <button onclick="window.location.href='/dashboard'" className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer transition-colors">
                 <span className="text-gray-600">←</span>
               </button>
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl" style={`background: linear-gradient(135deg, ${subject.color} 0%, ${subject.color}dd 100%);`}>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl" style={{background: `linear-gradient(135deg, ${subject.color} 0%, ${subject.color}dd 100%)`}}>
                 {subject.icon}
               </div>
               <div>
@@ -578,7 +578,7 @@ app.get('/subject/:subjectId', async (c) => {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold text-gray-900">Learning Path</h2>
             <div className="text-center">
-              <div className="text-2xl font-bold" style={`color: ${subject.color};`}>0%</div>
+              <div className="text-2xl font-bold" style={{color: subject.color}}>0%</div>
               <div className="text-sm text-gray-500">Subject Progress</div>
             </div>
           </div>
@@ -602,49 +602,59 @@ app.get('/subject/:subjectId', async (c) => {
         {/* Topics List */}
         <div className="space-y-4">
           <h3 className="text-xl font-bold text-gray-900">Topics</h3>
-          {topics.map((topic, index) => `
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer" 
-                 onclick="app.openTopic('${topic.id}', '${topic.title}')">
-              <div class="flex items-start justify-between">
-                <div class="flex items-start space-x-4 flex-1">
-                  <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" 
-                       style="background-color: ${subject.color};">
-                    ${index + 1}
+          {topics.map((topic, index) => {
+            const getDifficultyStyle = (level) => {
+              switch(level) {
+                case 'beginner': return {backgroundColor: '#dbeafe', color: '#1d4ed8'}
+                case 'intermediate': return {backgroundColor: '#fef3c7', color: '#d97706'}
+                case 'advanced': return {backgroundColor: '#fecaca', color: '#dc2626'}
+                default: return {backgroundColor: '#dbeafe', color: '#1d4ed8'}
+              }
+            }
+            
+            return (
+              <div key={topic.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer" 
+                   onclick={`app.openTopic('${topic.id}', '${topic.title}')`}>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-4 flex-1">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" 
+                         style={{backgroundColor: subject.color}}>
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-lg font-semibold text-gray-900 mb-2">{topic.title}</h4>
+                      <p className="text-gray-600 mb-3">{topic.description || 'Learn the fundamentals and build your understanding step by step.'}</p>
+                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        <span>📚 {topic.content_count || 0} lessons</span>
+                        {topic.quiz_count > 0 && <span>🧩 {topic.quiz_count} quizzes</span>}
+                        <span>⏱️ {topic.estimated_duration || 30} min</span>
+                        <span className="px-2 py-1 rounded-full text-xs font-medium" 
+                              style={getDifficultyStyle(topic.difficulty_level)}>
+                          {topic.difficulty_level || 'beginner'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div class="flex-1">
-                    <h4 class="text-lg font-semibold text-gray-900 mb-2">${topic.title}</h4>
-                    <p class="text-gray-600 mb-3">${topic.description || 'Learn the fundamentals and build your understanding step by step.'}</p>
-                    <div class="flex items-center space-x-4 text-sm text-gray-500">
-                      <span>📚 ${topic.content_count || 0} lessons</span>
-                      ${topic.quiz_count ? `<span>🧩 ${topic.quiz_count} quizzes</span>` : ''}
-                      <span>⏱️ ${topic.estimated_duration || 30} min</span>
-                      <span class="px-2 py-1 rounded-full text-xs font-medium" 
-                            style="background-color: ${topic.difficulty_level === 'beginner' ? '#dbeafe' : topic.difficulty_level === 'intermediate' ? '#fef3c7' : '#fecaca'}; 
-                                   color: ${topic.difficulty_level === 'beginner' ? '#1d4ed8' : topic.difficulty_level === 'intermediate' ? '#d97706' : '#dc2626'};">
-                        ${topic.difficulty_level || 'beginner'}
-                      </span>
+                  <div className="text-right">
+                    <div className="text-sm font-medium text-gray-700 mb-1">0% Complete</div>
+                    <div className="w-20 h-2 bg-gray-200 rounded-full">
+                      <div className="h-full bg-gradient-to-r rounded-full" 
+                           style={{width: '0%', background: `linear-gradient(90deg, ${subject.color} 0%, ${subject.color}cc 100%)`}}></div>
                     </div>
                   </div>
                 </div>
-                <div class="text-right">
-                  <div class="text-sm font-medium text-gray-700 mb-1">0% Complete</div>
-                  <div class="w-20 h-2 bg-gray-200 rounded-full">
-                    <div class="h-full bg-gradient-to-r rounded-full" 
-                         style="width: 0%; background: linear-gradient(90deg, ${subject.color} 0%, ${subject.color}cc 100%);"></div>
-                  </div>
-                </div>
               </div>
-            </div>
-          `).join('')}
+            )
+          })}
         </div>
         
-        ${topics.length === 0 ? `
-          <div class="text-center py-12">
-            <div class="text-6xl mb-4">📚</div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Content Coming Soon</h3>
-            <p class="text-gray-600">We're preparing amazing content for this subject. Check back soon!</p>
+        {topics.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">📚</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Content Coming Soon</h3>
+            <p className="text-gray-600">We're preparing amazing content for this subject. Check back soon!</p>
           </div>
-        ` : ''}
+        )}
       </div>
     </div>
   )
