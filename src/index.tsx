@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { renderer } from './renderer'
+import { MATHEMATICS_TOPICS, getLessonContent } from './routes'
 
 // Type definitions for Cloudflare bindings
 type Bindings = {
@@ -14,6 +15,745 @@ const app = new Hono<{ Bindings: Bindings }>()
 // Enable CORS for API routes
 app.use('/api/*', cors())
 app.use(renderer)
+
+// Enhanced Quiz Route with Examination Techniques (Fixed Version)
+app.get('/quiz/algebra-enhanced', (c) => {
+  const correctAnswers = ['c', 'b', 'a', 'c', 'b', 'a', 'c', 'b', 'a', 'b'];
+  const explanations = [
+    'A variable is a letter used to represent an unknown number.',
+    'When x = 3, substitute: 2(3) + 5 = 6 + 5 = 11',
+    'Combining like terms: 3x + 2x = (3+2)x = 5x',
+    'To solve x + 7 = 12, subtract 7 from both sides: x = 5',
+    'Expanding: 3(x + 4) = 3×x + 3×4 = 3x + 12',
+    'To solve 2x = 10, divide both sides by 2: x = 5',
+    'When a = 2, substitute: a² + 3 = 2² + 3 = 4 + 3 = 7',
+    'Combining: 5y - 2y = (5-2)y = 3y',
+    'To solve x - 3 = 8, add 3 to both sides: x = 11',
+    'Expanding: 2(3x + 1) = 2×3x + 2×1 = 6x + 2'
+  ];
+
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Algebra Quiz - Study Buddy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .question-flagged { border-left: 4px solid #f59e0b; background-color: #fef3c7; }
+        .timer-warning { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .reveal-animation { animation: slideDown 0.5s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .status-answered { background-color: #dcfce7 !important; border-color: #22c55e !important; }
+        .status-flagged { background-color: #fef3c7 !important; border-color: #f59e0b !important; }
+        .status-unanswered { background-color: #fef2f2 !important; border-color: #ef4444 !important; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <header class="bg-white shadow-sm border-b border-gray-200 mb-6">
+            <div class="max-w-4xl mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">SB</span>
+                        </div>
+                        <h1 class="text-xl font-bold text-gray-900">Enhanced Algebra Quiz</h1>
+                    </div>
+                    <div id="timer-display" class="flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-lg">
+                        <i class="fas fa-clock text-blue-600"></i>
+                        <span id="countdown-timer" class="font-mono text-lg font-bold text-blue-800">20:00</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-white rounded-lg p-4 mb-6 border border-gray-200">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-semibold text-gray-800">Quiz Progress</h2>
+                    <div class="flex space-x-2">
+                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                            Answered: <span id="answered-count">0</span>/10
+                        </span>
+                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                            Flagged: <span id="flagged-count">0</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-10 gap-2">
+                    ${Array.from({length: 10}, (_, i) => `
+                        <div id="status-q${i+1}" class="w-8 h-8 rounded border-2 border-gray-300 flex items-center justify-center text-xs font-medium bg-white">${i+1}</div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="space-y-6">${generateEnhancedQuestions()}</div>
+
+            <div class="mt-8 text-center">
+                <button id="submit-quiz" onclick="attemptQuizSubmission()" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400">Submit Quiz</button>
+                <p class="text-sm text-gray-500 mt-2"><i class="fas fa-info-circle"></i> You must answer all questions before submitting</p>
+            </div>
+
+            <div id="quiz-results" class="hidden mt-8 bg-white rounded-lg p-6 border border-gray-200">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Quiz Complete! 🎉</h3>
+                    <div id="final-score" class="text-4xl font-bold text-blue-600 mb-4"></div>
+                    <p class="text-gray-600">Here are your results:</p>
+                </div>
+            </div>
+
+            <!-- Move next challenge section outside and to bottom for immediate visibility -->
+            <div id="next-challenge" class="hidden mt-8 p-6 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg text-white text-center shadow-lg">
+                <h4 class="text-2xl font-bold mb-3">🚀 Ready for Next Challenge!</h4>
+                <p class="text-lg mb-4">Outstanding performance! You've mastered Algebra Basics with 80%+ score.</p>
+                <div class="text-sm opacity-90 mb-4">You've demonstrated strong algebraic understanding - time to tackle advanced concepts!</div>
+                <button onclick="window.location.href='/topic/21'" class="bg-white text-green-600 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">Continue to Mathematical Problem Solving →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Quiz script loading...');
+        
+        // Global quiz state
+        window.quizState = {
+            flaggedQuestions: new Set(),
+            answeredQuestions: new Set(),
+            timeRemaining: 20 * 60, // 20 minutes in seconds
+            timerInterval: null,
+            correctAnswers: ${JSON.stringify(correctAnswers)},
+            explanations: ${JSON.stringify(explanations)}
+        };
+
+        // Start timer function
+        function startQuizTimer() {
+            console.log('Starting timer...');
+            window.quizState.timerInterval = setInterval(function() {
+                window.quizState.timeRemaining--;
+                
+                const minutes = Math.floor(window.quizState.timeRemaining / 60);
+                const seconds = window.quizState.timeRemaining % 60;
+                const display = minutes + ':' + seconds.toString().padStart(2, '0');
+                
+                const timerElement = document.getElementById('countdown-timer');
+                if (timerElement) {
+                    timerElement.textContent = display;
+                }
+                
+                // Warning at 5 minutes
+                if (window.quizState.timeRemaining <= 300) {
+                    const timerDisplay = document.getElementById('timer-display');
+                    if (timerDisplay) {
+                        timerDisplay.classList.add('timer-warning');
+                        timerDisplay.classList.remove('bg-blue-50');
+                        timerDisplay.classList.add('bg-red-50');
+                    }
+                }
+                
+                // Auto-submit at 0
+                if (window.quizState.timeRemaining <= 0) {
+                    clearInterval(window.quizState.timerInterval);
+                    autoSubmitQuiz();
+                }
+            }, 1000);
+        }
+
+        // Toggle question flag
+        function toggleQuestionFlag(questionNum) {
+            console.log('Toggling flag for question:', questionNum);
+            
+            const flagBtn = document.getElementById('flag-q' + questionNum);
+            const questionCard = document.getElementById('question-' + questionNum);
+            const statusIndicator = document.getElementById('status-q' + questionNum);
+            
+            if (!flagBtn || !questionCard || !statusIndicator) {
+                console.error('Could not find elements for question:', questionNum);
+                return;
+            }
+            
+            if (window.quizState.flaggedQuestions.has(questionNum)) {
+                // Unflag
+                window.quizState.flaggedQuestions.delete(questionNum);
+                flagBtn.innerHTML = '<i class="far fa-flag"></i> Flag Question';
+                flagBtn.className = 'px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors';
+                questionCard.classList.remove('question-flagged');
+                statusIndicator.classList.remove('status-flagged');
+            } else {
+                // Flag
+                window.quizState.flaggedQuestions.add(questionNum);
+                flagBtn.innerHTML = '<i class="fas fa-flag"></i> Flagged';
+                flagBtn.className = 'px-3 py-1 text-xs bg-yellow-200 text-yellow-800 rounded-lg hover:bg-yellow-300 transition-colors';
+                questionCard.classList.add('question-flagged');
+                statusIndicator.classList.add('status-flagged');
+            }
+            
+            updateQuizStatus();
+        }
+
+        // Check quiz answer
+        function checkQuizAnswer(questionNum) {
+            console.log('Checking answer for question:', questionNum);
+            
+            const selected = document.querySelector('input[name="q' + questionNum + '"]:checked');
+            if (!selected) return;
+            
+            // Mark as answered
+            window.quizState.answeredQuestions.add(questionNum);
+            
+            const statusIndicator = document.getElementById('status-q' + questionNum);
+            if (statusIndicator) {
+                statusIndicator.classList.add('status-answered');
+                statusIndicator.innerHTML = '<i class="fas fa-check text-green-600 text-xs"></i>';
+            }
+            
+            updateQuizStatus();
+            
+            // Show temporary feedback
+            const feedback = document.getElementById('feedback' + questionNum);
+            if (feedback) {
+                feedback.innerHTML = '<div class="text-blue-600 bg-blue-50 p-2 rounded"><i class="fas fa-clock"></i> Answer recorded. Feedback will be revealed when you complete all questions.</div>';
+                feedback.classList.remove('hidden');
+            }
+        }
+
+        // Update quiz status counters
+        function updateQuizStatus() {
+            const answeredCount = document.getElementById('answered-count');
+            const flaggedCount = document.getElementById('flagged-count');
+            
+            if (answeredCount) {
+                answeredCount.textContent = window.quizState.answeredQuestions.size;
+            }
+            if (flaggedCount) {
+                flaggedCount.textContent = window.quizState.flaggedQuestions.size;
+            }
+            
+            // Update unanswered indicators
+            for (let i = 1; i <= 10; i++) {
+                const statusIndicator = document.getElementById('status-q' + i);
+                if (statusIndicator && !window.quizState.answeredQuestions.has(i) && !window.quizState.flaggedQuestions.has(i)) {
+                    statusIndicator.classList.add('status-unanswered');
+                }
+            }
+        }
+
+        // Attempt quiz submission
+        function attemptQuizSubmission() {
+            console.log('Attempting submission. Answered:', window.quizState.answeredQuestions.size);
+            
+            if (window.quizState.answeredQuestions.size < 10) {
+                const unanswered = [];
+                for (let i = 1; i <= 10; i++) {
+                    if (!window.quizState.answeredQuestions.has(i)) {
+                        unanswered.push(i);
+                    }
+                }
+                
+                alert('Please answer all questions before submitting. Unanswered questions: ' + unanswered.join(', '));
+                
+                // Highlight unanswered questions
+                unanswered.forEach(function(q) {
+                    const statusIndicator = document.getElementById('status-q' + q);
+                    if (statusIndicator) {
+                        statusIndicator.classList.add('animate-bounce', 'bg-red-200', 'border-red-400');
+                        setTimeout(function() {
+                            statusIndicator.classList.remove('animate-bounce');
+                        }, 2000);
+                    }
+                });
+                
+                return;
+            }
+            
+            finalizeQuiz();
+        }
+
+        // Auto-submit when time runs out
+        function autoSubmitQuiz() {
+            alert("Time's up! Quiz submitted automatically.");
+            finalizeQuiz();
+        }
+
+        // Finalize quiz and show results
+        function finalizeQuiz() {
+            console.log('Finalizing quiz...');
+            
+            if (window.quizState.timerInterval) {
+                clearInterval(window.quizState.timerInterval);
+            }
+            
+            let score = 0;
+            
+            // Calculate score and reveal feedback
+            for (let i = 1; i <= 10; i++) {
+                const selected = document.querySelector('input[name="q' + i + '"]:checked');
+                const feedback = document.getElementById('feedback' + i);
+                
+                if (!selected || !feedback) continue;
+                
+                const isCorrect = selected.value === window.quizState.correctAnswers[i-1];
+                
+                if (isCorrect) {
+                    score++;
+                    feedback.innerHTML = '<div class="text-green-600 bg-green-50 p-3 rounded reveal-animation"><strong>✓ Correct!</strong> ' + window.quizState.explanations[i-1] + '</div>';
+                } else {
+                    feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-3 rounded reveal-animation"><strong>✗ Incorrect.</strong> ' + window.quizState.explanations[i-1] + '</div>';
+                }
+                
+                feedback.classList.remove('hidden');
+            }
+            
+            // Show results
+            const percentage = (score / 10) * 100;
+            const finalScoreElement = document.getElementById('final-score');
+            const resultsElement = document.getElementById('quiz-results');
+            
+            if (finalScoreElement) {
+                finalScoreElement.textContent = score + '/10 (' + percentage + '%)';
+            }
+            
+            if (resultsElement) {
+                resultsElement.classList.remove('hidden');
+            }
+            
+            // Show next challenge if score >= 80%
+            if (percentage >= 80) {
+                console.log('High score achieved! Showing next challenge...');
+                setTimeout(function() {
+                    const nextChallenge = document.getElementById('next-challenge');
+                    if (nextChallenge) {
+                        console.log('Displaying next challenge section');
+                        nextChallenge.classList.remove('hidden');
+                        // Scroll to the bottom to show the progression pathway
+                        nextChallenge.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Add a subtle animation effect
+                        nextChallenge.style.animation = 'slideDown 0.8s ease-out';
+                    } else {
+                        console.error('Could not find next-challenge element');
+                    }
+                }, 800); // Reduced delay for more immediate visibility
+            } else {
+                console.log('Score below 80%, no progression pathway shown');
+            }
+            
+            // Disable submit button
+            const submitBtn = document.getElementById('submit-quiz');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Quiz Completed';
+            }
+        }
+
+        // Initialize quiz when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing quiz...');
+            startQuizTimer();
+            updateQuizStatus();
+        });
+    </script>
+</body>
+</html>`);
+})
+
+function generateEnhancedQuestions() {
+  const questions = [
+    {
+      id: 1,
+      question: "What is a variable in algebra?",
+      options: [
+        "A number that never changes",
+        "A mathematical operation", 
+        "A letter used to represent an unknown number",
+        "A type of equation"
+      ]
+    },
+    {
+      id: 2,
+      question: "If x = 3, what is the value of 2x + 5?",
+      options: ["10", "11", "8", "13"]
+    },
+    {
+      id: 3,
+      question: "Simplify: 3x + 2x",
+      options: ["5x", "6x", "x", "5x²"]
+    },
+    {
+      id: 4,
+      question: "Solve: x + 7 = 12",
+      options: ["x = 19", "x = 7", "x = 5", "x = 12"]
+    },
+    {
+      id: 5,
+      question: "Expand: 3(x + 4)",
+      options: ["3x + 4", "3x + 12", "x + 12", "3x + 7"]
+    },
+    {
+      id: 6,
+      question: "Solve: 2x = 10",
+      options: ["x = 5", "x = 20", "x = 2", "x = 12"]
+    },
+    {
+      id: 7,
+      question: "If a = 2, what is a² + 3?",
+      options: ["5", "6", "7", "9"]
+    },
+    {
+      id: 8,
+      question: "Simplify: 5y - 2y",
+      options: ["7y", "3y", "3", "10y"]
+    },
+    {
+      id: 9,
+      question: "Solve: x - 3 = 8",
+      options: ["x = 11", "x = 5", "x = 3", "x = 8"]
+    },
+    {
+      id: 10,
+      question: "Expand: 2(3x + 1)",
+      options: ["5x + 1", "6x + 2", "6x + 1", "2x + 3"]
+    }
+  ];
+
+  return questions.map(q => `
+    <div id="question-${q.id}" class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+      <div class="flex justify-between items-start mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Question ${q.id}</h3>
+        <button id="flag-q${q.id}" 
+                onclick="toggleQuestionFlag(${q.id})" 
+                class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+          <i class="far fa-flag"></i> Flag Question
+        </button>
+      </div>
+      
+      <p class="text-gray-700 mb-4 font-medium">${q.question}</p>
+      
+      <div class="space-y-2 mb-4">
+        ${q.options.map((option, index) => `
+          <label class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
+            <input type="radio" name="q${q.id}" value="${String.fromCharCode(97 + index)}" 
+                   onchange="checkQuizAnswer(${q.id})" 
+                   class="mr-3 text-blue-600">
+            <span class="text-gray-700">${String.fromCharCode(97 + index)}) ${option}</span>
+          </label>
+        `).join('')}
+      </div>
+      
+      <div id="feedback${q.id}" class="hidden mt-4"></div>
+    </div>
+  `).join('');
+}
+
+// Topic lesson route
+app.get('/topic/:id', (c) => {
+  const topicId = parseInt(c.req.param('id'));
+  
+  // Find the topic from our data
+  const topic = MATHEMATICS_TOPICS.find(t => t.id === topicId);
+  
+  if (!topic) {
+    return c.text('Topic not found', 404);
+  }
+
+  const lessonContent = getLessonContent(topicId);
+
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${topic.title} - Study Buddy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <header class="bg-white shadow-sm border-b border-gray-200 mb-6">
+            <div class="max-w-4xl mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <a href="/dashboard" class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-700">
+                            <i class="fas fa-arrow-left text-white text-sm"></i>
+                        </a>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900">${topic.title}</h1>
+                            <p class="text-sm text-gray-500">${topic.category} • Topic ${topicId} • ${topic.difficulty_level}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <a href="/quiz/${topicId}" 
+                           class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
+                            Take Quiz
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                ${lessonContent}
+            </div>
+            
+            <div class="mt-8 flex justify-between items-center">
+                <div class="text-center">
+                    ${topicId > 1 ? `<a href="/topic/${topicId - 1}" class="inline-flex items-center bg-gray-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Previous Topic
+                    </a>` : ''}
+                </div>
+                
+                <a href="/quiz/${topicId}" 
+                   class="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-play mr-2"></i>
+                    Start Practice Quiz
+                </a>
+                
+                <div class="text-center">
+                    ${topicId < 21 ? `<a href="/topic/${topicId + 1}" class="inline-flex items-center bg-gray-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                        Next Topic
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>` : ''}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced answer checking functions for interactive lessons
+        function checkAnswer(questionNum, correctAnswer, explanation) {
+            const selected = document.querySelector('input[name="q' + questionNum + '"]:checked');
+            const feedback = document.getElementById('feedback' + questionNum);
+            
+            if (!selected) {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-2 rounded"><i class="fas fa-exclamation-circle"></i> Please select an answer first.</div>';
+                feedback.classList.remove('hidden');
+                return;
+            }
+            
+            if (selected.value === correctAnswer) {
+                feedback.innerHTML = '<div class="text-green-600 bg-green-50 p-3 rounded"><strong><i class="fas fa-check-circle"></i> Correct!</strong> ' + explanation + '</div>';
+            } else {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-3 rounded"><strong><i class="fas fa-times-circle"></i> Incorrect.</strong> ' + explanation + '</div>';
+            }
+            feedback.classList.remove('hidden');
+        }
+
+        function checkDecimalAnswer(questionNum, correctAnswers, explanation) {
+            const input = document.getElementById('q' + questionNum + '_answer');
+            const userAnswer = input.value.trim();
+            const feedback = document.getElementById('feedback' + questionNum);
+            
+            if (!userAnswer) {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-2 rounded"><i class="fas fa-exclamation-circle"></i> Please enter an answer first.</div>';
+                feedback.classList.remove('hidden');
+                return;
+            }
+            
+            const isCorrect = correctAnswers.some(answer => answer === userAnswer);
+            
+            if (isCorrect) {
+                feedback.innerHTML = '<div class="text-green-600 bg-green-50 p-3 rounded"><strong><i class="fas fa-check-circle"></i> Correct!</strong> ' + explanation + '</div>';
+            } else {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-3 rounded"><strong><i class="fas fa-times-circle"></i> Try again.</strong> ' + explanation + '</div>';
+            }
+            feedback.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
+    `);
+})
+
+// Quiz route - redirect Topic 1 to enhanced quiz, others get simple quiz
+app.get('/quiz/:id', (c) => {
+  const topicId = c.req.param('id');
+
+  // For Topic 1, redirect to our enhanced algebra quiz
+  if (topicId === '1') {
+    return c.redirect('/quiz/algebra-enhanced');
+  }
+
+  // For other topics, show coming soon message
+  const topic = MATHEMATICS_TOPICS.find(t => t.id === parseInt(topicId));
+  
+  if (!topic) {
+    return c.text('Topic not found', 404);
+  }
+
+  return c.html(`
+    <div class="min-h-screen flex items-center justify-center bg-gray-50">
+      <div class="text-center">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Quiz Coming Soon!</h2>
+        <p class="text-gray-600 mb-6">We're preparing an interactive quiz for ${topic.title}.</p>
+        <a href="/topic/${topicId}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+          Back to Lesson
+        </a>
+      </div>
+    </div>
+  `);
+})
+
+// Mathematics dashboard route
+app.get('/dashboard', (c) => {
+  const topics = MATHEMATICS_TOPICS;
+
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGCSE Mathematics Dashboard - Study Buddy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <header class="bg-white shadow-sm border-b border-gray-200 mb-8">
+            <div class="max-w-7xl mx-auto px-4 py-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <a href="/" class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">📚</span>
+                        </a>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">IGCSE Mathematics</h1>
+                            <p class="text-gray-600">Complete curriculum with ${topics.length} topics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- Topic Categories -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Number Topics -->
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-calculator text-blue-600 mr-2"></i>
+                        Number (Topics 1-5)
+                    </h2>
+                    <div class="space-y-3">
+                        ${topics.filter(t => t.order_index >= 1 && t.order_index <= 5).map(topic => `
+                            <a href="/topic/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">${topic.title}</h3>
+                                        <p class="text-sm text-gray-600">${topic.description}</p>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <span class="px-2 py-1 bg-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-100 text-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-800 text-xs rounded-full">
+                                                ${topic.difficulty_level}
+                                            </span>
+                                            <span class="text-xs text-gray-500">
+                                                <i class="fas fa-clock"></i> ${topic.estimated_duration || 45} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-2xl">${topic.order_index}</div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Algebra Topics -->
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-x text-purple-600 mr-2"></i>
+                        Algebra (Topics 6-10)
+                    </h2>
+                    <div class="space-y-3">
+                        ${topics.filter(t => t.order_index >= 6 && t.order_index <= 10).map(topic => `
+                            <a href="/topic/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">${topic.title}</h3>
+                                        <p class="text-sm text-gray-600">${topic.description}</p>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <span class="px-2 py-1 bg-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-100 text-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-800 text-xs rounded-full">
+                                                ${topic.difficulty_level}
+                                            </span>
+                                            <span class="text-xs text-gray-500">
+                                                <i class="fas fa-clock"></i> ${topic.estimated_duration || 45} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-2xl">${topic.order_index}</div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Geometry Topics -->
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-shapes text-green-600 mr-2"></i>
+                        Geometry (Topics 11-15)
+                    </h2>
+                    <div class="space-y-3">
+                        ${topics.filter(t => t.order_index >= 11 && t.order_index <= 15).map(topic => `
+                            <a href="/topic/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-green-300 hover:shadow-md transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">${topic.title}</h3>
+                                        <p class="text-sm text-gray-600">${topic.description}</p>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <span class="px-2 py-1 bg-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-100 text-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-800 text-xs rounded-full">
+                                                ${topic.difficulty_level}
+                                            </span>
+                                            <span class="text-xs text-gray-500">
+                                                <i class="fas fa-clock"></i> ${topic.estimated_duration || 45} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-2xl">${topic.order_index}</div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Statistics & Probability Topics -->
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-chart-bar text-orange-600 mr-2"></i>
+                        Statistics & Probability (Topics 16-21)
+                    </h2>
+                    <div class="space-y-3">
+                        ${topics.filter(t => t.order_index >= 16 && t.order_index <= 21).map(topic => `
+                            <a href="/topic/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-orange-300 hover:shadow-md transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">${topic.title}</h3>
+                                        <p class="text-sm text-gray-600">${topic.description}</p>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <span class="px-2 py-1 bg-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-100 text-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-800 text-xs rounded-full">
+                                                ${topic.difficulty_level}
+                                            </span>
+                                            <span class="text-xs text-gray-500">
+                                                <i class="fas fa-clock"></i> ${topic.estimated_duration || 45} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-2xl">${topic.order_index}</div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+    `);
+})
 
 // Main dashboard route
 app.get('/', async (c) => {
@@ -48,8 +788,7 @@ app.get('/', async (c) => {
             Master Your O-Level Studies
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Interactive lessons, practice quizzes, and personalized learning paths for O-Level success. 
-            Study anytime, anywhere with our mobile-first platform.
+            Interactive lessons, practice quizzes, and personalized learning paths for O-Level success. Study anytime, anywhere with our mobile-first platform.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <button onclick="window.location.href='/dashboard'" className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer">
@@ -70,7 +809,7 @@ app.get('/', async (c) => {
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Mobile-First Learning</h3>
             <p className="text-gray-600">Access your studies on any device. Seamless experience across mobile, tablet, and desktop.</p>
           </div>
-          
+
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
               <span className="text-2xl">📚</span>
@@ -78,586 +817,231 @@ app.get('/', async (c) => {
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Complete O-Level Curriculum</h3>
             <p className="text-gray-600">Comprehensive coverage of Mathematics, English, Science, and more O-Level subjects.</p>
           </div>
-          
+
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
               <span className="text-2xl">🎯</span>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Personalized Learning</h3>
-            <p className="text-gray-600">AI-powered recommendations and adaptive learning paths tailored to your progress.</p>
-          </div>
-          
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
-              <span className="text-2xl">📊</span>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Progress Tracking</h3>
-            <p className="text-gray-600">Detailed analytics and progress reports to keep you motivated and on track.</p>
-          </div>
-          
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-              <span className="text-2xl">💬</span>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">WhatsApp Integration</h3>
-            <p className="text-gray-600">Get study reminders, quick lessons, and support directly through WhatsApp.</p>
-          </div>
-          
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-            <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-              <span className="text-2xl">🏆</span>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Gamification</h3>
-            <p className="text-gray-600">Earn points, badges, and achievements to make learning fun and engaging.</p>
-          </div>
-        </div>
-
-        {/* Subjects Preview */}
-        <div className="mb-16">
-          <h3 className="text-3xl font-bold text-center text-gray-900 mb-8">Available Subjects</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4" id="subjects-grid">
-            {/* Subjects will be loaded dynamically */}
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Interactive Quizzes</h3>
+            <p className="text-gray-600">Practice with real examination techniques including time management and question flagging.</p>
           </div>
         </div>
 
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-center text-white">
           <h3 className="text-3xl font-bold mb-4">Ready to Excel in Your O-Levels?</h3>
-          <p className="text-xl mb-6 opacity-90">Join thousands of students already using Study Buddy to achieve their academic goals.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onclick="window.location.href='/dashboard'" className="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors cursor-pointer">
-              Get Started Free
-            </button>
-            <button onclick="app.showLearnMore()" className="border border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-colors cursor-pointer">
-              Learn More
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold">SB</span>
-                </div>
-                <span className="text-xl font-bold">Study Buddy</span>
-              </div>
-              <p className="text-gray-400 mb-4">Empowering O-Level students with interactive learning experiences and comprehensive study resources.</p>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Features</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>Interactive Lessons</li>
-                <li>Practice Quizzes</li>
-                <li>Progress Tracking</li>
-                <li>Mobile Learning</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Subjects</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>Mathematics</li>
-                <li>English Language</li>
-                <li>Science</li>
-                <li>History & Geography</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Study Buddy. All rights reserved. Built with ❤️ for O-Level students.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
-  )
-})
-
-// API Routes
-
-// Get all subjects
-app.get('/api/subjects', async (c) => {
-  const { env } = c
-  
-  try {
-    const { results } = await env.DB.prepare(`
-      SELECT id, code, name, description, icon, color, is_active 
-      FROM subjects 
-      WHERE is_active = 1 
-      ORDER BY name
-    `).all()
-    
-    return c.json({ success: true, subjects: results })
-  } catch (error) {
-    return c.json({ success: false, error: 'Failed to fetch subjects' }, 500)
-  }
-})
-
-// Get topics for a subject
-app.get('/api/subjects/:subjectId/topics', async (c) => {
-  const { env } = c
-  const subjectId = c.req.param('subjectId')
-  
-  try {
-    const { results } = await env.DB.prepare(`
-      SELECT t.*, s.name as subject_name, s.code as subject_code
-      FROM topics t
-      JOIN subjects s ON t.subject_id = s.id
-      WHERE t.subject_id = ? AND t.is_active = 1
-      ORDER BY t.order_index, t.title
-    `).bind(subjectId).all()
-    
-    return c.json({ success: true, topics: results })
-  } catch (error) {
-    return c.json({ success: false, error: 'Failed to fetch topics' }, 500)
-  }
-})
-
-// Get content for a topic
-app.get('/api/topics/:topicId/content', async (c) => {
-  const { env } = c
-  const topicId = c.req.param('topicId')
-  
-  try {
-    const { results } = await env.DB.prepare(`
-      SELECT c.*, t.title as topic_title, s.name as subject_name
-      FROM content c
-      JOIN topics t ON c.topic_id = t.id
-      JOIN subjects s ON t.subject_id = s.id
-      WHERE c.topic_id = ? AND c.is_active = 1
-      ORDER BY c.order_index, c.title
-    `).bind(topicId).all()
-    
-    return c.json({ success: true, content: results })
-  } catch (error) {
-    return c.json({ success: false, error: 'Failed to fetch content' }, 500)
-  }
-})
-
-// Get user progress
-app.get('/api/users/:userId/progress', async (c) => {
-  const { env } = c
-  const userId = c.req.param('userId')
-  
-  try {
-    const { results } = await env.DB.prepare(`
-      SELECT 
-        up.*,
-        c.title as content_title,
-        c.content_type,
-        t.title as topic_title,
-        s.name as subject_name,
-        s.code as subject_code
-      FROM user_progress up
-      JOIN content c ON up.content_id = c.id
-      JOIN topics t ON c.topic_id = t.id
-      JOIN subjects s ON t.subject_id = s.id
-      WHERE up.user_id = ?
-      ORDER BY up.last_accessed DESC
-    `).bind(userId).all()
-    
-    return c.json({ success: true, progress: results })
-  } catch (error) {
-    return c.json({ success: false, error: 'Failed to fetch user progress' }, 500)
-  }
-})
-
-// Update user progress
-app.post('/api/users/:userId/progress', async (c) => {
-  const { env } = c
-  const userId = c.req.param('userId')
-  const { content_id, status, progress_percentage, time_spent } = await c.req.json()
-  
-  try {
-    await env.DB.prepare(`
-      INSERT OR REPLACE INTO user_progress 
-      (user_id, content_id, status, progress_percentage, time_spent, last_accessed, updated_at)
-      VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    `).bind(userId, content_id, status, progress_percentage, time_spent).run()
-    
-    return c.json({ success: true, message: 'Progress updated successfully' })
-  } catch (error) {
-    return c.json({ success: false, error: 'Failed to update progress' }, 500)
-  }
-})
-
-// Submit quiz attempt
-app.post('/api/quiz/submit', async (c) => {
-  const { env } = c
-  const { user_id, content_id, answers, time_taken } = await c.req.json()
-  
-  try {
-    // Get quiz questions to calculate score
-    const { results: questions } = await env.DB.prepare(`
-      SELECT id, correct_answer, points
-      FROM quiz_questions
-      WHERE content_id = ? AND is_active = 1
-    `).bind(content_id).all()
-    
-    let score = 0
-    let total_points = 0
-    
-    questions.forEach(question => {
-      total_points += question.points
-      const userAnswer = answers[question.id]
-      if (userAnswer === question.correct_answer) {
-        score += question.points
-      }
-    })
-    
-    const percentage = total_points > 0 ? (score / total_points) * 100 : 0
-    
-    // Save quiz attempt
-    const result = await env.DB.prepare(`
-      INSERT INTO quiz_attempts 
-      (user_id, content_id, score, total_points, percentage, time_taken, answers, is_completed, completed_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)
-    `).bind(user_id, content_id, score, total_points, percentage, time_taken, JSON.stringify(answers)).run()
-    
-    return c.json({ 
-      success: true, 
-      quiz_attempt_id: result.meta.last_row_id,
-      score, 
-      total_points, 
-      percentage 
-    })
-  } catch (error) {
-    return c.json({ success: false, error: 'Failed to submit quiz' }, 500)
-  }
-})
-
-// Get quiz questions
-app.get('/api/content/:contentId/quiz', async (c) => {
-  const { env } = c
-  const contentId = c.req.param('contentId')
-  
-  try {
-    const { results } = await env.DB.prepare(`
-      SELECT id, question_text, question_type, options, points, difficulty_level
-      FROM quiz_questions
-      WHERE content_id = ? AND is_active = 1
-      ORDER BY id
-    `).bind(contentId).all()
-    
-    return c.json({ success: true, questions: results })
-  } catch (error) {
-    return c.json({ success: false, error: 'Failed to fetch quiz questions' }, 500)
-  }
-})
-
-// Initialize database (development helper)
-app.post('/api/init-db', async (c) => {
-  const { env } = c
-  
-  try {
-    // This would typically be done via migrations, but for development we can initialize here
-    await env.DB.exec(`
-      CREATE TABLE IF NOT EXISTS test_table (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `)
-    
-    return c.json({ success: true, message: 'Database initialized successfully' })
-  } catch (error) {
-    return c.json({ success: false, error: 'Failed to initialize database' }, 500)
-  }
-})
-
-// Learning Dashboard route
-app.get('/dashboard', async (c) => {
-  const { env } = c
-  
-  // Get subjects for the dashboard
-  let subjects = []
-  try {
-    const { results } = await env.DB.prepare(`
-      SELECT id, code, name, description, icon, color, is_active 
-      FROM subjects 
-      WHERE is_active = 1 
-      ORDER BY name
-    `).all()
-    subjects = results || []
-  } catch (error) {
-    console.error('Failed to fetch subjects:', error)
-  }
-
-  return c.render(
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">SB</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Study Buddy</h1>
-                <p className="text-sm text-gray-500">Learning Dashboard</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button onclick="window.location.href='/'" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium cursor-pointer">
-                Home
-              </button>
-              <button onclick="app.showProfile()" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
-                Profile
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Dashboard Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">Welcome to Your Learning Journey! 🚀</h2>
-              <p className="text-gray-600 mt-2">Choose a subject below to start your O-Level studies</p>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600" id="total-progress">0%</div>
-              <div className="text-sm text-gray-500">Overall Progress</div>
-            </div>
-          </div>
-          
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">8</div>
-              <div className="text-sm text-gray-600">Subjects Available</div>
-            </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600" id="completed-lessons">0</div>
-              <div className="text-sm text-gray-600">Lessons Completed</div>
-            </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600" id="quiz-score">0%</div>
-              <div className="text-sm text-gray-600">Average Quiz Score</div>
-            </div>
-            <div className="text-center p-4 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600" id="study-time">0h</div>
-              <div className="text-sm text-gray-600">Time Studied</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Subjects Grid */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">Choose Your Subject</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="dashboard-subjects-grid">
-            {subjects.map(subject => (
-              <div key={subject.id} className="subject-card cursor-pointer" 
-                   style={{"--subject-color": subject.color, "--subject-color-dark": subject.color}} 
-                   onclick={`app.openSubject('${subject.id}', '${subject.name}')`}>
-                <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 border-2 border-transparent hover:border-blue-300 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl" style={{background: `linear-gradient(135deg, ${subject.color} 0%, ${subject.color}dd 100%)`}}>
-                      {subject.icon}
-                    </div>
-                    <span className="text-xs font-medium px-2 py-1 rounded-full" style={{backgroundColor: `${subject.color}20`, color: subject.color}}>
-                      {subject.code}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg text-gray-900 mb-2">{subject.name}</h4>
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">{subject.description || 'Comprehensive O-Level curriculum'}</p>
-                  </div>
-                  <div className="mt-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs text-gray-500">Progress</span>
-                      <span className="text-xs font-medium text-gray-700" id={`progress-${subject.id}`}>0%</span>
-                    </div>
-                    <div className="progress-bar">
-                      <div className="progress-fill" style={{width: '0%', background: `linear-gradient(90deg, ${subject.color} 0%, ${subject.color}cc 100%)`}}></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h3>
-          <div id="recent-activity" className="space-y-3">
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 text-sm">📚</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-sm text-gray-900">Welcome to Study Buddy!</p>
-                <p className="text-xs text-gray-500">Choose a subject above to start learning</p>
-              </div>
-              <span className="text-xs text-gray-400">Just now</span>
-            </div>
-          </div>
+          <p className="text-xl mb-6 opacity-90">Join thousands of students using Study Buddy to achieve their academic goals.</p>
+          <button onclick="window.location.href='/dashboard'" className="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors cursor-pointer">
+            Start with Mathematics
+          </button>
         </div>
       </div>
     </div>
   )
 })
 
-// Subject detail route
-app.get('/subject/:subjectId', async (c) => {
-  const { env } = c
-  const subjectId = c.req.param('subjectId')
-  
-  let subject = null
-  let topics = []
-  
-  try {
-    // Get subject details
-    const subjectResult = await env.DB.prepare(`
-      SELECT * FROM subjects WHERE id = ? AND is_active = 1
-    `).bind(subjectId).first()
-    
-    if (!subjectResult) {
-      return c.redirect('/dashboard')
-    }
-    
-    subject = subjectResult
-    
-    // Get topics for this subject
-    const topicsResult = await env.DB.prepare(`
-      SELECT t.*, 
-             COUNT(c.id) as content_count,
-             COUNT(CASE WHEN c.content_type = 'quiz' THEN 1 END) as quiz_count
-      FROM topics t
-      LEFT JOIN content c ON t.id = c.topic_id AND c.is_active = 1
-      WHERE t.subject_id = ? AND t.is_active = 1
-      GROUP BY t.id
-      ORDER BY t.order_index, t.title
-    `).bind(subjectId).all()
-    
-    topics = topicsResult.results || []
-  } catch (error) {
-    console.error('Failed to fetch subject data:', error)
-    return c.redirect('/dashboard')
-  }
-
-  return c.render(
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <button onclick="window.location.href='/dashboard'" className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer transition-colors">
-                <span className="text-gray-600">←</span>
-              </button>
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl" style={{background: `linear-gradient(135deg, ${subject.color} 0%, ${subject.color}dd 100%)`}}>
-                {subject.icon}
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">{subject.name}</h1>
-                <p className="text-sm text-gray-500">{subject.description}</p>
-              </div>
+// Dashboard route for complete curriculum
+app.get('/dashboard', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGCSE Mathematics Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm border-b border-gray-200 mb-6">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-3 mb-2">
+                    <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">SB</span>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900">IGCSE Mathematics Complete</h1>
+                </div>
+                <p class="text-gray-600">Enhanced quizzes with examination techniques</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <button onclick="window.location.href='/dashboard'" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium cursor-pointer">
-                Back to Dashboard
-              </button>
-            </div>
-          </div>
         </div>
-      </header>
+    </header>
 
-      {/* Subject Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Subject Overview */}
-        <div className="bg-white rounded-xl p-6 mb-8 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">Learning Path</h2>
-            <div className="text-center">
-              <div className="text-2xl font-bold" style={{color: subject.color}}>0%</div>
-              <div className="text-sm text-gray-500">Subject Progress</div>
+    <div class="max-w-6xl mx-auto px-4 pb-8">        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Number Operations</h3>
+                <p class="text-gray-600 text-sm mb-4">BODMAS, negative numbers, basic operations</p>
+                <div class="flex justify-between items-center">
+                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Foundation</span>
+                    <div class="flex space-x-2">
+                        <a href="/topic/1" class="px-3 py-1 bg-blue-600 text-white text-sm rounded">Lesson</a>
+                        <a href="/quiz/number-operations" class="px-3 py-1 bg-green-600 text-white text-sm rounded">Quiz</a>
+                    </div>
+                </div>
             </div>
-          </div>
-          <p className="text-gray-600 mb-4">{subject.description}</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-lg font-bold text-gray-900">{topics.length}</div>
-              <div className="text-sm text-gray-600">Topics</div>
-            </div>
-            <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-lg font-bold text-gray-900">{topics.reduce((sum, topic) => sum + (topic.content_count || 0), 0)}</div>
-              <div className="text-sm text-gray-600">Lessons</div>
-            </div>
-            <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-lg font-bold text-gray-900">{topics.reduce((sum, topic) => sum + (topic.quiz_count || 0), 0)}</div>
-              <div className="text-sm text-gray-600">Quizzes</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Topics List */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-gray-900">Topics</h3>
-          {topics.map((topic, index) => {
-            const getDifficultyStyle = (level) => {
-              switch(level) {
-                case 'beginner': return {backgroundColor: '#dbeafe', color: '#1d4ed8'}
-                case 'intermediate': return {backgroundColor: '#fef3c7', color: '#d97706'}
-                case 'advanced': return {backgroundColor: '#fecaca', color: '#dc2626'}
-                default: return {backgroundColor: '#dbeafe', color: '#1d4ed8'}
-              }
-            }
             
-            return (
-              <div key={topic.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer" 
-                   onclick={`app.openTopic('${topic.id}', '${topic.title}')`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-4 flex-1">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" 
-                         style={{backgroundColor: subject.color}}>
-                      {index + 1}
+            <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Fractions & Percentages</h3>
+                <p class="text-gray-600 text-sm mb-4">Conversions, operations, percentage problems</p>
+                <div class="flex justify-between items-center">
+                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Foundation</span>
+                    <div class="flex space-x-2">
+                        <a href="/topic/2" class="px-3 py-1 bg-blue-600 text-white text-sm rounded">Lesson</a>
+                        <a href="/quiz/fractions-decimals-percentages" class="px-3 py-1 bg-green-600 text-white text-sm rounded">Quiz</a>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-2">{topic.title}</h4>
-                      <p className="text-gray-600 mb-3">{topic.description || 'Learn the fundamentals and build your understanding step by step.'}</p>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
-                        <span>📚 {topic.content_count || 0} lessons</span>
-                        {topic.quiz_count > 0 && <span>🧩 {topic.quiz_count} quizzes</span>}
-                        <span>⏱️ {topic.estimated_duration || 30} min</span>
-                        <span className="px-2 py-1 rounded-full text-xs font-medium" 
-                              style={getDifficultyStyle(topic.difficulty_level)}>
-                          {topic.difficulty_level || 'beginner'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm font-medium text-gray-700 mb-1">0% Complete</div>
-                    <div className="w-20 h-2 bg-gray-200 rounded-full">
-                      <div className="h-full bg-gradient-to-r rounded-full" 
-                           style={{width: '0%', background: `linear-gradient(90deg, ${subject.color} 0%, ${subject.color}cc 100%)`}}></div>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            )
-          })}
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Ratio & Proportion</h3>
+                <p class="text-gray-600 text-sm mb-4">Ratios, scale, direct/inverse proportion</p>
+                <div class="flex justify-between items-center">
+                    <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Intermediate</span>
+                    <div class="flex space-x-2">
+                        <a href="/topic/3" class="px-3 py-1 bg-blue-600 text-white text-sm rounded">Lesson</a>
+                        <a href="/quiz/ratio-proportion-scale" class="px-3 py-1 bg-green-600 text-white text-sm rounded">Quiz</a>
+                    </div>
+                </div>
+            </div>
         </div>
         
-        {topics.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">📚</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Content Coming Soon</h3>
-            <p className="text-gray-600">We're preparing amazing content for this subject. Check back soon!</p>
-          </div>
-        )}
-      </div>
+        <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-6 border border-purple-200 mb-6">
+            <h2 class="text-xl font-bold text-purple-800 mb-4">🚀 Featured: Enhanced Algebra Quiz</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-purple-700 mb-2">Algebra Basics with Examination Techniques</h3>
+                    <p class="text-purple-600 text-sm mb-4">Experience our advanced quiz system designed for IGCSE preparation</p>
+                    <div class="flex space-x-2">
+                        <a href="/quiz/algebra-enhanced" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 font-semibold">
+                            Take Enhanced Quiz ✨
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="text-xs text-purple-600 space-y-2">
+                    <div class="flex items-center"><i class="fas fa-clock mr-2"></i>20-minute countdown timer</div>
+                    <div class="flex items-center"><i class="fas fa-flag mr-2"></i>Question flagging system</div>
+                    <div class="flex items-center"><i class="fas fa-chart-line mr-2"></i>Real-time progress tracking</div>
+                    <div class="flex items-center"><i class="fas fa-eye mr-2"></i>Final reveal with explanations</div>
+                    <div class="flex items-center"><i class="fas fa-trophy mr-2"></i>Achievement unlocks at 80%+</div>
+                </div>
+            </div>
+        </div>
     </div>
-  )
+</body>
+</html>`)
+})
+
+// Test route for progression debugging
+app.get('/test-progression', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Quiz Progression</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold mb-4">Quiz Progression Test</h1>
+        <button onclick="simulateHighScore()" class="bg-blue-600 text-white px-4 py-2 rounded">Simulate 90% Score (Should Show Progression)</button>
+        <button onclick="simulateLowScore()" class="bg-red-600 text-white px-4 py-2 rounded ml-2">Simulate 60% Score (No Progression)</button>
+        <button onclick="resetTest()" class="bg-gray-600 text-white px-4 py-2 rounded ml-2">Reset</button>
+        
+        <div id="quiz-results" class="hidden mt-8 bg-white rounded-lg p-6 border border-gray-200">
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Quiz Complete! 🎉</h3>
+                <div id="final-score" class="text-4xl font-bold text-blue-600 mb-4"></div>
+                <p class="text-gray-600">Here are your results:</p>
+            </div>
+        </div>
+
+        <div id="next-challenge" class="hidden mt-8 p-6 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg text-white text-center shadow-lg">
+            <h4 class="text-2xl font-bold mb-3">🚀 Ready for Next Challenge!</h4>
+            <p class="text-lg mb-4">Outstanding performance! You've mastered Algebra Basics with 80%+ score.</p>
+            <div class="text-sm opacity-90 mb-4">You've demonstrated strong algebraic understanding - time to tackle advanced concepts!</div>
+            <button onclick="window.location.href='/topic/21'" class="bg-white text-green-600 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">Continue to Mathematical Problem Solving →</button>
+        </div>
+    </div>
+
+    <script>
+        function simulateHighScore() {
+            console.log('Simulating high score (90%)...');
+            const percentage = 90;
+            const score = 9;
+            
+            // Show results
+            const finalScoreElement = document.getElementById('final-score');
+            const resultsElement = document.getElementById('quiz-results');
+            
+            if (finalScoreElement) {
+                finalScoreElement.textContent = score + '/10 (' + percentage + '%)';
+            }
+            
+            if (resultsElement) {
+                resultsElement.classList.remove('hidden');
+            }
+            
+            // Show next challenge if score >= 80%
+            if (percentage >= 80) {
+                console.log('High score achieved! Showing next challenge...');
+                setTimeout(function() {
+                    const nextChallenge = document.getElementById('next-challenge');
+                    if (nextChallenge) {
+                        console.log('Displaying next challenge section');
+                        nextChallenge.classList.remove('hidden');
+                        nextChallenge.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        console.error('Could not find next-challenge element');
+                    }
+                }, 800);
+            }
+        }
+
+        function simulateLowScore() {
+            console.log('Simulating low score (60%)...');
+            const percentage = 60;
+            const score = 6;
+            
+            // Show results
+            const finalScoreElement = document.getElementById('final-score');
+            const resultsElement = document.getElementById('quiz-results');
+            const nextChallenge = document.getElementById('next-challenge');
+            
+            if (finalScoreElement) {
+                finalScoreElement.textContent = score + '/10 (' + percentage + '%)';
+            }
+            
+            if (resultsElement) {
+                resultsElement.classList.remove('hidden');
+            }
+            
+            // Hide next challenge for low scores
+            if (nextChallenge) {
+                nextChallenge.classList.add('hidden');
+            }
+            
+            console.log('Score below 80%, no progression pathway shown');
+        }
+
+        function resetTest() {
+            const resultsElement = document.getElementById('quiz-results');
+            const nextChallenge = document.getElementById('next-challenge');
+            
+            if (resultsElement) {
+                resultsElement.classList.add('hidden');
+            }
+            
+            if (nextChallenge) {
+                nextChallenge.classList.add('hidden');
+            }
+            
+            console.log('Test reset');
+        }
+    </script>
+</body>
+</html>`);
 })
 
 export default app

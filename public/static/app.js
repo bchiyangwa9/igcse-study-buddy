@@ -105,11 +105,8 @@ class StudyBuddyApp {
   openTopic(topicId, topicTitle) {
     this.showNotification(`Opening ${topicTitle || 'topic'}...`, 'success');
     
-    // For now, show coming soon message
-    // In future, navigate to topic detail page
-    setTimeout(() => {
-      this.showNotification('Topic content coming soon! 🚀', 'info');
-    }, 1000);
+    // Navigate to topic content page
+    window.location.href = `/topic/${topicId}`;
   }
 
   // Show sign in modal

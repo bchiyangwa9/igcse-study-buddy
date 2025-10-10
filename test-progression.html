@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Quiz Progression</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold mb-4">Quiz Progression Test</h1>
+        <button onclick="simulateHighScore()" class="bg-blue-600 text-white px-4 py-2 rounded">Simulate 80%+ Score</button>
+        <button onclick="simulateLowScore()" class="bg-red-600 text-white px-4 py-2 rounded ml-2">Simulate <80% Score</button>
+        
+        <div id="quiz-results" class="hidden mt-8 bg-white rounded-lg p-6 border border-gray-200">
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Quiz Complete! 🎉</h3>
+                <div id="final-score" class="text-4xl font-bold text-blue-600 mb-4"></div>
+                <p class="text-gray-600">Here are your results:</p>
+            </div>
+        </div>
+
+        <div id="next-challenge" class="hidden mt-8 p-6 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg text-white text-center shadow-lg">
+            <h4 class="text-2xl font-bold mb-3">🚀 Ready for Next Challenge!</h4>
+            <p class="text-lg mb-4">Outstanding performance! You've mastered Algebra Basics with 80%+ score.</p>
+            <div class="text-sm opacity-90 mb-4">You've demonstrated strong algebraic understanding - time to tackle advanced concepts!</div>
+            <button onclick="window.location.href='/topic/21'" class="bg-white text-green-600 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">Continue to Mathematical Problem Solving →</button>
+        </div>
+    </div>
+
+    <script>
+        function simulateHighScore() {
+            console.log('Simulating high score (90%)...');
+            const percentage = 90;
+            const score = 9;
+            
+            // Show results
+            const finalScoreElement = document.getElementById('final-score');
+            const resultsElement = document.getElementById('quiz-results');
+            
+            if (finalScoreElement) {
+                finalScoreElement.textContent = score + '/10 (' + percentage + '%)';
+            }
+            
+            if (resultsElement) {
+                resultsElement.classList.remove('hidden');
+            }
+            
+            // Show next challenge if score >= 80%
+            if (percentage >= 80) {
+                console.log('High score achieved! Showing next challenge...');
+                setTimeout(function() {
+                    const nextChallenge = document.getElementById('next-challenge');
+                    if (nextChallenge) {
+                        console.log('Displaying next challenge section');
+                        nextChallenge.classList.remove('hidden');
+                        nextChallenge.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        nextChallenge.style.animation = 'slideDown 0.8s ease-out';
+                    } else {
+                        console.error('Could not find next-challenge element');
+                    }
+                }, 800);
+            }
+        }
+
+        function simulateLowScore() {
+            console.log('Simulating low score (60%)...');
+            const percentage = 60;
+            const score = 6;
+            
+            // Show results
+            const finalScoreElement = document.getElementById('final-score');
+            const resultsElement = document.getElementById('quiz-results');
+            const nextChallenge = document.getElementById('next-challenge');
+            
+            if (finalScoreElement) {
+                finalScoreElement.textContent = score + '/10 (' + percentage + '%)';
+            }
+            
+            if (resultsElement) {
+                resultsElement.classList.remove('hidden');
+            }
+            
+            // Hide next challenge for low scores
+            if (nextChallenge) {
+                nextChallenge.classList.add('hidden');
+            }
+            
+            console.log('Score below 80%, no progression pathway shown');
+        }
+    </script>
+</body>
+</html>
