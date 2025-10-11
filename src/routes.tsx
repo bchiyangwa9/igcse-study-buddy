@@ -331,6 +331,119 @@ export const LESSON_CONTENT = {
             </div>
         </div>
     </div>
+</div>`,
+
+  5: `<div class="space-y-6">
+    <div class="bg-teal-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-teal-800 mb-3">🔢 What Are Number Sequences?</h3>
+        <p class="text-gray-700 mb-4">A sequence is a set of numbers that follow a specific pattern or rule. Each number in the sequence is called a term.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold text-teal-600 mb-2">Example: 2, 5, 8, 11, 14, ...</h4>
+            <p class="text-sm text-gray-600">This sequence increases by 3 each time (+3 pattern)</p>
+            <div class="mt-2 text-xs text-teal-600">
+                <span class="mr-4">Term 1: 2</span>
+                <span class="mr-4">Term 2: 5</span>
+                <span class="mr-4">Term 3: 8</span>
+                <span class="mr-4">Term 4: 11</span>
+                <span>Term 5: 14</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">📈 Types of Sequences</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-blue-600 mb-2">Arithmetic Sequences</h4>
+                <p class="text-sm text-gray-700 mb-2">Same number added each time (common difference)</p>
+                <div class="space-y-1 text-xs">
+                    <p><strong>3, 7, 11, 15, 19...</strong> (+4)</p>
+                    <p><strong>20, 17, 14, 11, 8...</strong> (-3)</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-blue-600 mb-2">Geometric Sequences</h4>
+                <p class="text-sm text-gray-700 mb-2">Same number multiplied each time (common ratio)</p>
+                <div class="space-y-1 text-xs">
+                    <p><strong>2, 6, 18, 54, 162...</strong> (×3)</p>
+                    <p><strong>80, 40, 20, 10, 5...</strong> (×0.5)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">📊 Finding the nth Term</h3>
+        <p class="text-gray-700 mb-4">The nth term formula lets us find any term in the sequence without listing all previous terms.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold mb-2">Arithmetic Sequence Formula</h4>
+            <p class="text-lg font-mono text-center bg-gray-100 p-2 rounded mb-2">nth term = a + (n-1)d</p>
+            <div class="text-sm text-gray-600">
+                <p><strong>a</strong> = first term</p>
+                <p><strong>d</strong> = common difference</p>
+                <p><strong>n</strong> = position of term</p>
+            </div>
+        </div>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-2">Example: Find the 10th term of 5, 9, 13, 17...</h4>
+            <div class="space-y-1 text-sm text-gray-700">
+                <p>First term (a) = 5</p>
+                <p>Common difference (d) = +4</p>
+                <p>10th term = 5 + (10-1) × 4 = 5 + 36 = 41</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. What is the next term in the sequence: 3, 7, 11, 15, ?</p>
+                <input type="number" id="q1_answer" placeholder="Enter your answer" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(1, 19, 'The common difference is +4, so 15 + 4 = 19')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">2. Find the 8th term of the sequence: 2, 5, 8, 11...</p>
+                <p class="text-sm text-gray-600 mb-2">Hint: Use nth term = a + (n-1)d</p>
+                <input type="number" id="q2_answer" placeholder="Enter your answer" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(2, 23, 'a = 2, d = 3, so 8th term = 2 + (8-1) × 3 = 2 + 21 = 23')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback2" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">3. What type of sequence is: 1, 3, 9, 27, 81...?</p>
+                <div class="space-y-2 mb-3">
+                    <label class="flex items-center">
+                        <input type="radio" name="q3" value="a" class="mr-2">
+                        <span>a) Arithmetic (same difference)</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="q3" value="b" class="mr-2">
+                        <span>b) Geometric (same ratio)</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="q3" value="c" class="mr-2">
+                        <span>c) Neither</span>
+                    </label>
+                </div>
+                <button onclick="checkAnswer(3, 'b', 'Each term is multiplied by 3: 1×3=3, 3×3=9, 9×3=27, so it is geometric')" 
+                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback3" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
 </div>`
 };
 
