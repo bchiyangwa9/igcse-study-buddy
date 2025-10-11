@@ -220,4 +220,124 @@ INSERT OR REPLACE INTO lessons (topic_id, lesson_title, lesson_content) VALUES
         </a>
     </div>
 </div>
+'),
+
+(4, 'Powers, Roots & Standard Form', '
+<div class="max-w-4xl mx-auto p-6 bg-white">
+    <h1 class="text-3xl font-bold text-blue-800 mb-6">🔢 Powers, Roots & Standard Form</h1>
+    
+    <div class="mb-8 p-4 bg-blue-50 rounded-lg">
+        <h2 class="text-xl font-semibold text-blue-800 mb-3">Learning Objectives</h2>
+        <ul class="list-disc list-inside space-y-2 text-gray-700">
+            <li>Work with indices and apply the laws of indices</li>
+            <li>Calculate squares, cubes, and higher powers</li>
+            <li>Find square roots and cube roots</li>
+            <li>Convert to and from standard form (scientific notation)</li>
+            <li>Perform calculations with numbers in standard form</li>
+        </ul>
+    </div>
+
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Laws of Indices</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+                    <h3 class="font-semibold text-green-800 mb-2">Multiplication Rule</h3>
+                    <p class="text-gray-700">a^m × a^n = a^(m+n)</p>
+                    <p class="text-sm text-gray-600">Example: 2³ × 2² = 2⁵ = 32</p>
+                </div>
+                
+                <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <h3 class="font-semibold text-blue-800 mb-2">Division Rule</h3>
+                    <p class="text-gray-700">a^m ÷ a^n = a^(m-n)</p>
+                    <p class="text-sm text-gray-600">Example: 3⁵ ÷ 3² = 3³ = 27</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <h3 class="font-semibold text-purple-800 mb-2">Power Rule</h3>
+                    <p class="text-gray-700">(a^m)^n = a^(m×n)</p>
+                    <p class="text-sm text-gray-600">Example: (2³)² = 2⁶ = 64</p>
+                </div>
+                
+                <div class="p-4 bg-red-50 rounded-lg border border-red-200">
+                    <h3 class="font-semibold text-red-800 mb-2">Zero & Negative Powers</h3>
+                    <p class="text-gray-700">a⁰ = 1, a^(-n) = 1/a^n</p>
+                    <p class="text-sm text-gray-600">Example: 5⁰ = 1, 2^(-3) = 1/8</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Standard Form</h2>
+        
+        <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200 mb-4">
+            <h3 class="font-semibold text-yellow-800 mb-3">Standard Form Format: a × 10^n</h3>
+            <ul class="text-gray-700 space-y-2">
+                <li><strong>Where:</strong> 1 ≤ a < 10 and n is an integer</li>
+                <li><strong>Large numbers:</strong> n is positive</li>
+                <li><strong>Small numbers:</strong> n is negative</li>
+            </ul>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-3">
+                <h4 class="font-semibold text-gray-800">Converting TO Standard Form</h4>
+                <div class="p-3 bg-gray-50 rounded">
+                    <p class="text-gray-700"><strong>45,600</strong> = 4.56 × 10⁴</p>
+                    <p class="text-gray-700"><strong>0.00078</strong> = 7.8 × 10^(-4)</p>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <h4 class="font-semibold text-gray-800">Converting FROM Standard Form</h4>
+                <div class="p-3 bg-gray-50 rounded">
+                    <p class="text-gray-700"><strong>3.2 × 10³</strong> = 3,200</p>
+                    <p class="text-gray-700"><strong>6.7 × 10^(-2)</strong> = 0.067</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Interactive Practice</h2>
+        
+        <div class="space-y-4">
+            <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                <h3 class="font-semibold text-indigo-800 mb-2">Try This: Calculate 2⁵</h3>
+                <button onclick="showAnswer1()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Show Answer</button>
+                <div id="answer1" class="hidden mt-2 p-2 bg-white rounded">
+                    <p class="text-green-700 font-semibold">2⁵ = 2 × 2 × 2 × 2 × 2 = 32</p>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <h3 class="font-semibold text-orange-800 mb-2">Try This: Express 250,000 in standard form</h3>
+                <button onclick="showAnswer2()" class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700">Show Answer</button>
+                <div id="answer2" class="hidden mt-2 p-2 bg-white rounded">
+                    <p class="text-green-700 font-semibold">250,000 = 2.5 × 10⁵</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8 text-center">
+        <a href="/quiz/powers-roots-standard-form" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+            Take the Enhanced Quiz →
+        </a>
+    </div>
+</div>
+
+<script>
+function showAnswer1() {
+    document.getElementById("answer1").classList.remove("hidden");
+}
+
+function showAnswer2() {
+    document.getElementById("answer2").classList.remove("hidden");
+}
+</script>
 ');
