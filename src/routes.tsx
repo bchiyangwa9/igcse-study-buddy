@@ -733,6 +733,291 @@ export const LESSON_CONTENT = {
             </div>
         </div>
     </div>
+</div>`,
+
+  8: `<div class="space-y-6">
+    <div class="bg-rose-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-rose-800 mb-3">🔄 Simultaneous Equations</h3>
+        <p class="text-gray-700 mb-4">Simultaneous equations are two equations with two unknowns that must be solved together to find unique values for both variables.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold text-rose-600 mb-2">Example System</h4>
+            <div class="text-center space-y-1">
+                <p class="font-mono text-lg">2x + y = 7</p>
+                <p class="font-mono text-lg">x - y = 2</p>
+            </div>
+            <p class="text-sm text-gray-600 mt-2 text-center">Find values of x and y that satisfy both equations</p>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">➕ Elimination Method</h3>
+        <p class="text-gray-700 mb-4">Add or subtract equations to eliminate one variable, then solve for the other.</p>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-3">Example: Solve 2x + y = 7 and x - y = 2</h4>
+            <div class="space-y-2 text-sm">
+                <p><strong>Step 1:</strong> Add the equations (to eliminate y)</p>
+                <p class="ml-4 font-mono">(2x + y) + (x - y) = 7 + 2</p>
+                <p class="ml-4 font-mono">3x = 9</p>
+                <p class="ml-4 font-mono">x = 3</p>
+                <p><strong>Step 2:</strong> Substitute x = 3 into first equation</p>
+                <p class="ml-4 font-mono">2(3) + y = 7</p>
+                <p class="ml-4 font-mono">6 + y = 7</p>
+                <p class="ml-4 font-mono">y = 1</p>
+                <p class="font-bold text-green-600">Solution: x = 3, y = 1</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">🔀 Substitution Method</h3>
+        <p class="text-gray-700 mb-4">Solve one equation for one variable, then substitute into the other equation.</p>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-3">Example: Solve x + 2y = 8 and 3x - y = 5</h4>
+            <div class="space-y-2 text-sm">
+                <p><strong>Step 1:</strong> From first equation: x = 8 - 2y</p>
+                <p><strong>Step 2:</strong> Substitute into second equation</p>
+                <p class="ml-4 font-mono">3(8 - 2y) - y = 5</p>
+                <p class="ml-4 font-mono">24 - 6y - y = 5</p>
+                <p class="ml-4 font-mono">24 - 7y = 5</p>
+                <p class="ml-4 font-mono">-7y = -19</p>
+                <p class="ml-4 font-mono">y = 19/7</p>
+                <p><strong>Step 3:</strong> Find x: x = 8 - 2(19/7) = 18/7</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. Solve using elimination: x + y = 5 and x - y = 1</p>
+                <div class="flex space-x-4 mb-3">
+                    <input type="number" id="q1x_answer" placeholder="x = ?" 
+                           class="border border-gray-300 rounded px-3 py-2 w-20">
+                    <input type="number" id="q1y_answer" placeholder="y = ?" 
+                           class="border border-gray-300 rounded px-3 py-2 w-20">
+                </div>
+                <button onclick="checkSimultaneousAnswer(1, 3, 2, 'Add equations: 2x = 6, so x = 3. Substitute: 3 + y = 5, so y = 2')" 
+                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  9: `<div class="space-y-6">
+    <div class="bg-amber-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-amber-800 mb-3">📐 Quadratic Equations</h3>
+        <p class="text-gray-700 mb-4">Quadratic equations have x² as the highest power. They often have two solutions and their graphs are parabolas.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold text-amber-600 mb-2">Standard Form</h4>
+            <p class="text-center text-lg font-mono bg-gray-100 p-2 rounded">ax² + bx + c = 0</p>
+            <p class="text-sm text-gray-600 mt-2 text-center">Where a ≠ 0, and a, b, c are constants</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-mono">x² - 4 = 0</p>
+                <p class="text-xs text-gray-600">Simple quadratic</p>
+            </div>
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-mono">x² + 5x + 6 = 0</p>
+                <p class="text-xs text-gray-600">Factorable quadratic</p>
+            </div>
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-mono">2x² - 3x - 1 = 0</p>
+                <p class="text-xs text-gray-600">Use quadratic formula</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">✂️ Factoring Method</h3>
+        <p class="text-gray-700 mb-4">When possible, factor the quadratic into two brackets and solve each factor = 0.</p>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-3">Example: Solve x² + 5x + 6 = 0</h4>
+            <div class="space-y-2 text-sm">
+                <p><strong>Step 1:</strong> Find two numbers that multiply to 6 and add to 5</p>
+                <p class="ml-4">Numbers: 2 and 3 (2 × 3 = 6, 2 + 3 = 5)</p>
+                <p><strong>Step 2:</strong> Write as factors</p>
+                <p class="ml-4 font-mono">(x + 2)(x + 3) = 0</p>
+                <p><strong>Step 3:</strong> Solve each factor</p>
+                <p class="ml-4">x + 2 = 0 → x = -2</p>
+                <p class="ml-4">x + 3 = 0 → x = -3</p>
+                <p class="font-bold text-green-600">Solutions: x = -2 or x = -3</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">🧮 Quadratic Formula</h3>
+        <p class="text-gray-700 mb-4">When factoring is difficult, use the quadratic formula to find solutions.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold mb-2 text-center">Quadratic Formula</h4>
+            <p class="text-center text-lg font-mono bg-gray-100 p-3 rounded">x = (-b ± √(b² - 4ac)) / 2a</p>
+        </div>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-2">Example: Solve x² - 3x - 4 = 0</h4>
+            <div class="text-sm space-y-1">
+                <p>a = 1, b = -3, c = -4</p>
+                <p>x = (3 ± √(9 + 16)) / 2 = (3 ± √25) / 2 = (3 ± 5) / 2</p>
+                <p>x = (3 + 5)/2 = 4 or x = (3 - 5)/2 = -1</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. Solve by factoring: x² - 5x + 6 = 0</p>
+                <div class="flex space-x-4 mb-3">
+                    <input type="number" id="q1a_answer" placeholder="First solution" 
+                           class="border border-gray-300 rounded px-3 py-2 w-28">
+                    <input type="number" id="q1b_answer" placeholder="Second solution" 
+                           class="border border-gray-300 rounded px-3 py-2 w-28">
+                </div>
+                <button onclick="checkQuadraticAnswer(1, [2, 3], 'Factor: (x-2)(x-3) = 0, so x = 2 or x = 3')" 
+                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  10: `<div class="space-y-6">
+    <div class="bg-violet-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-violet-800 mb-3">📊 Functions and Graphs</h3>
+        <p class="text-gray-700 mb-4">A function is a special relationship where each input (x) has exactly one output (y). We use function notation like f(x) to represent this.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-violet-600 mb-2">Function Notation</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>f(x) = 2x + 3</strong></p>
+                    <p>f(1) = 2(1) + 3 = 5</p>
+                    <p>f(0) = 2(0) + 3 = 3</p>
+                    <p>f(-2) = 2(-2) + 3 = -1</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-violet-600 mb-2">Key Terms</h4>
+                <div class="space-y-1 text-sm">
+                    <p><strong>Domain:</strong> All possible x-values</p>
+                    <p><strong>Range:</strong> All possible y-values</p>
+                    <p><strong>Intercepts:</strong> Where graph crosses axes</p>
+                    <p><strong>Gradient:</strong> Slope of the line</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">📈 Linear Functions</h3>
+        <p class="text-gray-700 mb-4">Linear functions create straight line graphs with constant gradient.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold mb-2">Linear Function Forms</h4>
+            <div class="space-y-2 text-sm">
+                <p><strong>Slope-intercept form:</strong> y = mx + c</p>
+                <p class="ml-4">m = gradient, c = y-intercept</p>
+                <p><strong>Example:</strong> y = 3x - 2</p>
+                <p class="ml-4">Gradient = 3, y-intercept = -2</p>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-blue-600 mb-2">Positive Gradient</h4>
+                <p class="text-sm">y = 2x + 1</p>
+                <p class="text-xs text-gray-600">Line slopes upward ↗</p>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-blue-600 mb-2">Negative Gradient</h4>
+                <p class="text-sm">y = -x + 3</p>
+                <p class="text-xs text-gray-600">Line slopes downward ↘</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">📉 Quadratic Functions</h3>
+        <p class="text-gray-700 mb-4">Quadratic functions create parabola (curved) graphs.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold mb-2">Quadratic Function Form</h4>
+            <p class="text-center font-mono text-lg bg-gray-100 p-2 rounded">f(x) = ax² + bx + c</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-2">a > 0 (Positive)</h4>
+                <p class="text-sm">f(x) = x² + 2x - 3</p>
+                <p class="text-xs text-gray-600">Parabola opens upward ∪</p>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-2">a < 0 (Negative)</h4>
+                <p class="text-sm">f(x) = -x² + 4x + 1</p>
+                <p class="text-xs text-gray-600">Parabola opens downward ∩</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-orange-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-orange-800 mb-3">🔄 Graph Transformations</h3>
+        <p class="text-gray-700 mb-4">Functions can be transformed by shifting, stretching, or reflecting.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-orange-600 mb-2">Vertical Shifts</h4>
+                <div class="text-sm space-y-1">
+                    <p>f(x) + k → shift up by k units</p>
+                    <p>f(x) - k → shift down by k units</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-orange-600 mb-2">Horizontal Shifts</h4>
+                <div class="text-sm space-y-1">
+                    <p>f(x + k) → shift left by k units</p>
+                    <p>f(x - k) → shift right by k units</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. If f(x) = 3x - 2, find f(4)</p>
+                <input type="number" id="q1_answer" placeholder="f(4) = ?" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(1, 10, 'Substitute x = 4: f(4) = 3(4) - 2 = 12 - 2 = 10')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">2. What is the gradient of the line y = -2x + 5?</p>
+                <input type="number" id="q2_answer" placeholder="Gradient = ?" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(2, -2, 'In y = mx + c form, the coefficient of x is the gradient: -2')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback2" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
 </div>`
 };
 

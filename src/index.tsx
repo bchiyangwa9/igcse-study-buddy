@@ -666,6 +666,54 @@ app.get('/topic/:id', (c) => {
             }
             feedback.classList.remove('hidden');
         }
+
+        function checkSimultaneousAnswer(questionNum, correctX, correctY, explanation) {
+            const xInput = document.getElementById('q' + questionNum + 'x_answer');
+            const yInput = document.getElementById('q' + questionNum + 'y_answer');
+            const feedback = document.getElementById('feedback' + questionNum);
+            
+            const userX = parseFloat(xInput.value.trim());
+            const userY = parseFloat(yInput.value.trim());
+            
+            if (!xInput.value.trim() || !yInput.value.trim() || isNaN(userX) || isNaN(userY)) {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-2 rounded"><i class="fas fa-exclamation-circle"></i> Please enter both x and y values.</div>';
+                feedback.classList.remove('hidden');
+                return;
+            }
+            
+            if (userX === correctX && userY === correctY) {
+                feedback.innerHTML = '<div class="text-green-600 bg-green-50 p-3 rounded"><strong><i class="fas fa-check-circle"></i> Correct!</strong> ' + explanation + '</div>';
+            } else {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-3 rounded"><strong><i class="fas fa-times-circle"></i> Incorrect.</strong> ' + explanation + '</div>';
+            }
+            feedback.classList.remove('hidden');
+        }
+
+        function checkQuadraticAnswer(questionNum, correctAnswers, explanation) {
+            const input1 = document.getElementById('q' + questionNum + 'a_answer');
+            const input2 = document.getElementById('q' + questionNum + 'b_answer');
+            const feedback = document.getElementById('feedback' + questionNum);
+            
+            const answer1 = parseFloat(input1.value.trim());
+            const answer2 = parseFloat(input2.value.trim());
+            
+            if (!input1.value.trim() || !input2.value.trim() || isNaN(answer1) || isNaN(answer2)) {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-2 rounded"><i class="fas fa-exclamation-circle"></i> Please enter both solutions.</div>';
+                feedback.classList.remove('hidden');
+                return;
+            }
+            
+            const userAnswers = [answer1, answer2].sort();
+            const sortedCorrect = correctAnswers.sort();
+            const isCorrect = userAnswers[0] === sortedCorrect[0] && userAnswers[1] === sortedCorrect[1];
+            
+            if (isCorrect) {
+                feedback.innerHTML = '<div class="text-green-600 bg-green-50 p-3 rounded"><strong><i class="fas fa-check-circle"></i> Correct!</strong> ' + explanation + '</div>';
+            } else {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-3 rounded"><strong><i class="fas fa-times-circle"></i> Try again.</strong> ' + explanation + '</div>';
+            }
+            feedback.classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
