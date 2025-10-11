@@ -1240,6 +1240,179 @@ app.get('/test-progression', (c) => {
             
             console.log('Test reset');
         }
+        
+        // Statistics and Probability JavaScript Functions
+        function checkStatsAnswer(questionNum, correctAnswer, explanation) {
+            const select = document.getElementById('q' + questionNum + '_stats_answer');
+            const feedback = document.getElementById('stats_feedback' + questionNum);
+            
+            if (!select || !feedback) return;
+            
+            const userAnswer = select.value.trim();
+            
+            if (userAnswer === correctAnswer) {
+                feedback.innerHTML = '<div class="bg-green-100 text-green-800 p-3 rounded"><i class="fas fa-check-circle mr-2"></i><strong>Correct!</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            } else if (userAnswer === '') {
+                feedback.innerHTML = '<div class="bg-yellow-100 text-yellow-800 p-3 rounded"><i class="fas fa-exclamation-triangle mr-2"></i>Please select an answer.</div>';
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = '<div class="bg-red-100 text-red-800 p-3 rounded"><i class="fas fa-times-circle mr-2"></i><strong>Incorrect.</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            }
+        }
+        
+        function checkStatsTextAnswer(questionNum, correctAnswers, explanation) {
+            const input = document.getElementById('q' + questionNum + '_stats_text');
+            const feedback = document.getElementById('stats_feedback' + questionNum);
+            
+            if (!input || !feedback) return;
+            
+            const userAnswer = input.value.trim().toLowerCase();
+            
+            let isCorrect = false;
+            for (const correct of correctAnswers) {
+                if (userAnswer.includes(correct.toLowerCase())) {
+                    isCorrect = true;
+                    break;
+                }
+            }
+            
+            if (isCorrect) {
+                feedback.innerHTML = '<div class="bg-green-100 text-green-800 p-3 rounded"><i class="fas fa-check-circle mr-2"></i><strong>Correct!</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            } else if (userAnswer === '') {
+                feedback.innerHTML = '<div class="bg-yellow-100 text-yellow-800 p-3 rounded"><i class="fas fa-exclamation-triangle mr-2"></i>Please enter your answer.</div>';
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = '<div class="bg-red-100 text-red-800 p-3 rounded"><i class="fas fa-times-circle mr-2"></i><strong>Try again.</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            }
+        }
+        
+        function checkStatsNumberAnswer(questionNum, correctAnswer, type, explanation) {
+            const input = document.getElementById('q' + questionNum + '_' + type + '_answer') || document.getElementById('q' + questionNum + '_mean_answer') || document.getElementById('q' + questionNum + '_median_answer') || document.getElementById('q' + questionNum + '_mode_answer');
+            const feedback = document.getElementById('stats_mean_feedback' + questionNum) || document.getElementById('dist_feedback' + questionNum) || document.getElementById('prob_feedback' + questionNum);
+            
+            if (!input || !feedback) return;
+            
+            const userAnswer = parseFloat(input.value);
+            
+            if (isNaN(userAnswer)) {
+                feedback.innerHTML = '<div class="bg-yellow-100 text-yellow-800 p-3 rounded"><i class="fas fa-exclamation-triangle mr-2"></i>Please enter a valid number.</div>';
+                feedback.classList.remove('hidden');
+                return;
+            }
+            
+            const tolerance = 0.01; // Allow small rounding errors
+            if (Math.abs(userAnswer - correctAnswer) < tolerance) {
+                feedback.innerHTML = '<div class="bg-green-100 text-green-800 p-3 rounded"><i class="fas fa-check-circle mr-2"></i><strong>Correct!</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = '<div class="bg-red-100 text-red-800 p-3 rounded"><i class="fas fa-times-circle mr-2"></i><strong>Incorrect.</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            }
+        }
+        
+        function checkProbAnswer(questionNum, correctAnswers, explanation) {
+            const input = document.getElementById('q' + questionNum + '_prob_answer') || document.getElementById('q' + questionNum + '_tree_answer');
+            const feedback = document.getElementById('prob_feedback' + questionNum) || document.getElementById('tree_feedback' + questionNum);
+            
+            if (!input || !feedback) return;
+            
+            const userAnswer = input.value.trim().toLowerCase().replace(/\s/g, '');
+            
+            let isCorrect = false;
+            for (const correct of correctAnswers) {
+                if (userAnswer === correct.toLowerCase().replace(/\s/g, '')) {
+                    isCorrect = true;
+                    break;
+                }
+            }
+            
+            if (isCorrect) {
+                feedback.innerHTML = '<div class="bg-green-100 text-green-800 p-3 rounded"><i class="fas fa-check-circle mr-2"></i><strong>Correct!</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            } else if (userAnswer === '') {
+                feedback.innerHTML = '<div class="bg-yellow-100 text-yellow-800 p-3 rounded"><i class="fas fa-exclamation-triangle mr-2"></i>Please enter your answer.</div>';
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = '<div class="bg-red-100 text-red-800 p-3 rounded"><i class="fas fa-times-circle mr-2"></i><strong>Incorrect.</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            }
+        }
+        
+        function checkTreeAnswer(questionNum, correctAnswer, explanation) {
+            const input = document.getElementById('q' + questionNum + '_tree_answer');
+            const feedback = document.getElementById('tree_feedback' + questionNum);
+            
+            if (!input || !feedback) return;
+            
+            const userAnswer = parseFloat(input.value);
+            
+            if (isNaN(userAnswer)) {
+                feedback.innerHTML = '<div class="bg-yellow-100 text-yellow-800 p-3 rounded"><i class="fas fa-exclamation-triangle mr-2"></i>Please enter a valid number.</div>';
+                feedback.classList.remove('hidden');
+                return;
+            }
+            
+            const tolerance = 0.01;
+            if (Math.abs(userAnswer - correctAnswer) < tolerance) {
+                feedback.innerHTML = '<div class="bg-green-100 text-green-800 p-3 rounded"><i class="fas fa-check-circle mr-2"></i><strong>Correct!</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = '<div class="bg-red-100 text-red-800 p-3 rounded"><i class="fas fa-times-circle mr-2"></i><strong>Incorrect.</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            }
+        }
+        
+        function checkHypAnswer(questionNum, correctAnswer, explanation) {
+            const select = document.getElementById('q' + questionNum + '_hyp_answer');
+            const feedback = document.getElementById('hyp_feedback' + questionNum);
+            
+            if (!select || !feedback) return;
+            
+            const userAnswer = select.value.trim();
+            
+            if (userAnswer === correctAnswer) {
+                feedback.innerHTML = '<div class="bg-green-100 text-green-800 p-3 rounded"><i class="fas fa-check-circle mr-2"></i><strong>Correct!</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            } else if (userAnswer === '') {
+                feedback.innerHTML = '<div class="bg-yellow-100 text-yellow-800 p-3 rounded"><i class="fas fa-exclamation-triangle mr-2"></i>Please select an answer.</div>';
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = '<div class="bg-red-100 text-red-800 p-3 rounded"><i class="fas fa-times-circle mr-2"></i><strong>Incorrect.</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            }
+        }
+        
+        function checkHypTextAnswer(questionNum, correctAnswers, explanation) {
+            const input = document.getElementById('q' + questionNum + '_hyp_answer');
+            const feedback = document.getElementById('hyp_feedback' + questionNum);
+            
+            if (!input || !feedback) return;
+            
+            const userAnswer = input.value.trim().toLowerCase().replace(/\s/g, '');
+            
+            let isCorrect = false;
+            for (const correct of correctAnswers) {
+                if (userAnswer === correct.toLowerCase().replace(/\s/g, '')) {
+                    isCorrect = true;
+                    break;
+                }
+            }
+            
+            if (isCorrect) {
+                feedback.innerHTML = '<div class="bg-green-100 text-green-800 p-3 rounded"><i class="fas fa-check-circle mr-2"></i><strong>Correct!</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            } else if (userAnswer === '') {
+                feedback.innerHTML = '<div class="bg-yellow-100 text-yellow-800 p-3 rounded"><i class="fas fa-exclamation-triangle mr-2"></i>Please enter your answer.</div>';
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = '<div class="bg-red-100 text-red-800 p-3 rounded"><i class="fas fa-times-circle mr-2"></i><strong>Try again.</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            }
+        }
     </script>
 </body>
 </html>`);

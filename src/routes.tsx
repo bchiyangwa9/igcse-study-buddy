@@ -2402,6 +2402,680 @@ export const LESSON_CONTENT = {
             </div>
         </div>
     </div>
+</div>`,
+
+  // STATISTICS AND PROBABILITY TOPICS (16-21)
+  16: `<div class="space-y-6">
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">📊 Data Collection and Presentation</h3>
+        <p class="text-gray-700 mb-4">Statistics begins with collecting and organizing data to understand patterns and make informed decisions.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-2">Types of Data</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Qualitative:</strong> Categories (colors, names)</p>
+                    <p><strong>Quantitative:</strong> Numbers (height, age)</p>
+                    <p><strong>Discrete:</strong> Counted (students, cars)</p>
+                    <p><strong>Continuous:</strong> Measured (weight, time)</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-2">Collection Methods</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Survey:</strong> Questionnaires</p>
+                    <p><strong>Observation:</strong> Direct recording</p>
+                    <p><strong>Experiment:</strong> Controlled testing</p>
+                    <p><strong>Census:</strong> Entire population</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg border border-purple-200">
+        <h3 class="text-lg font-bold text-purple-700 mb-4">📋 Data Presentation Methods</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-purple-50 p-4 rounded">
+                <h4 class="font-bold text-purple-600 mb-2">Frequency Tables</h4>
+                <div class="text-xs bg-white p-2 rounded border">
+                    <table class="w-full">
+                        <tr><th class="border px-1 py-1">Score</th><th class="border px-1 py-1">Freq</th></tr>
+                        <tr><td class="border px-1 py-1">1-5</td><td class="border px-1 py-1">3</td></tr>
+                        <tr><td class="border px-1 py-1">6-10</td><td class="border px-1 py-1">7</td></tr>
+                        <tr><td class="border px-1 py-1">11-15</td><td class="border px-1 py-1">5</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded">
+                <h4 class="font-bold text-purple-600 mb-2">Bar Charts</h4>
+                <p class="text-xs">Bars show frequency of categories</p>
+                <div class="mt-2 flex items-end justify-around h-12 bg-white rounded border">
+                    <div class="bg-purple-400 w-3" style="height: 60%"></div>
+                    <div class="bg-purple-400 w-3" style="height: 80%"></div>
+                    <div class="bg-purple-400 w-3" style="height: 40%"></div>
+                    <div class="bg-purple-400 w-3" style="height: 100%"></div>
+                </div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded">
+                <h4 class="font-bold text-purple-600 mb-2">Pie Charts</h4>
+                <p class="text-xs">Circles show proportions</p>
+                <div class="mt-2 flex justify-center">
+                    <div class="w-12 h-12 rounded-full" style="background: conic-gradient(#8b5cf6 0deg 144deg, #a78bfa 144deg 216deg, #c4b5fd 216deg 288deg, #ddd6fe 288deg 360deg);"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-purple-50 p-4 rounded-lg">
+            <h4 class="font-bold text-purple-600 mb-3">🎯 Interactive Practice</h4>
+            
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 1:</strong> A survey collected ages: 12, 15, 13, 12, 14, 15, 13, 12, 14, 15. What type of data is this?</p>
+                <select id="q1_stats_answer" class="border border-gray-300 rounded px-3 py-2">
+                    <option value="">Select answer</option>
+                    <option value="qualitative">Qualitative</option>
+                    <option value="quantitative_discrete">Quantitative Discrete</option>
+                    <option value="quantitative_continuous">Quantitative Continuous</option>
+                </select>
+                <button onclick="checkStatsAnswer(1, 'quantitative_discrete', 'Ages are numbers that are counted in whole years, making them quantitative discrete data.')" 
+                        class="ml-2 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Check Answer</button>
+                <div id="stats_feedback1" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 2:</strong> In a frequency table, the class 10-14 has a frequency of 8. What does this mean?</p>
+                <input type="text" id="q2_stats_text" placeholder="Enter your explanation" 
+                       class="border border-gray-300 rounded px-3 py-2 w-full">
+                <button onclick="checkStatsTextAnswer(2, ['8 values', '8 data points', 'eight values'], 'There are 8 data values that fall between 10 and 14 (inclusive).')" 
+                        class="mt-2 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Check Answer</button>
+                <div id="stats_feedback2" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  17: `<div class="space-y-6">
+    <div class="bg-indigo-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-indigo-800 mb-3">📈 Statistical Measures</h3>
+        <p class="text-gray-700 mb-4">Statistical measures help us summarize and understand data sets through measures of central tendency and spread.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-indigo-600 mb-2">Measures of Central Tendency</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Mean (x̄):</strong> Sum ÷ Number of values</p>
+                    <p><strong>Median:</strong> Middle value when ordered</p>
+                    <p><strong>Mode:</strong> Most frequent value</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-indigo-600 mb-2">Measures of Spread</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Range:</strong> Highest - Lowest</p>
+                    <p><strong>Quartiles:</strong> Q1, Q2 (median), Q3</p>
+                    <p><strong>Standard Deviation:</strong> Measure of spread</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg border border-indigo-200">
+        <h3 class="text-lg font-bold text-indigo-700 mb-4">🧮 Calculating Statistical Measures</h3>
+        
+        <div class="bg-indigo-50 p-4 rounded-lg mb-6">
+            <h4 class="font-bold text-indigo-600 mb-3">Example Dataset: Test Scores</h4>
+            <p class="mb-2"><strong>Data:</strong> 65, 70, 75, 80, 85, 90, 95</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                    <h5 class="font-bold text-indigo-500 mb-2">Step-by-Step Calculations:</h5>
+                    <div class="text-sm space-y-1 bg-white p-3 rounded">
+                        <p><strong>Mean:</strong> (65+70+75+80+85+90+95) ÷ 7 = 560 ÷ 7 = 80</p>
+                        <p><strong>Median:</strong> Middle of 7 values = 80</p>
+                        <p><strong>Mode:</strong> No repeated values = None</p>
+                        <p><strong>Range:</strong> 95 - 65 = 30</p>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-bold text-indigo-500 mb-2">Quartiles:</h5>
+                    <div class="text-sm space-y-1 bg-white p-3 rounded">
+                        <p><strong>Q1:</strong> 25th percentile = 70</p>
+                        <p><strong>Q2:</strong> 50th percentile (median) = 80</p>
+                        <p><strong>Q3:</strong> 75th percentile = 90</p>
+                        <p><strong>IQR:</strong> Q3 - Q1 = 90 - 70 = 20</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-indigo-50 p-4 rounded-lg">
+            <h4 class="font-bold text-indigo-600 mb-3">🎯 Interactive Practice</h4>
+            
+            <div class="mb-4">
+                <p class="mb-2"><strong>Dataset:</strong> 12, 15, 18, 15, 21, 24, 15, 18</p>
+                <p class="mb-2"><strong>Question 1:</strong> What is the mean of this dataset?</p>
+                <input type="number" id="q1_mean_answer" placeholder="Enter mean" step="0.1"
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkStatsNumberAnswer(1, 17.25, 'mean', 'Sum = 12+15+18+15+21+24+15+18 = 138, Mean = 138 ÷ 8 = 17.25')" 
+                        class="ml-2 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Check Answer</button>
+                <div id="stats_mean_feedback1" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 2:</strong> What is the median of the same dataset?</p>
+                <p class="text-xs text-gray-600 mb-2">Hint: First order the values: 12, 15, 15, 15, 18, 18, 21, 24</p>
+                <input type="number" id="q2_median_answer" placeholder="Enter median" step="0.1"
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkStatsNumberAnswer(2, 16.5, 'median', 'With 8 values, median is average of 4th and 5th values: (15 + 18) ÷ 2 = 16.5')" 
+                        class="ml-2 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Check Answer</button>
+                <div id="stats_mean_feedback2" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 3:</strong> What is the mode of the dataset?</p>
+                <input type="number" id="q3_mode_answer" placeholder="Enter mode"
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkStatsNumberAnswer(3, 15, 'mode', 'The value 15 appears 3 times, more than any other value, so mode = 15')" 
+                        class="ml-2 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Check Answer</button>
+                <div id="stats_mean_feedback3" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  18: `<div class="space-y-6">
+    <div class="bg-pink-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-pink-800 mb-3">🎯 Probability Basics</h3>
+        <p class="text-gray-700 mb-4">Probability measures how likely an event is to occur, expressed as a number between 0 and 1.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-pink-600 mb-2">Probability Scale</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>0:</strong> Impossible</p>
+                    <p><strong>0.5:</strong> Even chance</p>
+                    <p><strong>1:</strong> Certain</p>
+                    <div class="bg-gradient-to-r from-red-400 via-yellow-400 to-green-400 h-4 rounded mt-2"></div>
+                    <div class="flex justify-between text-xs">
+                        <span>0</span>
+                        <span>0.5</span>
+                        <span>1</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-pink-600 mb-2">Basic Formula</h4>
+                <div class="text-center p-3 bg-pink-50 rounded">
+                    <p class="font-mono text-lg">P(E) = Number of favorable outcomes / Total number of outcomes</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-pink-600 mb-2">Example</h4>
+                <div class="text-sm space-y-1">
+                    <p><strong>Rolling a dice:</strong></p>
+                    <p>P(getting 3) = 1/6 ≈ 0.167</p>
+                    <p>P(even number) = 3/6 = 0.5</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg border border-pink-200">
+        <h3 class="text-lg font-bold text-pink-700 mb-4">🎲 Probability Rules and Examples</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-pink-50 p-4 rounded-lg">
+                <h4 class="font-bold text-pink-600 mb-3">Coin Toss Example</h4>
+                <div class="text-sm space-y-2">
+                    <p><strong>Sample Space:</strong> {Heads, Tails}</p>
+                    <p><strong>P(Heads) =</strong> 1/2 = 0.5</p>
+                    <p><strong>P(Tails) =</strong> 1/2 = 0.5</p>
+                    <p><strong>Sum:</strong> 0.5 + 0.5 = 1 ✓</p>
+                </div>
+            </div>
+            <div class="bg-pink-50 p-4 rounded-lg">
+                <h4 class="font-bold text-pink-600 mb-3">Card Draw Example</h4>
+                <div class="text-sm space-y-2">
+                    <p><strong>Standard deck:</strong> 52 cards</p>
+                    <p><strong>P(Heart) =</strong> 13/52 = 1/4</p>
+                    <p><strong>P(King) =</strong> 4/52 = 1/13</p>
+                    <p><strong>P(Red card) =</strong> 26/52 = 1/2</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-pink-50 p-4 rounded-lg mb-6">
+            <h4 class="font-bold text-pink-600 mb-3">🔗 Probability Rules</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-3 rounded">
+                    <h5 class="font-bold text-pink-500 mb-2">Addition Rule</h5>
+                    <p class="text-sm">P(A or B) = P(A) + P(B) - P(A and B)</p>
+                    <p class="text-xs text-gray-600">For mutually exclusive events: P(A or B) = P(A) + P(B)</p>
+                </div>
+                <div class="bg-white p-3 rounded">
+                    <h5 class="font-bold text-pink-500 mb-2">Complement Rule</h5>
+                    <p class="text-sm">P(not A) = 1 - P(A)</p>
+                    <p class="text-xs text-gray-600">The probability that an event doesn't happen</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-pink-50 p-4 rounded-lg">
+            <h4 class="font-bold text-pink-600 mb-3">🎯 Interactive Practice</h4>
+            
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 1:</strong> A bag contains 5 red balls, 3 blue balls, and 2 green balls. What is the probability of drawing a red ball?</p>
+                <input type="text" id="q1_prob_answer" placeholder="Enter as fraction (e.g., 1/2)" 
+                       class="border border-gray-300 rounded px-3 py-2 w-32">
+                <button onclick="checkProbAnswer(1, ['5/10', '1/2', '0.5'], 'Total balls = 5+3+2 = 10. P(red) = 5/10 = 1/2')" 
+                        class="ml-2 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">Check Answer</button>
+                <div id="prob_feedback1" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 2:</strong> Rolling a fair 6-sided dice, what is P(getting a number greater than 4)?</p>
+                <input type="text" id="q2_prob_answer" placeholder="Enter as fraction or decimal" 
+                       class="border border-gray-300 rounded px-3 py-2 w-32">
+                <button onclick="checkProbAnswer(2, ['2/6', '1/3', '0.333', '0.33'], 'Numbers greater than 4 are 5 and 6. P = 2/6 = 1/3')" 
+                        class="ml-2 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">Check Answer</button>
+                <div id="prob_feedback2" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 3:</strong> If P(sunny) = 0.7, what is P(not sunny)?</p>
+                <input type="number" id="q3_prob_answer" placeholder="Enter decimal" step="0.1" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkStatsNumberAnswer(3, 0.3, 'probability', 'P(not sunny) = 1 - P(sunny) = 1 - 0.7 = 0.3')" 
+                        class="ml-2 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">Check Answer</button>
+                <div id="prob_feedback3" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  19: `<div class="space-y-6">
+    <div class="bg-orange-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-orange-800 mb-3">🌳 Probability Trees and Conditional Probability</h3>
+        <p class="text-gray-700 mb-4">Tree diagrams help visualize sequences of events and calculate complex probabilities systematically.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-orange-600 mb-2">Tree Diagrams</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Branches:</strong> Show possible outcomes</p>
+                    <p><strong>Probabilities:</strong> Written on branches</p>
+                    <p><strong>Endpoints:</strong> Show final outcomes</p>
+                    <p><strong>Multiplication:</strong> Along branches</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-orange-600 mb-2">Conditional Probability</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>P(A|B):</strong> Probability of A given B</p>
+                    <p><strong>Formula:</strong> P(A|B) = P(A and B) / P(B)</p>
+                    <p><strong>Example:</strong> P(Rain|Cloudy)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg border border-orange-200">
+        <h3 class="text-lg font-bold text-orange-700 mb-4">🎲 Tree Diagram Example</h3>
+        
+        <div class="bg-orange-50 p-4 rounded-lg mb-6">
+            <h4 class="font-bold text-orange-600 mb-3">Example: Two Coin Tosses</h4>
+            
+            <div class="flex justify-center mb-4">
+                <div class="text-sm font-mono bg-white p-4 rounded border">
+                    <div class="text-center mb-2"><strong>Start</strong></div>
+                    <div class="grid grid-cols-4 gap-2 text-center">
+                        <div>First Toss</div>
+                        <div></div>
+                        <div>Second Toss</div>
+                        <div>Outcome</div>
+                        
+                        <div class="border-r-2 border-gray-400 pr-2">H (0.5)</div>
+                        <div>→</div>
+                        <div>H (0.5)<br/>T (0.5)</div>
+                        <div>HH (0.25)<br/>HT (0.25)</div>
+                        
+                        <div class="border-r-2 border-gray-400 pr-2">T (0.5)</div>
+                        <div>→</div>
+                        <div>H (0.5)<br/>T (0.5)</div>
+                        <div>TH (0.25)<br/>TT (0.25)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h5 class="font-bold text-orange-500 mb-2">Calculations:</h5>
+                    <div class="text-sm space-y-1 bg-white p-3 rounded">
+                        <p><strong>P(HH) =</strong> 0.5 × 0.5 = 0.25</p>
+                        <p><strong>P(exactly one H) =</strong> P(HT) + P(TH) = 0.25 + 0.25 = 0.5</p>
+                        <p><strong>P(at least one H) =</strong> 1 - P(TT) = 1 - 0.25 = 0.75</p>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-bold text-orange-500 mb-2">Key Rules:</h5>
+                    <div class="text-sm space-y-1 bg-white p-3 rounded">
+                        <p><strong>Along branches:</strong> Multiply probabilities</p>
+                        <p><strong>Different paths:</strong> Add probabilities</p>
+                        <p><strong>All outcomes sum to 1:</strong> 0.25 + 0.25 + 0.25 + 0.25 = 1</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-orange-50 p-4 rounded-lg mb-6">
+            <h4 class="font-bold text-orange-600 mb-3">🎯 Conditional Probability Example</h4>
+            
+            <div class="bg-white p-4 rounded border mb-4">
+                <p class="mb-2"><strong>Scenario:</strong> A class has 30 students. 18 play football, 12 play basketball, 6 play both sports.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <h5 class="font-bold text-orange-500 mb-2">Given Information:</h5>
+                        <div class="text-sm space-y-1">
+                            <p>Total students: 30</p>
+                            <p>Play football (F): 18</p>
+                            <p>Play basketball (B): 12</p>
+                            <p>Play both (F ∩ B): 6</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-orange-500 mb-2">Questions:</h5>
+                        <div class="text-sm space-y-1">
+                            <p>P(B|F) = P(plays basketball given plays football)</p>
+                            <p>= P(B ∩ F) / P(F)</p>
+                            <p>= (6/30) / (18/30) = 6/18 = 1/3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-orange-50 p-4 rounded-lg">
+            <h4 class="font-bold text-orange-600 mb-3">🎯 Interactive Practice</h4>
+            
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 1:</strong> Drawing two cards without replacement from a deck. What is P(both are hearts)?</p>
+                <p class="text-xs text-gray-600 mb-2">Hint: First card P(Heart) = 13/52, Second card P(Heart|First was Heart) = 12/51</p>
+                <input type="text" id="q1_tree_answer" placeholder="Enter as fraction" 
+                       class="border border-gray-300 rounded px-3 py-2 w-32">
+                <button onclick="checkProbAnswer(1, ['12/204', '1/17'], 'P(both hearts) = (13/52) × (12/51) = 156/2652 = 12/204 = 1/17')" 
+                        class="ml-2 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700">Check Answer</button>
+                <div id="tree_feedback1" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 2:</strong> A bag has 4 red and 6 blue balls. Draw 2 balls without replacement. What is P(first red, second blue)?</p>
+                <input type="text" id="q2_tree_answer" placeholder="Enter as fraction" 
+                       class="border border-gray-300 rounded px-3 py-2 w-32">
+                <button onclick="checkProbAnswer(2, ['24/90', '4/15'], 'P(red then blue) = (4/10) × (6/9) = 24/90 = 4/15')" 
+                        class="ml-2 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700">Check Answer</button>
+                <div id="tree_feedback2" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 3:</strong> In a class, P(studies Math) = 0.8, P(passes test) = 0.9, P(passes test | studies Math) = 0.95. What is P(studies Math | passes test)?</p>
+                <input type="number" id="q3_tree_answer" placeholder="Enter decimal" step="0.01" 
+                       class="border border-gray-300 rounded px-3 py-2 w-32">
+                <button onclick="checkTreeAnswer(3, 0.84, 'Use formula: P(A|B) = P(B|A) × P(A) / P(B) = 0.95 × 0.8 / 0.9 = 0.844')" 
+                        class="ml-2 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700">Check Answer</button>
+                <div id="tree_feedback3" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  20: `<div class="space-y-6">
+    <div class="bg-cyan-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-cyan-800 mb-3">📊 Statistical Distributions</h3>
+        <p class="text-gray-700 mb-4">Statistical distributions show how data values are spread and help us understand patterns in large datasets.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-cyan-600 mb-2">Normal Distribution</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Bell-shaped curve</strong></p>
+                    <p><strong>68-95-99.7 Rule:</strong></p>
+                    <p>68% within 1 standard deviation</p>
+                    <p>95% within 2 standard deviations</p>
+                    <p>99.7% within 3 standard deviations</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-cyan-600 mb-2">Other Distributions</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Uniform:</strong> All values equally likely</p>
+                    <p><strong>Skewed:</strong> Tail on one side</p>
+                    <p><strong>Bimodal:</strong> Two peaks</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg border border-cyan-200">
+        <h3 class="text-lg font-bold text-cyan-700 mb-4">📈 Understanding Distributions</h3>
+        
+        <div class="bg-cyan-50 p-4 rounded-lg mb-6">
+            <h4 class="font-bold text-cyan-600 mb-3">Normal Distribution Properties</h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded">
+                    <h5 class="font-bold text-cyan-500 mb-2">Visual Representation</h5>
+                    <div class="text-center">
+                        <svg width="200" height="120" class="mx-auto">
+                            <path d="M 20 100 Q 100 20 180 100" stroke="#0891b2" stroke-width="3" fill="none"/>
+                            <line x1="100" y1="20" x2="100" y2="100" stroke="#0891b2" stroke-dasharray="5,5"/>
+                            <text x="100" y="115" text-anchor="middle" font-size="12">μ (mean)</text>
+                        </svg>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded">
+                    <h5 class="font-bold text-cyan-500 mb-2">Key Features</h5>
+                    <div class="text-sm space-y-1">
+                        <p><strong>Symmetric:</strong> Mirror image around mean</p>
+                        <p><strong>Mean = Median = Mode</strong></p>
+                        <p><strong>Standard deviation (σ):</strong> Controls width</p>
+                        <p><strong>Area under curve = 1</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-cyan-50 p-4 rounded-lg mb-6">
+            <h4 class="font-bold text-cyan-600 mb-3">📏 Standard Scores (Z-scores)</h4>
+            
+            <div class="bg-white p-4 rounded border mb-4">
+                <div class="text-center mb-3">
+                    <p class="font-mono text-lg"><strong>Z = (X - μ) / σ</strong></p>
+                    <p class="text-sm text-gray-600">Where X = data value, μ = mean, σ = standard deviation</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h5 class="font-bold text-cyan-500 mb-2">Example Calculation:</h5>
+                        <div class="text-sm space-y-1">
+                            <p><strong>Given:</strong> Test scores normally distributed</p>
+                            <p>Mean (μ) = 75, Standard deviation (σ) = 10</p>
+                            <p><strong>Find Z-score for X = 85:</strong></p>
+                            <p>Z = (85 - 75) / 10 = 10/10 = 1</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-cyan-500 mb-2">Interpretation:</h5>
+                        <div class="text-sm space-y-1">
+                            <p><strong>Z = 1:</strong> 1 standard deviation above mean</p>
+                            <p><strong>Z = 0:</strong> Equal to the mean</p>
+                            <p><strong>Z = -1:</strong> 1 standard deviation below mean</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-cyan-50 p-4 rounded-lg">
+            <h4 class="font-bold text-cyan-600 mb-3">🎯 Interactive Practice</h4>
+            
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 1:</strong> Heights are normally distributed with mean 170cm and standard deviation 8cm. What is the Z-score for a height of 186cm?</p>
+                <input type="number" id="q1_dist_answer" placeholder="Enter Z-score" step="0.1" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkStatsNumberAnswer(1, 2, 'zscore', 'Z = (186 - 170) / 8 = 16 / 8 = 2')" 
+                        class="ml-2 bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700">Check Answer</button>
+                <div id="dist_feedback1" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 2:</strong> In a normal distribution, what percentage of data falls within 2 standard deviations of the mean?</p>
+                <input type="number" id="q2_dist_answer" placeholder="Enter percentage" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkStatsNumberAnswer(2, 95, 'percentage', 'By the 68-95-99.7 rule, 95% of data falls within 2 standard deviations')" 
+                        class="ml-2 bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700">Check Answer</button>
+                <div id="dist_feedback2" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 3:</strong> If test scores have mean = 80 and σ = 5, what score corresponds to Z = -1.5?</p>
+                <input type="number" id="q3_dist_answer" placeholder="Enter score" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkStatsNumberAnswer(3, 72.5, 'score', 'Using X = μ + Z×σ: X = 80 + (-1.5)×5 = 80 - 7.5 = 72.5')" 
+                        class="ml-2 bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700">Check Answer</button>
+                <div id="dist_feedback3" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  21: `<div class="space-y-6">
+    <div class="bg-emerald-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-emerald-800 mb-3">🔬 Hypothesis Testing and Analysis</h3>
+        <p class="text-gray-700 mb-4">Hypothesis testing helps us make decisions about populations based on sample data using statistical evidence.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-emerald-600 mb-2">Hypothesis Testing Steps</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>1. State hypotheses</strong> (H₀ and H₁)</p>
+                    <p><strong>2. Choose significance level</strong> (α)</p>
+                    <p><strong>3. Calculate test statistic</strong></p>
+                    <p><strong>4. Find p-value</strong></p>
+                    <p><strong>5. Make decision</strong></p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-emerald-600 mb-2">Types of Errors</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Type I Error:</strong> Reject true H₀</p>
+                    <p><strong>Type II Error:</strong> Accept false H₀</p>
+                    <p><strong>α (alpha):</strong> P(Type I Error)</p>
+                    <p><strong>Power:</strong> 1 - P(Type II Error)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg border border-emerald-200">
+        <h3 class="text-lg font-bold text-emerald-700 mb-4">🧪 Hypothesis Testing Process</h3>
+        
+        <div class="bg-emerald-50 p-4 rounded-lg mb-6">
+            <h4 class="font-bold text-emerald-600 mb-3">Example: Testing a Mean</h4>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="mb-3"><strong>Scenario:</strong> A factory claims their light bulbs last 1000 hours on average. A sample of 25 bulbs has a mean of 950 hours with standard deviation 100 hours. Test at α = 0.05.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h5 class="font-bold text-emerald-500 mb-2">Step-by-Step Solution:</h5>
+                        <div class="text-sm space-y-2">
+                            <p><strong>Step 1:</strong> H₀: μ = 1000, H₁: μ ≠ 1000</p>
+                            <p><strong>Step 2:</strong> α = 0.05 (two-tailed)</p>
+                            <p><strong>Step 3:</strong> t = (x̄ - μ) / (s/√n)</p>
+                            <p>t = (950 - 1000) / (100/√25) = -50/20 = -2.5</p>
+                            <p><strong>Step 4:</strong> With df = 24, |t| = 2.5</p>
+                            <p><strong>Step 5:</strong> Critical value ≈ ±2.064</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-emerald-500 mb-2">Conclusion:</h5>
+                        <div class="text-sm space-y-2">
+                            <p>Since |2.5| > 2.064, we <strong>reject H₀</strong></p>
+                            <p><strong>Interpretation:</strong> There is sufficient evidence that the mean lifetime is not 1000 hours.</p>
+                            <p><strong>Practical meaning:</strong> The bulbs may not last as long as claimed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-emerald-50 p-4 rounded-lg mb-6">
+            <h4 class="font-bold text-emerald-600 mb-3">📊 Correlation and Regression</h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded">
+                    <h5 class="font-bold text-emerald-500 mb-2">Correlation Coefficient (r)</h5>
+                    <div class="text-sm space-y-2">
+                        <p><strong>Range:</strong> -1 ≤ r ≤ 1</p>
+                        <p><strong>r = 1:</strong> Perfect positive correlation</p>
+                        <p><strong>r = 0:</strong> No linear correlation</p>
+                        <p><strong>r = -1:</strong> Perfect negative correlation</p>
+                        <p><strong>|r| > 0.7:</strong> Strong correlation</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded">
+                    <h5 class="font-bold text-emerald-500 mb-2">Linear Regression</h5>
+                    <div class="text-sm space-y-2">
+                        <p><strong>Equation:</strong> y = mx + b</p>
+                        <p><strong>Slope (m):</strong> Change in y per unit x</p>
+                        <p><strong>y-intercept (b):</strong> Value when x = 0</p>
+                        <p><strong>R²:</strong> Proportion of variance explained</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-emerald-50 p-4 rounded-lg">
+            <h4 class="font-bold text-emerald-600 mb-3">🎯 Interactive Practice</h4>
+            
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 1:</strong> If the p-value = 0.03 and α = 0.05, what is your decision about H₀?</p>
+                <select id="q1_hyp_answer" class="border border-gray-300 rounded px-3 py-2">
+                    <option value="">Select answer</option>
+                    <option value="reject">Reject H₀</option>
+                    <option value="fail_to_reject">Fail to reject H₀</option>
+                    <option value="accept">Accept H₀</option>
+                </select>
+                <button onclick="checkHypAnswer(1, 'reject', 'Since p-value (0.03) < α (0.05), we reject H₀')" 
+                        class="ml-2 bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">Check Answer</button>
+                <div id="hyp_feedback1" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 2:</strong> A correlation coefficient r = -0.85 indicates what type of relationship?</p>
+                <select id="q2_hyp_answer" class="border border-gray-300 rounded px-3 py-2">
+                    <option value="">Select answer</option>
+                    <option value="strong_positive">Strong positive correlation</option>
+                    <option value="strong_negative">Strong negative correlation</option>
+                    <option value="weak_positive">Weak positive correlation</option>
+                    <option value="no_correlation">No correlation</option>
+                </select>
+                <button onclick="checkHypAnswer(2, 'strong_negative', '|r| = 0.85 > 0.7 indicates strong correlation, and negative sign means negative relationship')" 
+                        class="ml-2 bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">Check Answer</button>
+                <div id="hyp_feedback2" class="hidden mt-3"></div>
+            </div>
+
+            <div class="mb-4">
+                <p class="mb-2"><strong>Question 3:</strong> In a two-tailed test with α = 0.01, what would be the critical z-values?</p>
+                <input type="text" id="q3_hyp_answer" placeholder="Enter as ±value (e.g., ±2.58)" 
+                       class="border border-gray-300 rounded px-3 py-2 w-32">
+                <button onclick="checkHypTextAnswer(3, ['±2.58', '±2.576'], 'For α = 0.01 two-tailed test, critical z-values are ±2.58')" 
+                        class="ml-2 bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">Check Answer</button>
+                <div id="hyp_feedback3" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
 </div>`
 };
 
