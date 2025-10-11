@@ -105,12 +105,44 @@ app.get('/quiz/algebra-enhanced', (c) => {
                 </div>
             </div>
 
-            <!-- Move next challenge section outside and to bottom for immediate visibility -->
+            <!-- High score progression pathway (80%+) -->
             <div id="next-challenge" class="hidden mt-8 p-6 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg text-white text-center shadow-lg">
                 <h4 class="text-2xl font-bold mb-3">🚀 Ready for Next Challenge!</h4>
                 <p class="text-lg mb-4">Outstanding performance! You've mastered Algebra Basics with 80%+ score.</p>
                 <div class="text-sm opacity-90 mb-4">You've demonstrated strong algebraic understanding - time to tackle advanced concepts!</div>
                 <button onclick="window.location.href='/topic/21'" class="bg-white text-green-600 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">Continue to Mathematical Problem Solving →</button>
+            </div>
+
+            <!-- Review guidance for lower scores (<80%) -->
+            <div id="review-guidance" class="hidden mt-8 p-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white text-center shadow-lg">
+                <h4 class="text-2xl font-bold mb-3">📚 Time to Review & Strengthen!</h4>
+                <p class="text-lg mb-4">You're making progress! Let's review the concepts you missed to build a stronger foundation.</p>
+                
+                <div class="bg-white bg-opacity-20 rounded-lg p-4 mb-4 text-left">
+                    <h5 class="font-semibold mb-2"><i class="fas fa-lightbulb mr-2"></i>What to do next:</h5>
+                    <ul class="text-sm space-y-1 list-disc list-inside">
+                        <li>Review the explanations above for questions you got wrong</li>
+                        <li>Practice similar problems to strengthen weak areas</li>
+                        <li>Retake this quiz when you feel more confident</li>
+                        <li>Continue with other lessons at your current level</li>
+                    </ul>
+                </div>
+
+                <div class="text-sm opacity-90 mb-4">
+                    <strong>Remember:</strong> Mathematical mastery takes practice. Each attempt makes you stronger! 💪
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="window.location.href='/topic/1'" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-book mr-2"></i>Review Lesson
+                    </button>
+                    <button onclick="window.location.href='/topic/2'" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-arrow-right mr-2"></i>Fractions & Percentages
+                    </button>
+                    <button onclick="window.location.href='/dashboard'" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-home mr-2"></i>All Topics
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -319,7 +351,7 @@ app.get('/quiz/algebra-enhanced', (c) => {
                 resultsElement.classList.remove('hidden');
             }
             
-            // Show next challenge if score >= 80%
+            // Show appropriate pathway based on score
             if (percentage >= 80) {
                 console.log('High score achieved! Showing next challenge...');
                 setTimeout(function() {
@@ -327,17 +359,25 @@ app.get('/quiz/algebra-enhanced', (c) => {
                     if (nextChallenge) {
                         console.log('Displaying next challenge section');
                         nextChallenge.classList.remove('hidden');
-                        // Scroll to the bottom to show the progression pathway
                         nextChallenge.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        
-                        // Add a subtle animation effect
                         nextChallenge.style.animation = 'slideDown 0.8s ease-out';
                     } else {
                         console.error('Could not find next-challenge element');
                     }
-                }, 800); // Reduced delay for more immediate visibility
+                }, 800);
             } else {
-                console.log('Score below 80%, no progression pathway shown');
+                console.log('Score below 80%, showing review guidance...');
+                setTimeout(function() {
+                    const reviewGuidance = document.getElementById('review-guidance');
+                    if (reviewGuidance) {
+                        console.log('Displaying review guidance section');
+                        reviewGuidance.classList.remove('hidden');
+                        reviewGuidance.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        reviewGuidance.style.animation = 'slideDown 0.8s ease-out';
+                    } else {
+                        console.error('Could not find review-guidance element');
+                    }
+                }, 800);
             }
             
             // Disable submit button
@@ -957,12 +997,45 @@ app.get('/test-progression', (c) => {
             </div>
         </div>
 
+        <!-- High score progression pathway (80%+) -->
         <div id="next-challenge" class="hidden mt-8 p-6 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg text-white text-center shadow-lg">
             <h4 class="text-2xl font-bold mb-3">🚀 Ready for Next Challenge!</h4>
             <p class="text-lg mb-4">Outstanding performance! You've mastered Algebra Basics with 80%+ score.</p>
             <div class="text-sm opacity-90 mb-4">You've demonstrated strong algebraic understanding - time to tackle advanced concepts!</div>
             <button onclick="window.location.href='/topic/21'" class="bg-white text-green-600 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">Continue to Mathematical Problem Solving →</button>
         </div>
+
+        <!-- Review guidance for lower scores (<80%) -->
+        <div id="review-guidance" class="hidden mt-8 p-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white text-center shadow-lg">
+            <h4 class="text-2xl font-bold mb-3">📚 Time to Review & Strengthen!</h4>
+            <p class="text-lg mb-4">You're making progress! Let's review the concepts you missed to build a stronger foundation.</p>
+            
+            <div class="bg-white bg-opacity-20 rounded-lg p-4 mb-4 text-left">
+                <h5 class="font-semibold mb-2"><i class="fas fa-lightbulb mr-2"></i>What to do next:</h5>
+                <ul class="text-sm space-y-1 list-disc list-inside">
+                    <li>Review the explanations above for questions you got wrong</li>
+                    <li>Practice similar problems to strengthen weak areas</li>
+                    <li>Retake this quiz when you feel more confident</li>
+                    <li>Continue with other lessons at your current level</li>
+                </ul>
+            </div>
+
+            <div class="text-sm opacity-90 mb-4">
+                <strong>Remember:</strong> Mathematical mastery takes practice. Each attempt makes you stronger! 💪
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3">
+                <button onclick="window.location.href='/topic/1'" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-book mr-2"></i>Review Lesson
+                </button>
+                <button onclick="window.location.href='/topic/2'" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-arrow-right mr-2"></i>Fractions & Percentages
+                </button>
+                <button onclick="window.location.href='/dashboard'" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-home mr-2"></i>All Topics
+                </button>
+            </div>
+        >
     </div>
 
     <script>
@@ -1008,6 +1081,7 @@ app.get('/test-progression', (c) => {
             const finalScoreElement = document.getElementById('final-score');
             const resultsElement = document.getElementById('quiz-results');
             const nextChallenge = document.getElementById('next-challenge');
+            const reviewGuidance = document.getElementById('review-guidance');
             
             if (finalScoreElement) {
                 finalScoreElement.textContent = score + '/10 (' + percentage + '%)';
@@ -1017,17 +1091,29 @@ app.get('/test-progression', (c) => {
                 resultsElement.classList.remove('hidden');
             }
             
-            // Hide next challenge for low scores
+            // Hide next challenge and show review guidance
             if (nextChallenge) {
                 nextChallenge.classList.add('hidden');
             }
             
-            console.log('Score below 80%, no progression pathway shown');
+            // Show review guidance for low scores
+            setTimeout(function() {
+                if (reviewGuidance) {
+                    console.log('Displaying review guidance section');
+                    reviewGuidance.classList.remove('hidden');
+                    reviewGuidance.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    console.error('Could not find review-guidance element');
+                }
+            }, 800);
+            
+            console.log('Score below 80%, showing review guidance');
         }
 
         function resetTest() {
             const resultsElement = document.getElementById('quiz-results');
             const nextChallenge = document.getElementById('next-challenge');
+            const reviewGuidance = document.getElementById('review-guidance');
             
             if (resultsElement) {
                 resultsElement.classList.add('hidden');
@@ -1035,6 +1121,10 @@ app.get('/test-progression', (c) => {
             
             if (nextChallenge) {
                 nextChallenge.classList.add('hidden');
+            }
+            
+            if (reviewGuidance) {
+                reviewGuidance.classList.add('hidden');
             }
             
             console.log('Test reset');
