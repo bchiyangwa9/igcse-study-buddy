@@ -1646,6 +1646,762 @@ export const LESSON_CONTENT = {
             </div>
         </div>
     </div>
+</div>`,
+
+  11: `<div class="space-y-6">
+    <div class="bg-emerald-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-emerald-800 mb-3">📐 Basic Geometry Concepts</h3>
+        <p class="text-gray-700 mb-4">Geometry is the study of shapes, sizes, positions, and properties of objects in space. Let's start with the fundamental concepts.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-emerald-600 mb-2">Points, Lines & Angles</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Point:</strong> Exact location (no size) • A</p>
+                    <p><strong>Line:</strong> Infinite straight path ↔</p>
+                    <p><strong>Ray:</strong> Line with one endpoint →</p>
+                    <p><strong>Angle:</strong> Formed by two rays with common endpoint</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-emerald-600 mb-2">Basic Shapes</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Triangle:</strong> 3 sides, 3 angles</p>
+                    <p><strong>Quadrilateral:</strong> 4 sides, 4 angles</p>
+                    <p><strong>Pentagon:</strong> 5 sides, 5 angles</p>
+                    <p><strong>Circle:</strong> All points equidistant from center</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">📊 Types of Angles</h3>
+        <p class="text-gray-700 mb-4">Angles are measured in degrees (°). Different angle sizes have special names.</p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded border text-center">
+                <div class="text-2xl mb-2">⌐</div>
+                <h4 class="font-bold text-blue-600 text-sm">Acute Angle</h4>
+                <p class="text-xs">Less than 90°</p>
+                <p class="text-xs text-gray-500">Example: 45°</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded border text-center">
+                <div class="text-2xl mb-2">⌐</div>
+                <h4 class="font-bold text-blue-600 text-sm">Right Angle</h4>
+                <p class="text-xs">Exactly 90°</p>
+                <p class="text-xs text-gray-500">Square corner</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded border text-center">
+                <div class="text-2xl mb-2">⌐</div>
+                <h4 class="font-bold text-blue-600 text-sm">Obtuse Angle</h4>
+                <p class="text-xs">90° to 180°</p>
+                <p class="text-xs text-gray-500">Example: 120°</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded border text-center">
+                <div class="text-2xl mb-2">—</div>
+                <h4 class="font-bold text-blue-600 text-sm">Straight Angle</h4>
+                <p class="text-xs">Exactly 180°</p>
+                <p class="text-xs text-gray-500">Straight line</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">📏 Parallel Lines and Transversals</h3>
+        <p class="text-gray-700 mb-4">When a transversal (crossing line) intersects parallel lines, it creates several angle relationships.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-3">Angle Pairs</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Corresponding Angles:</strong> Same position, equal</p>
+                    <p><strong>Alternate Interior:</strong> Inside, opposite sides, equal</p>
+                    <p><strong>Alternate Exterior:</strong> Outside, opposite sides, equal</p>
+                    <p><strong>Co-interior:</strong> Inside, same side, add to 180°</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-3">Key Facts</h4>
+                <div class="space-y-2 text-sm">
+                    <p>• Parallel lines never meet</p>
+                    <p>• Corresponding angles are equal</p>
+                    <p>• Alternate angles are equal</p>
+                    <p>• Co-interior angles sum to 180°</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-orange-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-orange-800 mb-3">🔺 Polygon Angle Rules</h3>
+        <p class="text-gray-700 mb-4">Polygons have special rules for their interior and exterior angles.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold mb-3">Interior Angle Formulas</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <p class="font-medium text-orange-600">Sum of Interior Angles:</p>
+                    <p class="font-mono bg-gray-100 p-2 rounded">(n - 2) × 180°</p>
+                    <p class="text-xs text-gray-600">where n = number of sides</p>
+                </div>
+                <div>
+                    <p class="font-medium text-orange-600">Each Interior Angle (Regular):</p>
+                    <p class="font-mono bg-gray-100 p-2 rounded">(n - 2) × 180° ÷ n</p>
+                    <p class="text-xs text-gray-600">for regular polygons only</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-bold text-orange-600">Triangle</p>
+                <p class="text-sm">Sum: 180°</p>
+                <p class="text-xs text-gray-600">Each: 60°</p>
+            </div>
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-bold text-orange-600">Square</p>
+                <p class="text-sm">Sum: 360°</p>
+                <p class="text-xs text-gray-600">Each: 90°</p>
+            </div>
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-bold text-orange-600">Pentagon</p>
+                <p class="text-sm">Sum: 540°</p>
+                <p class="text-xs text-gray-600">Each: 108°</p>
+            </div>
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-bold text-orange-600">Hexagon</p>
+                <p class="text-sm">Sum: 720°</p>
+                <p class="text-xs text-gray-600">Each: 120°</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-yellow-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-yellow-800 mb-3">⭐ Exterior Angles</h3>
+        <p class="text-gray-700 mb-4">Exterior angles are formed when extending one side of a polygon.</p>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-2">Key Facts About Exterior Angles</h4>
+            <div class="space-y-2 text-sm">
+                <p>• The sum of exterior angles of any polygon = 360°</p>
+                <p>• Each exterior angle of a regular n-sided polygon = 360° ÷ n</p>
+                <p>• Interior angle + exterior angle = 180° (linear pair)</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. What is the sum of interior angles in a pentagon?</p>
+                <p class="text-sm text-gray-600 mb-2">Hint: Use (n - 2) × 180° where n = 5</p>
+                <input type="number" id="q1_answer" placeholder="Enter degrees" 
+                       class="border border-gray-300 rounded px-3 py-2 w-28">
+                <span class="text-sm">°</span>
+                <button onclick="checkNumberAnswer(1, 540, 'Pentagon has 5 sides: (5-2) × 180° = 3 × 180° = 540°')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">2. In a regular octagon, what is each interior angle?</p>
+                <p class="text-sm text-gray-600 mb-2">Hint: Find total sum, then divide by number of angles</p>
+                <input type="number" id="q2_answer" placeholder="Enter degrees" 
+                       class="border border-gray-300 rounded px-3 py-2 w-28">
+                <span class="text-sm">°</span>
+                <button onclick="checkNumberAnswer(2, 135, 'Octagon: (8-2) × 180° ÷ 8 = 1080° ÷ 8 = 135°')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback2" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">3. If two parallel lines are cut by a transversal and one angle is 70°, what is the corresponding angle?</p>
+                <input type="number" id="q3_answer" placeholder="Enter degrees" 
+                       class="border border-gray-300 rounded px-3 py-2 w-28">
+                <span class="text-sm">°</span>
+                <button onclick="checkNumberAnswer(3, 70, 'Corresponding angles are equal when lines are parallel, so the angle is also 70°')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback3" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  12: `<div class="space-y-6">
+    <div class="bg-sky-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-sky-800 mb-3">🔺 Triangle Properties</h3>
+        <p class="text-gray-700 mb-4">Triangles are the most fundamental polygons in geometry. They have unique properties and classifications.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-sky-600 mb-2">By Sides</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Equilateral:</strong> 3 equal sides</p>
+                    <p><strong>Isosceles:</strong> 2 equal sides</p>
+                    <p><strong>Scalene:</strong> No equal sides</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-sky-600 mb-2">By Angles</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Acute:</strong> All angles < 90°</p>
+                    <p><strong>Right:</strong> One angle = 90°</p>
+                    <p><strong>Obtuse:</strong> One angle > 90°</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-sky-600 mb-2">Key Facts</h4>
+                <div class="space-y-2 text-sm">
+                    <p>Sum of angles = 180°</p>
+                    <p>Exterior angle = sum of opposite interior angles</p>
+                    <p>Longest side opposite largest angle</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-indigo-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-indigo-800 mb-3">📐 Congruent Triangles</h3>
+        <p class="text-gray-700 mb-4">Congruent triangles are identical in shape and size. There are four tests to prove congruence.</p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-indigo-600 text-sm mb-2">SSS</h4>
+                <p class="text-xs">Side-Side-Side</p>
+                <p class="text-xs text-gray-600">All three sides equal</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-indigo-600 text-sm mb-2">SAS</h4>
+                <p class="text-xs">Side-Angle-Side</p>
+                <p class="text-xs text-gray-600">Two sides and included angle</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-indigo-600 text-sm mb-2">ASA</h4>
+                <p class="text-xs">Angle-Side-Angle</p>
+                <p class="text-xs text-gray-600">Two angles and included side</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-indigo-600 text-sm mb-2">RHS</h4>
+                <p class="text-xs">Right-Hypotenuse-Side</p>
+                <p class="text-xs text-gray-600">Right triangles only</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-rose-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-rose-800 mb-3">📏 Similar Triangles</h3>
+        <p class="text-gray-700 mb-4">Similar triangles have the same shape but different sizes. Corresponding angles are equal, sides are proportional.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold mb-3">Tests for Similarity</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="text-center">
+                    <p class="font-bold text-rose-600">AAA</p>
+                    <p>All angles equal</p>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold text-rose-600">SSS</p>
+                    <p>Sides proportional</p>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold text-rose-600">SAS</p>
+                    <p>Two sides proportional, included angle equal</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-2">Scale Factor</h4>
+            <p class="text-sm">If triangles are similar with scale factor k:</p>
+            <div class="text-sm space-y-1 mt-2">
+                <p>• Corresponding lengths are in ratio k : 1</p>
+                <p>• Areas are in ratio k² : 1</p>
+                <p>• Volumes are in ratio k³ : 1</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-violet-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-violet-800 mb-3">🔷 Quadrilaterals</h3>
+        <p class="text-gray-700 mb-4">Quadrilaterals are four-sided polygons with special properties.</p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="bg-white p-3 rounded border">
+                <h4 class="font-bold text-violet-600 text-sm mb-1">Rectangle</h4>
+                <p class="text-xs">4 right angles, opposite sides equal</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded border">
+                <h4 class="font-bold text-violet-600 text-sm mb-1">Square</h4>
+                <p class="text-xs">4 equal sides, 4 right angles</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded border">
+                <h4 class="font-bold text-violet-600 text-sm mb-1">Rhombus</h4>
+                <p class="text-xs">4 equal sides, opposite angles equal</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded border">
+                <h4 class="font-bold text-violet-600 text-sm mb-1">Parallelogram</h4>
+                <p class="text-xs">Opposite sides parallel and equal</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded border">
+                <h4 class="font-bold text-violet-600 text-sm mb-1">Trapezium</h4>
+                <p class="text-xs">One pair of parallel sides</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded border">
+                <h4 class="font-bold text-violet-600 text-sm mb-1">Kite</h4>
+                <p class="text-xs">Two pairs of adjacent equal sides</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. In triangle ABC, if angle A = 65° and angle B = 45°, what is angle C?</p>
+                <input type="number" id="q1_answer" placeholder="Enter degrees" 
+                       class="border border-gray-300 rounded px-3 py-2 w-28">
+                <span class="text-sm">°</span>
+                <button onclick="checkNumberAnswer(1, 70, 'Sum of angles in triangle = 180°. So C = 180° - 65° - 45° = 70°')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">2. What type of triangle has sides 5cm, 5cm, and 8cm?</p>
+                <div class="space-y-2 mb-3">
+                    <label class="flex items-center">
+                        <input type="radio" name="q2" value="a" class="mr-2">
+                        <span>a) Equilateral</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="q2" value="b" class="mr-2">
+                        <span>b) Isosceles</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="q2" value="c" class="mr-2">
+                        <span>c) Scalene</span>
+                    </label>
+                </div>
+                <button onclick="checkAnswer(2, 'b', 'Two sides are equal (5cm each), so it is isosceles')" 
+                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback2" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  13: `<div class="space-y-6">
+    <div class="bg-cyan-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-cyan-800 mb-3">⭕ Circle Geometry</h3>
+        <p class="text-gray-700 mb-4">A circle is the set of all points that are the same distance from a center point. Let's explore its properties and measurements.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-cyan-600 mb-2">Circle Parts</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Center:</strong> Fixed point in middle</p>
+                    <p><strong>Radius (r):</strong> Distance from center to edge</p>
+                    <p><strong>Diameter (d):</strong> Distance across center (d = 2r)</p>
+                    <p><strong>Circumference:</strong> Distance around circle</p>
+                    <p><strong>Arc:</strong> Part of circumference</p>
+                    <p><strong>Chord:</strong> Straight line between two points</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-cyan-600 mb-2">Key Formulas</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Circumference:</strong> C = πd or C = 2πr</p>
+                    <p><strong>Area:</strong> A = πr²</p>
+                    <p><strong>π (pi) ≈ 3.14159...</strong></p>
+                    <p class="text-xs text-gray-600">Use π button on calculator or 3.14 for approximations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">📐 Circle Theorems</h3>
+        <p class="text-gray-700 mb-4">Circle theorems are powerful rules about angles and lengths in circles.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-blue-600 mb-3">Angle Theorems</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Angle in semicircle:</strong> Always 90°</p>
+                    <p><strong>Angles in same segment:</strong> Equal</p>
+                    <p><strong>Angle at center:</strong> Twice angle at circumference</p>
+                    <p><strong>Cyclic quadrilateral:</strong> Opposite angles sum to 180°</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-blue-600 mb-3">Tangent Theorems</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Tangent-radius:</strong> Meet at 90°</p>
+                    <p><strong>Two tangents from point:</strong> Equal length</p>
+                    <p><strong>Alternate segment:</strong> Tangent angle equals angle in alternate segment</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">🌟 Arc Length and Sector Area</h3>
+        <p class="text-gray-700 mb-4">We can find the length of arcs and areas of sectors using angles.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-2">Arc Length</h4>
+                <div class="text-sm space-y-2">
+                    <p class="font-mono bg-gray-100 p-2 rounded text-center">Arc length = (θ/360°) × 2πr</p>
+                    <p>Where θ = angle at center in degrees</p>
+                    <p class="text-xs text-gray-600">For angle in radians: Arc = θr</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-2">Sector Area</h4>
+                <div class="text-sm space-y-2">
+                    <p class="font-mono bg-gray-100 p-2 rounded text-center">Sector area = (θ/360°) × πr²</p>
+                    <p>Where θ = angle at center in degrees</p>
+                    <p class="text-xs text-gray-600">For angle in radians: Area = ½θr²</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. Find the circumference of a circle with radius 7 cm (use π = 3.14)</p>
+                <input type="number" id="q1_answer" placeholder="Enter answer" step="0.01"
+                       class="border border-gray-300 rounded px-3 py-2 w-28">
+                <span class="text-sm">cm</span>
+                <button onclick="checkNumberAnswer(1, 43.96, 'C = 2πr = 2 × 3.14 × 7 = 43.96 cm')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">2. Find the area of a circle with radius 5 cm (use π = 3.14)</p>
+                <input type="number" id="q2_answer" placeholder="Enter answer" step="0.01"
+                       class="border border-gray-300 rounded px-3 py-2 w-28">
+                <span class="text-sm">cm²</span>
+                <button onclick="checkNumberAnswer(2, 78.5, 'A = πr² = 3.14 × 5² = 3.14 × 25 = 78.5 cm²')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback2" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  14: `<div class="space-y-6">
+    <div class="bg-red-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-red-800 mb-3">📏 Pythagoras' Theorem</h3>
+        <p class="text-gray-700 mb-4">In a right-angled triangle, the square of the hypotenuse equals the sum of squares of the other two sides.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold text-red-600 mb-3 text-center">Pythagorean Formula</h4>
+            <p class="text-center text-2xl font-mono bg-gray-100 p-3 rounded mb-3">a² + b² = c²</p>
+            <div class="text-sm text-center text-gray-600">
+                <p>a, b = legs (shorter sides)</p>
+                <p>c = hypotenuse (longest side, opposite right angle)</p>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-red-600 mb-2">Finding the Hypotenuse</h4>
+                <div class="text-sm space-y-2">
+                    <p><strong>Given:</strong> legs a = 3, b = 4</p>
+                    <p><strong>Find:</strong> hypotenuse c</p>
+                    <p>c² = 3² + 4² = 9 + 16 = 25</p>
+                    <p>c = √25 = 5</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-red-600 mb-2">Finding a Leg</h4>
+                <div class="text-sm space-y-2">
+                    <p><strong>Given:</strong> leg a = 5, hypotenuse c = 13</p>
+                    <p><strong>Find:</strong> leg b</p>
+                    <p>5² + b² = 13²</p>
+                    <p>25 + b² = 169</p>
+                    <p>b² = 144, so b = 12</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-orange-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-orange-800 mb-3">📐 Introduction to Trigonometry</h3>
+        <p class="text-gray-700 mb-4">Trigonometry uses ratios in right triangles to find unknown sides and angles.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold text-orange-600 mb-3 text-center">The Three Ratios</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="text-center">
+                    <p class="font-bold text-orange-600">Sine</p>
+                    <p class="font-mono bg-gray-100 p-2 rounded my-2">sin θ = opposite/hypotenuse</p>
+                    <p class="text-xs text-gray-600">SOH</p>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold text-orange-600">Cosine</p>
+                    <p class="font-mono bg-gray-100 p-2 rounded my-2">cos θ = adjacent/hypotenuse</p>
+                    <p class="text-xs text-gray-600">CAH</p>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold text-orange-600">Tangent</p>
+                    <p class="font-mono bg-gray-100 p-2 rounded my-2">tan θ = opposite/adjacent</p>
+                    <p class="text-xs text-gray-600">TOA</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold text-orange-600 mb-2">Remember: SOH CAH TOA</h4>
+            <p class="text-sm text-gray-700">This helps remember which ratio to use for each trigonometric function!</p>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">🔍 Using Trigonometry</h3>
+        <p class="text-gray-700 mb-4">Use trigonometry to find missing sides or angles in right triangles.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-blue-600 mb-2">Finding a Side</h4>
+                <div class="text-sm space-y-2">
+                    <p><strong>Given:</strong> angle = 30°, hypotenuse = 10</p>
+                    <p><strong>Find:</strong> opposite side</p>
+                    <p>sin 30° = opposite/10</p>
+                    <p>opposite = 10 × sin 30° = 10 × 0.5 = 5</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-blue-600 mb-2">Finding an Angle</h4>
+                <div class="text-sm space-y-2">
+                    <p><strong>Given:</strong> opposite = 7, adjacent = 7</p>
+                    <p><strong>Find:</strong> angle θ</p>
+                    <p>tan θ = 7/7 = 1</p>
+                    <p>θ = tan⁻¹(1) = 45°</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">📊 Special Triangles</h3>
+        <p class="text-gray-700 mb-4">Some right triangles have special angle and side relationships.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-purple-600 mb-2">45°-45°-90° Triangle</h4>
+                <p class="text-sm">Sides in ratio 1 : 1 : √2</p>
+                <p class="text-xs text-gray-600">If legs = 1, hypotenuse = √2</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-purple-600 mb-2">30°-60°-90° Triangle</h4>
+                <p class="text-sm">Sides in ratio 1 : √3 : 2</p>
+                <p class="text-xs text-gray-600">Short leg : long leg : hypotenuse</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. In a right triangle with legs 6 and 8, find the hypotenuse</p>
+                <input type="number" id="q1_answer" placeholder="Enter answer" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(1, 10, 'Use Pythagoras: c² = 6² + 8² = 36 + 64 = 100, so c = 10')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">2. In a right triangle, if the hypotenuse is 5 and one leg is 3, find the other leg</p>
+                <input type="number" id="q2_answer" placeholder="Enter answer" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(2, 4, 'Use Pythagoras: 3² + b² = 5², so b² = 25 - 9 = 16, therefore b = 4')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback2" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  15: `<div class="space-y-6">
+    <div class="bg-teal-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-teal-800 mb-3">📍 Coordinate Geometry</h3>
+        <p class="text-gray-700 mb-4">Coordinate geometry combines algebra and geometry using coordinates to describe positions and relationships.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-teal-600 mb-2">Coordinate System</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>x-axis:</strong> Horizontal line</p>
+                    <p><strong>y-axis:</strong> Vertical line</p>
+                    <p><strong>Origin:</strong> Point (0, 0) where axes meet</p>
+                    <p><strong>Coordinates:</strong> (x, y) where x is horizontal, y is vertical</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-teal-600 mb-2">The Four Quadrants</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>I:</strong> (+x, +y) top right</p>
+                    <p><strong>II:</strong> (-x, +y) top left</p>
+                    <p><strong>III:</strong> (-x, -y) bottom left</p>
+                    <p><strong>IV:</strong> (+x, -y) bottom right</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">📏 Distance Formula</h3>
+        <p class="text-gray-700 mb-4">Find the distance between any two points using the distance formula.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold text-blue-600 mb-3 text-center">Distance Formula</h4>
+            <p class="text-center text-lg font-mono bg-gray-100 p-3 rounded mb-3">d = √[(x₂-x₁)² + (y₂-y₁)²]</p>
+            <p class="text-sm text-center text-gray-600">Distance between points (x₁, y₁) and (x₂, y₂)</p>
+        </div>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold text-blue-600 mb-2">Example</h4>
+            <div class="text-sm space-y-2">
+                <p><strong>Find distance between (1, 2) and (4, 6)</strong></p>
+                <p>d = √[(4-1)² + (6-2)²]</p>
+                <p>d = √[3² + 4²] = √[9 + 16] = √25 = 5</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">📊 Midpoint Formula</h3>
+        <p class="text-gray-700 mb-4">Find the point exactly halfway between two given points.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold text-purple-600 mb-3 text-center">Midpoint Formula</h4>
+            <p class="text-center text-lg font-mono bg-gray-100 p-3 rounded mb-3">M = ((x₁+x₂)/2, (y₁+y₂)/2)</p>
+            <p class="text-sm text-center text-gray-600">Midpoint between (x₁, y₁) and (x₂, y₂)</p>
+        </div>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold text-purple-600 mb-2">Example</h4>
+            <div class="text-sm space-y-2">
+                <p><strong>Find midpoint of (2, 4) and (8, 10)</strong></p>
+                <p>M = ((2+8)/2, (4+10)/2) = (10/2, 14/2) = (5, 7)</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-orange-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-orange-800 mb-3">📈 Gradient (Slope)</h3>
+        <p class="text-gray-700 mb-4">Gradient measures how steep a line is - the rate of change of y with respect to x.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold text-orange-600 mb-3 text-center">Gradient Formula</h4>
+            <p class="text-center text-lg font-mono bg-gray-100 p-3 rounded mb-3">m = (y₂-y₁)/(x₂-x₁)</p>
+            <p class="text-sm text-center text-gray-600">Gradient between points (x₁, y₁) and (x₂, y₂)</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-orange-600">Positive Gradient</h4>
+                <p class="text-sm">Line slopes upward ↗</p>
+                <p class="text-xs text-gray-600">m > 0</p>
+            </div>
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-orange-600">Negative Gradient</h4>
+                <p class="text-sm">Line slopes downward ↘</p>
+                <p class="text-xs text-gray-600">m < 0</p>
+            </div>
+            <div class="bg-white p-4 rounded border text-center">
+                <h4 class="font-bold text-orange-600">Zero Gradient</h4>
+                <p class="text-sm">Horizontal line →</p>
+                <p class="text-xs text-gray-600">m = 0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-rose-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-rose-800 mb-3">📐 Equation of a Straight Line</h3>
+        <p class="text-gray-700 mb-4">There are several ways to write the equation of a straight line.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-rose-600 mb-2">Gradient-Intercept Form</h4>
+                <p class="font-mono bg-gray-100 p-2 rounded text-center mb-2">y = mx + c</p>
+                <div class="text-sm space-y-1">
+                    <p>m = gradient</p>
+                    <p>c = y-intercept</p>
+                    <p class="text-xs text-gray-600">Most common form</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-rose-600 mb-2">Point-Gradient Form</h4>
+                <p class="font-mono bg-gray-100 p-2 rounded text-center mb-2">y - y₁ = m(x - x₁)</p>
+                <div class="text-sm space-y-1">
+                    <p>When you know gradient and one point</p>
+                    <p class="text-xs text-gray-600">Useful for finding equations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. Find the distance between points (0, 0) and (3, 4)</p>
+                <input type="number" id="q1_answer" placeholder="Enter answer" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(1, 5, 'Distance = √[(3-0)² + (4-0)²] = √[9 + 16] = √25 = 5')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">2. Find the gradient of the line through points (1, 2) and (5, 10)</p>
+                <input type="number" id="q2_answer" placeholder="Enter answer" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(2, 2, 'Gradient = (10-2)/(5-1) = 8/4 = 2')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback2" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
 </div>`
 };
 
