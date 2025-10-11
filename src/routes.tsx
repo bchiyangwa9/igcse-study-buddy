@@ -444,6 +444,295 @@ export const LESSON_CONTENT = {
             </div>
         </div>
     </div>
+</div>`,
+
+  6: `<div class="space-y-6">
+    <div class="bg-emerald-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-emerald-800 mb-3">🔤 What Are Algebraic Expressions?</h3>
+        <p class="text-gray-700 mb-4">Algebraic expressions use letters (variables) to represent unknown numbers. They're like mathematical sentences that describe relationships.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-emerald-600 mb-2">Key Terms</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Variable:</strong> Letter representing unknown (x, y, a)</p>
+                    <p><strong>Coefficient:</strong> Number in front of variable (3x → 3)</p>
+                    <p><strong>Constant:</strong> Number without variable (5, -7)</p>
+                    <p><strong>Term:</strong> Part separated by + or - (3x, 2y, 5)</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-emerald-600 mb-2">Example Expression</h4>
+                <p class="text-center text-lg font-mono bg-gray-100 p-2 rounded mb-2">3x + 2y - 5</p>
+                <div class="text-xs space-y-1">
+                    <p><span class="font-bold">3x:</span> coefficient 3, variable x</p>
+                    <p><span class="font-bold">2y:</span> coefficient 2, variable y</p>
+                    <p><span class="font-bold">-5:</span> constant term</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">🔄 Collecting Like Terms</h3>
+        <p class="text-gray-700 mb-4">Like terms have exactly the same variables with the same powers. We can add or subtract like terms.</p>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold mb-2">Like Terms Examples</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="font-medium text-green-600">✓ Like Terms:</p>
+                        <p>3x and 5x</p>
+                        <p>2y² and -4y²</p>
+                        <p>7 and -3 (constants)</p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-red-600">✗ Unlike Terms:</p>
+                        <p>3x and 2y</p>
+                        <p>x² and x</p>
+                        <p>5xy and 3x</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold mb-2">Step-by-Step: Simplify 3x + 2y + 5x - y + 4</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Step 1:</strong> Group like terms</p>
+                    <p class="ml-4 text-gray-600">(3x + 5x) + (2y - y) + 4</p>
+                    <p><strong>Step 2:</strong> Combine coefficients</p>
+                    <p class="ml-4 text-gray-600">8x + y + 4</p>
+                    <p class="font-bold text-green-600">Answer: 8x + y + 4</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">📏 Expanding Brackets</h3>
+        <p class="text-gray-700 mb-4">When we expand brackets, we multiply everything inside the bracket by what's outside.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-2">Single Brackets</h4>
+                <div class="space-y-2 text-sm">
+                    <p class="font-mono">3(x + 4) = 3x + 12</p>
+                    <p class="font-mono">-2(3y - 5) = -6y + 10</p>
+                    <p class="font-mono">x(2x + 3) = 2x² + 3x</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <h4 class="font-bold text-purple-600 mb-2">Factorizing (Reverse)</h4>
+                <div class="space-y-2 text-sm">
+                    <p class="font-mono">6x + 9 = 3(2x + 3)</p>
+                    <p class="font-mono">x² + 5x = x(x + 5)</p>
+                    <p class="font-mono">4y² - 8y = 4y(y - 2)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-orange-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-orange-800 mb-3">🔢 Substitution</h3>
+        <p class="text-gray-700 mb-4">Substitution means replacing variables with specific numbers to find the value of an expression.</p>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-2">Example: Find 3x + 2y when x = 4 and y = -1</h4>
+            <div class="space-y-2 text-sm">
+                <p><strong>Step 1:</strong> Substitute the values</p>
+                <p class="ml-4">3(4) + 2(-1)</p>
+                <p><strong>Step 2:</strong> Calculate</p>
+                <p class="ml-4">12 + (-2) = 10</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. Simplify: 5x + 3 + 2x - 1</p>
+                <input type="text" id="q1_answer" placeholder="Enter simplified form" 
+                       class="border border-gray-300 rounded px-3 py-2 w-40">
+                <button onclick="checkAlgebraAnswer(1, ['7x + 2', '7x+2', '2 + 7x', '2+7x'], 'Collect like terms: (5x + 2x) + (3 - 1) = 7x + 2')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">2. Expand: 3(x + 4)</p>
+                <input type="text" id="q2_answer" placeholder="Enter expanded form" 
+                       class="border border-gray-300 rounded px-3 py-2 w-40">
+                <button onclick="checkAlgebraAnswer(2, ['3x + 12', '3x+12', '12 + 3x', '12+3x'], 'Multiply everything inside: 3 × x + 3 × 4 = 3x + 12')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback2" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">3. Find the value of 2x - y when x = 5 and y = 3</p>
+                <input type="number" id="q3_answer" placeholder="Enter the value" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(3, 7, 'Substitute: 2(5) - 3 = 10 - 3 = 7')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback3" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>`,
+
+  7: `<div class="space-y-6">
+    <div class="bg-cyan-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-cyan-800 mb-3">⚖️ What Are Linear Equations?</h3>
+        <p class="text-gray-700 mb-4">A linear equation is like a mathematical balance scale. Both sides must be equal, and we can solve for the unknown variable.</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold text-cyan-600 mb-2">General Form</h4>
+            <p class="text-center text-lg font-mono bg-gray-100 p-2 rounded">ax + b = c</p>
+            <p class="text-sm text-gray-600 mt-2">Where a, b, and c are numbers, and x is the variable we need to find</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-mono text-lg">x + 3 = 7</p>
+                <p class="text-xs text-gray-600">Simple equation</p>
+            </div>
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-mono text-lg">2x - 5 = 9</p>
+                <p class="text-xs text-gray-600">With coefficient</p>
+            </div>
+            <div class="bg-white p-3 rounded border text-center">
+                <p class="font-mono text-lg">3x + 4 = 2x + 7</p>
+                <p class="text-xs text-gray-600">Variables on both sides</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-800 mb-3">🔍 Solving Linear Equations</h3>
+        <p class="text-gray-700 mb-4">The key rule: whatever you do to one side, you must do to the other side to keep it balanced!</p>
+        
+        <div class="bg-white p-4 rounded border mb-4">
+            <h4 class="font-bold mb-3">Method: Solve x + 5 = 12</h4>
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between items-center">
+                    <span>x + 5 = 12</span>
+                    <span class="text-gray-500">(original equation)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>x + 5 - 5 = 12 - 5</span>
+                    <span class="text-gray-500">(subtract 5 from both sides)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-green-600">x = 7</span>
+                    <span class="text-gray-500">(solution)</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-3">Method: Solve 3x - 4 = 14</h4>
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between items-center">
+                    <span>3x - 4 = 14</span>
+                    <span class="text-gray-500">(original equation)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>3x - 4 + 4 = 14 + 4</span>
+                    <span class="text-gray-500">(add 4 to both sides)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>3x = 18</span>
+                    <span class="text-gray-500">(simplify)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>x = 6</span>
+                    <span class="text-gray-500">(divide both sides by 3)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-purple-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-purple-800 mb-3">🔄 Variables on Both Sides</h3>
+        <p class="text-gray-700 mb-4">When variables appear on both sides, collect them on one side first.</p>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-3">Example: Solve 5x + 3 = 2x + 12</h4>
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between items-center">
+                    <span>5x + 3 = 2x + 12</span>
+                    <span class="text-gray-500">(original)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>5x - 2x + 3 = 2x - 2x + 12</span>
+                    <span class="text-gray-500">(subtract 2x from both sides)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>3x + 3 = 12</span>
+                    <span class="text-gray-500">(simplify)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>3x = 9</span>
+                    <span class="text-gray-500">(subtract 3 from both sides)</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-green-600">x = 3</span>
+                    <span class="text-gray-500">(divide by 3)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-yellow-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-yellow-800 mb-3">✅ Checking Your Answer</h3>
+        <p class="text-gray-700 mb-4">Always substitute your answer back into the original equation to check!</p>
+        
+        <div class="bg-white p-4 rounded border">
+            <h4 class="font-bold mb-2">Check: If x = 3 in 5x + 3 = 2x + 12</h4>
+            <div class="text-sm space-y-1">
+                <p><strong>Left side:</strong> 5(3) + 3 = 15 + 3 = 18</p>
+                <p><strong>Right side:</strong> 2(3) + 12 = 6 + 12 = 18</p>
+                <p class="font-bold text-green-600">✓ Both sides equal 18, so x = 3 is correct!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-green-800 mb-3">🎯 Interactive Practice</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">1. Solve: x + 8 = 15</p>
+                <input type="number" id="q1_answer" placeholder="x = ?" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(1, 7, 'Subtract 8 from both sides: x = 15 - 8 = 7')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback1" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">2. Solve: 2x - 3 = 11</p>
+                <input type="number" id="q2_answer" placeholder="x = ?" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(2, 7, 'Add 3: 2x = 14, then divide by 2: x = 7')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback2" class="hidden mt-3"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded border">
+                <p class="font-medium mb-3">3. Solve: 4x + 1 = 2x + 9</p>
+                <input type="number" id="q3_answer" placeholder="x = ?" 
+                       class="border border-gray-300 rounded px-3 py-2 w-24">
+                <button onclick="checkNumberAnswer(3, 4, 'Subtract 2x: 2x + 1 = 9, subtract 1: 2x = 8, divide by 2: x = 4')" 
+                        class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Check Answer</button>
+                <div id="feedback3" class="hidden mt-3"></div>
+            </div>
+        </div>
+    </div>
 </div>`
 };
 

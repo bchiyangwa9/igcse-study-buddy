@@ -644,6 +644,28 @@ app.get('/topic/:id', (c) => {
             }
             feedback.classList.remove('hidden');
         }
+
+        function checkAlgebraAnswer(questionNum, correctAnswers, explanation) {
+            const input = document.getElementById('q' + questionNum + '_answer');
+            const userAnswer = input.value.trim().toLowerCase().replace(/\\s/g, '');
+            const feedback = document.getElementById('feedback' + questionNum);
+            
+            if (!input.value.trim()) {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-2 rounded"><i class="fas fa-exclamation-circle"></i> Please enter an answer first.</div>';
+                feedback.classList.remove('hidden');
+                return;
+            }
+            
+            const normalizedAnswers = correctAnswers.map(answer => answer.toLowerCase().replace(/\\s/g, ''));
+            const isCorrect = normalizedAnswers.some(answer => answer === userAnswer);
+            
+            if (isCorrect) {
+                feedback.innerHTML = '<div class="text-green-600 bg-green-50 p-3 rounded"><strong><i class="fas fa-check-circle"></i> Correct!</strong> ' + explanation + '</div>';
+            } else {
+                feedback.innerHTML = '<div class="text-red-600 bg-red-50 p-3 rounded"><strong><i class="fas fa-times-circle"></i> Try again.</strong> ' + explanation + '</div>';
+            }
+            feedback.classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
