@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { renderer } from './renderer'
 import { MATHEMATICS_TOPICS, getLessonContent } from './routes'
+import { ENGLISH_TOPICS, getEnglishLessonContent } from './english-routes'
 
 // Type definitions for Cloudflare bindings
 type Bindings = {
@@ -2208,6 +2209,447 @@ app.get('/quizzes', (c) => {
 </html>`);
 });
 
+// English Dashboard Route
+app.get('/english', (c) => {
+  const englishTopics = ENGLISH_TOPICS;
+
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambridge IGCSE English (0500) - Study Buddy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <header class="bg-white shadow-sm border-b border-gray-200 mb-8">
+            <div class="max-w-7xl mx-auto px-4 py-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <a href="/dashboard" class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">📖</span>
+                        </a>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">Cambridge IGCSE English (0500)</h1>
+                            <p class="text-gray-600">First Language English with comprehensive reading and writing preparation</p>
+                        </div>
+                    </div>
+                    <a href="/dashboard" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- Diagnostic Assessment Banner -->
+            <div class="bg-gradient-to-r from-red-500 to-pink-600 rounded-lg p-6 text-white mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-2">🎯 Start Your English Journey</h2>
+                        <p class="mb-4">Take our comprehensive diagnostic assessment to create your personalized 24-week learning pathway</p>
+                        <div class="flex items-center space-x-4 text-sm">
+                            <span><i class="fas fa-clock mr-1"></i> 150 minutes</span>
+                            <span><i class="fas fa-chart-line mr-1"></i> Individual profiling</span>
+                            <span><i class="fas fa-route mr-1"></i> Personalized pathways</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <a href="/english/diagnostic" class="bg-white text-red-600 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                            Begin Assessment
+                        </a>
+                        <p class="text-xs mt-2 opacity-90">Recommended first step</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Overview -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Paper 1: Reading -->
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-book-open text-blue-600 mr-2"></i>
+                        Paper 1: Reading (Weeks 1-12)
+                    </h2>
+                    <div class="space-y-3">
+                        ${englishTopics.filter(t => t.paper === 'Paper 1').map(topic => `
+                            <a href="/english/lesson/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">${topic.title}</h3>
+                                        <p class="text-sm text-gray-600">${topic.description}</p>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <span class="px-2 py-1 bg-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-100 text-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-800 text-xs rounded-full">
+                                                ${topic.difficulty_level}
+                                            </span>
+                                            <span class="text-xs text-gray-500">
+                                                <i class="fas fa-clock"></i> ${topic.estimated_duration} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-2xl font-bold text-blue-600">${topic.order_index}</div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Paper 2: Writing -->
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-pen text-green-600 mr-2"></i>
+                        Paper 2: Writing (Weeks 13-24)
+                    </h2>
+                    <div class="space-y-3">
+                        ${englishTopics.filter(t => t.paper === 'Paper 2').map(topic => `
+                            <a href="/english/lesson/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-green-300 hover:shadow-md transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">${topic.title}</h3>
+                                        <p class="text-sm text-gray-600">${topic.description}</p>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <span class="px-2 py-1 bg-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-100 text-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-800 text-xs rounded-full">
+                                                ${topic.difficulty_level}
+                                            </span>
+                                            <span class="text-xs text-gray-500">
+                                                <i class="fas fa-clock"></i> ${topic.estimated_duration} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-2xl font-bold text-green-600">${topic.order_index}</div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Exam Preparation -->
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-graduation-cap text-purple-600 mr-2"></i>
+                        Exam Preparation
+                    </h2>
+                    <div class="space-y-3">
+                        ${englishTopics.filter(t => t.category === 'Exam Prep').map(topic => `
+                            <a href="/english/lesson/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">${topic.title}</h3>
+                                        <p class="text-sm text-gray-600">${topic.description}</p>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <span class="px-2 py-1 bg-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-100 text-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : 'red'}-800 text-xs rounded-full">
+                                                ${topic.difficulty_level}
+                                            </span>
+                                            <span class="text-xs text-gray-500">
+                                                <i class="fas fa-clock"></i> ${topic.estimated_duration} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-2xl font-bold text-purple-600">${topic.order_index}</div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assessment Features -->
+            <div class="bg-white rounded-lg p-6 border border-gray-200 mb-8">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-chart-bar text-red-600 mr-2"></i>
+                    Assessment & Progress Tracking
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-user-check text-red-600 text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-700 mb-2">Individual Profiling</h4>
+                        <p class="text-sm text-gray-600">Detailed analysis of your reading and writing competencies with personalized feedback</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-route text-red-600 text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-700 mb-2">Learning Pathways</h4>
+                        <p class="text-sm text-gray-600">Customized 24-week study plans based on your diagnostic assessment results</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-clipboard-check text-red-600 text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-700 mb-2">Cambridge Standards</h4>
+                        <p class="text-sm text-gray-600">All assessments aligned with official Cambridge IGCSE assessment objectives</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`);
+});
+
+// English Diagnostic Assessment Route
+app.get('/english/diagnostic', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Diagnostic Assessment - Study Buddy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <header class="bg-white shadow-sm border-b border-gray-200 mb-6">
+            <div class="max-w-4xl mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">📋</span>
+                        </div>
+                        <h1 class="text-xl font-bold text-gray-900">English Diagnostic Assessment</h1>
+                    </div>
+                    <div id="timer-display" class="flex items-center space-x-2 bg-red-50 px-4 py-2 rounded-lg">
+                        <i class="fas fa-clock text-red-600"></i>
+                        <span id="countdown-timer" class="font-mono text-lg font-bold text-red-800">150:00</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-4xl mx-auto px-4">
+            <!-- Assessment Overview -->
+            <div class="bg-white rounded-lg p-6 border border-gray-200 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">📋 Assessment Overview</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-blue-600 mb-2">📖 Reading Section (75 minutes)</h3>
+                        <ul class="text-sm text-gray-700 space-y-1">
+                            <li>• Comprehension passages (3 texts)</li>
+                            <li>• Language analysis questions</li>
+                            <li>• Inference and interpretation</li>
+                            <li>• Comparative analysis</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-green-600 mb-2">✍️ Writing Section (75 minutes)</h3>
+                        <ul class="text-sm text-gray-700 space-y-1">
+                            <li>• Descriptive writing task</li>
+                            <li>• Persuasive writing task</li>
+                            <li>• Creative writing prompt</li>
+                            <li>• Formal writing exercise</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-4">
+                    <h4 class="font-bold text-yellow-800 mb-2">⚠️ Important Instructions</h4>
+                    <ul class="text-sm text-yellow-800 space-y-1">
+                        <li>• This assessment will take approximately 150 minutes to complete</li>
+                        <li>• You can pause and return later if needed</li>
+                        <li>• Results will determine your personalized learning pathway</li>
+                        <li>• Answer all questions to the best of your ability</li>
+                    </ul>
+                </div>
+
+                <div class="text-center">
+                    <button id="start-assessment" class="bg-red-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-red-700 transition-colors">
+                        <i class="fas fa-play mr-2"></i>Start Assessment
+                    </button>
+                    <p class="text-sm text-gray-500 mt-2">Make sure you have 150 minutes available before starting</p>
+                </div>
+            </div>
+
+            <!-- Assessment Content (Initially Hidden) -->
+            <div id="assessment-content" class="hidden">
+                <div class="bg-white rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Assessment in Progress...</h3>
+                    <div class="flex items-center justify-center py-8">
+                        <div class="text-center">
+                            <i class="fas fa-spinner fa-spin text-4xl text-red-600 mb-4"></i>
+                            <p class="text-gray-600">Loading your personalized assessment...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('start-assessment').addEventListener('click', function() {
+            // Hide overview and show assessment
+            document.querySelector('.bg-white.rounded-lg.p-6.border.border-gray-200.mb-6').style.display = 'none';
+            document.getElementById('assessment-content').classList.remove('hidden');
+            
+            // Start timer
+            let timeRemaining = 150 * 60; // 150 minutes in seconds
+            const timerElement = document.getElementById('countdown-timer');
+            
+            const timer = setInterval(function() {
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                timerElement.textContent = minutes + ':' + seconds.toString().padStart(2, '0');
+                
+                timeRemaining--;
+                
+                if (timeRemaining < 0) {
+                    clearInterval(timer);
+                    alert('Assessment time completed!');
+                }
+            }, 1000);
+            
+            // Simulate assessment loading
+            setTimeout(function() {
+                document.getElementById('assessment-content').innerHTML = 
+                    '<div class="bg-white rounded-lg p-6 border border-gray-200">' +
+                    '<h3 class="text-xl font-bold text-gray-800 mb-4">📖 Reading Section - Passage 1</h3>' +
+                    '<div class="bg-gray-50 p-4 rounded-lg mb-4">' +
+                    '<p class="text-sm text-gray-700 mb-2"><em>This is a sample of how the diagnostic assessment would appear. The full assessment would include authentic Cambridge-style passages and questions based on your comprehensive curriculum analysis.</em></p>' +
+                    '</div>' +
+                    '<div class="text-center mt-8">' +
+                    '<button onclick="window.location.href=\\'/english\\'" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors">Return to English Dashboard</button>' +
+                    '</div>' +
+                    '</div>';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>`);
+});
+
+// English Lesson Route
+app.get('/english/lesson/:id', (c) => {
+  const topicId = parseInt(c.req.param('id'));
+  
+  // Find the topic from our data
+  const topic = ENGLISH_TOPICS.find(t => t.id === topicId);
+  
+  if (!topic) {
+    return c.text('English topic not found', 404);
+  }
+  
+  const lessonContent = getEnglishLessonContent(topicId);
+  
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${topic.title} - Cambridge IGCSE English</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <header class="bg-white shadow-sm border-b border-gray-200 mb-6">
+            <div class="max-w-4xl mx-auto px-4 py-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <a href="/english" class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center hover:bg-red-700">
+                            <span class="text-white font-bold text-sm">📖</span>
+                        </a>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">${topic.title}</h1>
+                            <p class="text-gray-600">${topic.paper} • ${topic.category} • ${topic.estimated_duration} minutes</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <span class="px-3 py-1 bg-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : topic.difficulty_level === 'assessment' ? 'red' : 'red'}-100 text-${topic.difficulty_level === 'beginner' ? 'green' : topic.difficulty_level === 'intermediate' ? 'yellow' : topic.difficulty_level === 'assessment' ? 'red' : 'red'}-800 text-sm rounded-full">
+                            ${topic.difficulty_level}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-4xl mx-auto px-4 pb-8">
+            <div class="bg-white rounded-lg p-6 border border-gray-200 mb-6">
+                ${lessonContent}
+            </div>
+            
+            <div class="flex justify-between items-center">
+                <a href="/english" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to English
+                </a>
+                <div class="flex space-x-3">
+                    ${topicId > 0 ? `<a href="/english/lesson/${topicId - 1}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-chevron-left mr-2"></i>Previous
+                    </a>` : ''}
+                    ${topicId < 18 ? `<a href="/english/lesson/${topicId + 1}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Next<i class="fas fa-chevron-right ml-2"></i>
+                    </a>` : ''}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // English-specific JavaScript functions
+        function checkReadingAnswer(questionNum, correctAnswer, explanation) {
+            const select = document.getElementById('q' + questionNum + '_reading_answer');
+            const feedback = document.getElementById('reading_feedback' + questionNum);
+            
+            if (!select || !feedback) return;
+            
+            const userAnswer = select.value.trim();
+            
+            if (userAnswer === correctAnswer) {
+                feedback.innerHTML = '<div class="bg-green-100 text-green-800 p-3 rounded"><i class="fas fa-check-circle mr-2"></i><strong>Excellent!</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            } else if (userAnswer === '') {
+                feedback.innerHTML = '<div class="bg-yellow-100 text-yellow-800 p-3 rounded"><i class="fas fa-exclamation-triangle mr-2"></i>Please select an answer.</div>';
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = '<div class="bg-red-100 text-red-800 p-3 rounded"><i class="fas fa-times-circle mr-2"></i><strong>Not quite.</strong> ' + explanation + '</div>';
+                feedback.classList.remove('hidden');
+            }
+        }
+        
+        function checkWritingPractice() {
+            const textarea = document.getElementById('writing_practice');
+            const feedback = document.getElementById('writing_feedback');
+            
+            if (!textarea || !feedback) return;
+            
+            const userText = textarea.value.trim();
+            
+            if (userText.length < 20) {
+                feedback.innerHTML = '<div class="bg-yellow-100 text-yellow-800 p-3 rounded"><i class="fas fa-exclamation-triangle mr-2"></i>Please write a more detailed response (at least 20 words).</div>';
+                feedback.classList.remove('hidden');
+                return;
+            }
+            
+            // Simple analysis for demonstration
+            const sentences = userText.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const words = userText.split(/\\s+/).length;
+            
+            let feedbackText = '<div class="bg-blue-100 text-blue-800 p-3 rounded"><i class="fas fa-lightbulb mr-2"></i><strong>Writing Analysis:</strong><br>';
+            feedbackText += '• Word count: ' + words + '<br>';
+            feedbackText += '• Sentences: ' + sentences.length + '<br>';
+            
+            if (sentences.length > 1) {
+                feedbackText += '• Good use of multiple sentences<br>';
+            }
+            
+            if (userText.includes('and') || userText.includes('but') || userText.includes('because')) {
+                feedbackText += '• Nice use of connecting words<br>';
+            }
+            
+            feedbackText += '<br><strong>Keep practicing!</strong> Focus on varied sentence structures and descriptive language.</div>';
+            
+            feedback.innerHTML = feedbackText;
+            feedback.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>`);
+});
+
 // Topic lesson route
 app.get('/topic/:id', (c) => {
   const topicId = parseInt(c.req.param('id'));
@@ -2471,7 +2913,7 @@ app.get('/quiz/:id', (c) => {
 })
 
 // Mathematics dashboard route
-app.get('/dashboard', (c) => {
+app.get('/mathematics', (c) => {
   const topics = MATHEMATICS_TOPICS;
 
   return c.html(`<!DOCTYPE html>
@@ -2489,12 +2931,20 @@ app.get('/dashboard', (c) => {
             <div class="max-w-7xl mx-auto px-4 py-6">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <a href="/" class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <a href="/dashboard" class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                             <span class="text-white font-bold text-lg">📚</span>
                         </a>
                         <div>
                             <h1 class="text-2xl font-bold text-gray-900">IGCSE Mathematics</h1>
                             <p class="text-gray-600">Complete curriculum with ${topics.length} topics</p>
+                        </div>
+                        <div class="flex space-x-3">
+                            <a href="/dashboard" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                            </a>
+                            <a href="/quizzes" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-quiz-alt mr-2"></i>All Quizzes
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -2719,83 +3169,178 @@ app.get('/dashboard', (c) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IGCSE Mathematics Dashboard</title>
+    <title>IGCSE Study Dashboard - Study Buddy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
     <header class="bg-white shadow-sm border-b border-gray-200 mb-6">
-        <div class="max-w-6xl mx-auto px-4 py-6">
+        <div class="max-w-7xl mx-auto px-4 py-6">
             <div class="text-center">
                 <div class="flex items-center justify-center space-x-3 mb-2">
-                    <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                         <span class="text-white font-bold text-xl">SB</span>
                     </div>
-                    <h1 class="text-3xl font-bold text-gray-900">IGCSE Mathematics Complete</h1>
+                    <h1 class="text-3xl font-bold text-gray-900">IGCSE Study Dashboard</h1>
                 </div>
-                <p class="text-gray-600">Enhanced quizzes with examination techniques</p>
+                <p class="text-gray-600">Comprehensive IGCSE preparation with Mathematics and English modules</p>
             </div>
         </div>
     </header>
 
-    <div class="max-w-6xl mx-auto px-4 pb-8">        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Number Operations</h3>
-                <p class="text-gray-600 text-sm mb-4">BODMAS, negative numbers, basic operations</p>
-                <div class="flex justify-between items-center">
-                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Foundation</span>
-                    <div class="flex space-x-2">
-                        <a href="/topic/1" class="px-3 py-1 bg-blue-600 text-white text-sm rounded">Lesson</a>
-                        <a href="/quiz/number-operations" class="px-3 py-1 bg-green-600 text-white text-sm rounded">Quiz</a>
+    <div class="max-w-7xl mx-auto px-4 pb-8">
+        <!-- Subject Selection Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <!-- Mathematics Module -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 hover:shadow-lg transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-calculator text-white text-xl"></i>
                     </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-blue-800">IGCSE Mathematics</h2>
+                        <p class="text-blue-600">Complete curriculum with interactive lessons and quizzes</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-700">21</div>
+                        <div class="text-sm text-blue-600">Topics</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-700">210</div>
+                        <div class="text-sm text-blue-600">Questions</div>
+                    </div>
+                </div>
+                
+                <div class="space-y-2 mb-6">
+                    <div class="flex items-center text-sm text-blue-700">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Number, Algebra, Geometry, Statistics
+                    </div>
+                    <div class="flex items-center text-sm text-blue-700">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Enhanced quizzes with exam techniques
+                    </div>
+                    <div class="flex items-center text-sm text-blue-700">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Progressive difficulty levels
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <a href="/mathematics" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-center font-semibold hover:bg-blue-700 transition-colors">
+                        Enter Mathematics
+                    </a>
+                    <a href="/quizzes" class="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                        View Quizzes
+                    </a>
                 </div>
             </div>
             
-            <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Fractions & Percentages</h3>
-                <p class="text-gray-600 text-sm mb-4">Conversions, operations, percentage problems</p>
-                <div class="flex justify-between items-center">
-                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Foundation</span>
-                    <div class="flex space-x-2">
-                        <a href="/topic/2" class="px-3 py-1 bg-blue-600 text-white text-sm rounded">Lesson</a>
-                        <a href="/quiz/fractions-decimals-percentages" class="px-3 py-1 bg-green-600 text-white text-sm rounded">Quiz</a>
+            <!-- English Module -->
+            <div class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl p-6 border border-red-200 hover:shadow-lg transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-book-open text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-red-800">Cambridge IGCSE English (0500)</h2>
+                        <p class="text-red-600">First Language English with diagnostic assessment</p>
                     </div>
                 </div>
-            </div>
-            
-            <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Ratio & Proportion</h3>
-                <p class="text-gray-600 text-sm mb-4">Ratios, scale, direct/inverse proportion</p>
-                <div class="flex justify-between items-center">
-                    <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Intermediate</span>
-                    <div class="flex space-x-2">
-                        <a href="/topic/3" class="px-3 py-1 bg-blue-600 text-white text-sm rounded">Lesson</a>
-                        <a href="/quiz/ratio-proportion-scale" class="px-3 py-1 bg-green-600 text-white text-sm rounded">Quiz</a>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-red-700">19</div>
+                        <div class="text-sm text-red-600">Topics</div>
                     </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-red-700">150</div>
+                        <div class="text-sm text-red-600">Min Assessment</div>
+                    </div>
+                </div>
+                
+                <div class="space-y-2 mb-6">
+                    <div class="flex items-center text-sm text-red-700">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Paper 1: Reading & Paper 2: Writing
+                    </div>
+                    <div class="flex items-center text-sm text-red-700">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Individual competency profiling
+                    </div>
+                    <div class="flex items-center text-sm text-red-700">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        24-week personalized pathways
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <a href="/english" class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg text-center font-semibold hover:bg-red-700 transition-colors">
+                        Enter English
+                    </a>
+                    <a href="/english/diagnostic" class="px-4 py-2 border border-red-600 text-red-600 rounded-lg font-semibold hover:bg-red-50 transition-colors">
+                        Take Diagnostic
+                    </a>
                 </div>
             </div>
         </div>
         
-        <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-6 border border-purple-200 mb-6">
-            <h2 class="text-xl font-bold text-purple-800 mb-4">🚀 Featured: Enhanced Algebra Quiz</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="font-semibold text-purple-700 mb-2">Algebra Basics with Examination Techniques</h3>
-                    <p class="text-purple-600 text-sm mb-4">Experience our advanced quiz system designed for IGCSE preparation</p>
-                    <div class="flex space-x-2">
-                        <a href="/quiz/algebra-enhanced" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 font-semibold">
-                            Take Enhanced Quiz ✨
-                        </a>
-                    </div>
+        <!-- Quick Access Features -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-clock text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Timed Practice</h3>
+                <p class="text-gray-600 text-sm mb-4">Examination-style quizzes with countdown timers and progress tracking</p>
+                <a href="/quiz/algebra-enhanced" class="inline-flex items-center text-purple-600 font-medium hover:text-purple-700">
+                    Try Enhanced Quiz <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Progress Tracking</h3>
+                <p class="text-gray-600 text-sm mb-4">Monitor your performance with detailed analytics and personalized recommendations</p>
+                <a href="/mathematics" class="inline-flex items-center text-green-600 font-medium hover:text-green-700">
+                    View Mathematics <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-graduation-cap text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Exam Preparation</h3>
+                <p class="text-gray-600 text-sm mb-4">Cambridge-aligned content with assessment objectives and mark schemes</p>
+                <a href="/english/diagnostic" class="inline-flex items-center text-blue-600 font-medium hover:text-blue-700">
+                    Start Assessment <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Getting Started Guide -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-8 text-white">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-4">🚀 Ready to Begin Your IGCSE Journey?</h3>
+                <p class="text-lg mb-6 opacity-90">Choose your learning path and start mastering IGCSE content with our interactive platform</p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="/mathematics" class="bg-white text-indigo-600 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-calculator mr-2"></i>Mathematics Module
+                    </a>
+                    <a href="/english" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-book-open mr-2"></i>English Module
+                    </a>
                 </div>
                 
-                <div class="text-xs text-purple-600 space-y-2">
-                    <div class="flex items-center"><i class="fas fa-clock mr-2"></i>20-minute countdown timer</div>
-                    <div class="flex items-center"><i class="fas fa-flag mr-2"></i>Question flagging system</div>
-                    <div class="flex items-center"><i class="fas fa-chart-line mr-2"></i>Real-time progress tracking</div>
-                    <div class="flex items-center"><i class="fas fa-eye mr-2"></i>Final reveal with explanations</div>
-                    <div class="flex items-center"><i class="fas fa-trophy mr-2"></i>Achievement unlocks at 80%+</div>
+                <div class="mt-6 text-sm opacity-80">
+                    <p><i class="fas fa-lightbulb mr-1"></i> <strong>Tip:</strong> Start with the English diagnostic assessment to create your personalized 24-week study plan</p>
                 </div>
             </div>
         </div>
