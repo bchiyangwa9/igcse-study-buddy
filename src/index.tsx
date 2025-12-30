@@ -7,8 +7,11 @@ import { ENGLISH_TOPICS, getEnglishLessonContent } from './english-routes'
 // Type definitions for Cloudflare bindings
 type Bindings = {
   DB: D1Database;
+  LEARNING_RESOURCES?: R2Bucket;
   ENVIRONMENT: string;
   APP_NAME: string;
+  ADMIN_USERNAME?: string;
+  ADMIN_PASSWORD_HASH?: string;
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -2671,6 +2674,50 @@ app.get('/topic/:id', (c) => {
     <title>${topic.title} - Study Buddy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .resource-lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .resource-lightbox.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .resource-content {
+            background: white;
+            border-radius: 1rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .resource-card {
+            transition: all 0.2s;
+        }
+        .resource-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen">
@@ -2678,7 +2725,7 @@ app.get('/topic/:id', (c) => {
             <div class="max-w-4xl mx-auto px-4 py-4">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <a href="/dashboard" class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-700">
+                        <a href="/mathematics" class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-700">
                             <i class="fas fa-arrow-left text-white text-sm"></i>
                         </a>
                         <div>
@@ -2688,6 +2735,11 @@ app.get('/topic/:id', (c) => {
                     </div>
                     
                     <div class="flex space-x-2">
+                        <button onclick="openResourceLightbox()" 
+                           class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors flex items-center">
+                            <i class="fas fa-images mr-2"></i>
+                            Resources
+                        </button>
                         <a href="/quiz/${topicId}" 
                            class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
                             Take Quiz
@@ -2725,6 +2777,377 @@ app.get('/topic/:id', (c) => {
             </div>
         </div>
     </div>
+
+    <!-- Resource Lightbox Modal -->
+    <div id="resourceLightbox" class="resource-lightbox" onclick="closeResourceLightbox(event)">
+        <div class="resource-content" onclick="event.stopPropagation()">
+            <div class="sticky top-0 bg-white border-b border-gray-200 p-6 z-10">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-book-open text-purple-600 mr-3"></i>
+                            Learning Resources
+                        </h2>
+                        <p class="text-gray-600 mt-1">${topic.title}</p>
+                    </div>
+                    <button onclick="closeResourceLightbox()" class="text-gray-500 hover:text-gray-700 text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <!-- Infographics Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-images text-blue-600 mr-2"></i>
+                        Visual Infographics
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="resource-card bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4 cursor-pointer" onclick="openImageLightbox('concept')">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-brain text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">Key Concepts</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Visual summary of main concepts</p>
+                                    <span class="inline-block mt-2 text-xs text-blue-700 font-medium">
+                                        <i class="fas fa-arrow-right mr-1"></i>View Infographic
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resource-card bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-4 cursor-pointer" onclick="openImageLightbox('formula')">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-calculator text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">Formula Sheet</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Essential formulas and equations</p>
+                                    <span class="inline-block mt-2 text-xs text-green-700 font-medium">
+                                        <i class="fas fa-arrow-right mr-1"></i>View Infographic
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resource-card bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4 cursor-pointer" onclick="openImageLightbox('examples')">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-lightbulb text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">Worked Examples</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Step-by-step problem solving</p>
+                                    <span class="inline-block mt-2 text-xs text-purple-700 font-medium">
+                                        <i class="fas fa-arrow-right mr-1"></i>View Infographic
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resource-card bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 rounded-lg p-4 cursor-pointer" onclick="openImageLightbox('tips')">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-star text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">Study Tips</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Exam tips and common mistakes</p>
+                                    <span class="inline-block mt-2 text-xs text-orange-700 font-medium">
+                                        <i class="fas fa-arrow-right mr-1"></i>View Infographic
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-video text-red-600 mr-2"></i>
+                        Video Tutorials
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="resource-card bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg p-4 cursor-pointer" onclick="openVideo('introduction')">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-play text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-900">Introduction to ${topic.title}</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Overview of key concepts • 8 min</p>
+                                    <span class="inline-block mt-2 text-xs text-red-700 font-medium">
+                                        <i class="fas fa-play-circle mr-1"></i>Watch Video
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resource-card bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg p-4 cursor-pointer" onclick="openVideo('worked')">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-play text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-900">Worked Examples</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Step-by-step problem solving • 12 min</p>
+                                    <span class="inline-block mt-2 text-xs text-red-700 font-medium">
+                                        <i class="fas fa-play-circle mr-1"></i>Watch Video
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resource-card bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg p-4 cursor-pointer" onclick="openVideo('practice')">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-play text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-900">Practice Problems</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Common exam questions explained • 15 min</p>
+                                    <span class="inline-block mt-2 text-xs text-red-700 font-medium">
+                                        <i class="fas fa-play-circle mr-1"></i>Watch Video
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Resources -->
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <h3 class="text-sm font-bold text-gray-700 mb-2 flex items-center">
+                        <i class="fas fa-info-circle text-gray-600 mr-2"></i>
+                        Note
+                    </h3>
+                    <p class="text-sm text-gray-600">
+                        These resources are designed to complement your learning. For the best results, watch the videos first, 
+                        then review the infographics, and finally practice with the quiz.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Lightbox (for viewing infographics) -->
+    <div id="imageLightbox" class="resource-lightbox" onclick="closeImageLightbox(event)">
+        <div class="relative max-w-5xl w-full mx-4" onclick="event.stopPropagation()">
+            <button onclick="closeImageLightbox()" class="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-100 shadow-lg z-10">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="bg-white rounded-lg shadow-2xl overflow-hidden">
+                <div id="imageContent" class="p-4">
+                    <!-- Image will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Lightbox -->
+    <div id="videoLightbox" class="resource-lightbox" onclick="closeVideoLightbox(event)">
+        <div class="relative max-w-5xl w-full mx-4" onclick="event.stopPropagation()">
+            <button onclick="closeVideoLightbox()" class="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-100 shadow-lg z-10">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="bg-black rounded-lg shadow-2xl overflow-hidden">
+                <div id="videoContent" class="aspect-video">
+                    <!-- Video will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOPIC_ID = ${topicId};
+        let topicResources = null;
+        
+        // Load resources when page loads
+        async function loadTopicResources() {
+            try {
+                const response = await fetch(\`/api/resources/topic/\${TOPIC_ID}\`);
+                topicResources = await response.json();
+                updateResourceCards();
+            } catch (error) {
+                console.error('Error loading resources:', error);
+                topicResources = [];
+            }
+        }
+        
+        // Update resource cards with availability indicators
+        function updateResourceCards() {
+            const resourceTypeMap = {
+                'infographic_concept': 1,
+                'infographic_formula': 2,
+                'infographic_examples': 3,
+                'infographic_tips': 4,
+                'video_introduction': 5,
+                'video_worked': 6,
+                'video_practice': 7
+            };
+            
+            // Check which resources are available
+            Object.entries(resourceTypeMap).forEach(([type, typeId]) => {
+                const hasResource = topicResources && topicResources.some(r => r.resource_type_id === typeId);
+                // You can add visual indicators here if needed
+            });
+        }
+        
+        function openResourceLightbox() {
+            const lightbox = document.getElementById('resourceLightbox');
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Load resources if not already loaded
+            if (!topicResources) {
+                loadTopicResources();
+            }
+        }
+        
+        function closeResourceLightbox(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const lightbox = document.getElementById('resourceLightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function openImageLightbox(type) {
+            const imageContent = document.getElementById('imageContent');
+            const lightbox = document.getElementById('imageLightbox');
+            
+            // Map resource type to resource_type_id
+            const typeMap = {
+                'concept': 1,
+                'formula': 2,
+                'examples': 3,
+                'tips': 4
+            };
+            
+            // Try to find resource from database
+            const resource = topicResources?.find(r => r.resource_type_id === typeMap[type]);
+            
+            if (resource && resource.image_url) {
+                // Load real resource from database
+                imageContent.innerHTML = \`
+                    <div class="text-center mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">\${resource.title}</h3>
+                        <p class="text-gray-600 mt-1">\${resource.description || ''}</p>
+                    </div>
+                    <img src="\${resource.image_url}" alt="\${resource.title}" class="w-full rounded-lg">
+                    <div class="mt-4 text-center">
+                        <p class="text-sm text-gray-500">
+                            <i class="fas fa-download mr-1"></i>
+                            <a href="\${resource.image_url}" download class="text-blue-600 hover:underline">Download Infographic</a>
+                        </p>
+                    </div>
+                \`;
+            } else {
+                // Show placeholder with upload prompt
+                const typeNames = {
+                    'concept': 'Key Concepts',
+                    'formula': 'Formula Sheet',
+                    'examples': 'Worked Examples',
+                    'tips': 'Study Tips'
+                };
+                
+                imageContent.innerHTML = \`
+                    <div class="text-center py-12">
+                        <i class="fas fa-image text-6xl text-gray-300 mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">\${typeNames[type]}</h3>
+                        <p class="text-gray-600 mb-4">This infographic hasn't been uploaded yet.</p>
+                        <a href="/admin/cms" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-upload mr-2"></i>Upload in CMS
+                        </a>
+                    </div>
+                \`;
+            }
+            
+            lightbox.classList.add('active');
+        }
+        
+        function closeImageLightbox(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const lightbox = document.getElementById('imageLightbox');
+            lightbox.classList.remove('active');
+        }
+
+        async function openVideo(type) {
+            const videoContent = document.getElementById('videoContent');
+            const lightbox = document.getElementById('videoLightbox');
+            
+            // Map resource type to resource_type_id
+            const typeMap = {
+                'introduction': 5,
+                'worked': 6,
+                'practice': 7
+            };
+            
+            // Try to find resource from database
+            const resource = topicResources?.find(r => r.resource_type_id === typeMap[type]);
+            
+            if (resource && resource.video_embed_code) {
+                // Load real video from database
+                videoContent.innerHTML = \`
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        src="\${resource.video_embed_code}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                        class="w-full h-full"
+                    ></iframe>
+                \`;
+            } else {
+                // Show placeholder with upload prompt
+                const typeNames = {
+                    'introduction': 'Introduction Video',
+                    'worked': 'Worked Examples Video',
+                    'practice': 'Practice Problems Video'
+                };
+                
+                videoContent.innerHTML = \`
+                    <div class="flex items-center justify-center h-full bg-gray-900 text-white">
+                        <div class="text-center p-8">
+                            <i class="fas fa-video text-6xl text-gray-500 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">\${typeNames[type]}</h3>
+                            <p class="text-gray-400 mb-4">This video hasn't been added yet.</p>
+                            <a href="/admin/cms" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                                <i class="fas fa-plus mr-2"></i>Add in CMS
+                            </a>
+                        </div>
+                    </div>
+                \`;
+            }
+            
+            lightbox.classList.add('active');
+        }
+        
+        function closeVideoLightbox(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const lightbox = document.getElementById('videoLightbox');
+            const videoContent = document.getElementById('videoContent');
+            videoContent.innerHTML = ''; // Stop video playback
+            lightbox.classList.remove('active');
+        }
+
+        // Close lightboxes with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeResourceLightbox();
+                closeImageLightbox();
+                closeVideoLightbox();
+            }
+        });
+        
+        // Load resources on page load
+        loadTopicResources();
+    </script>
 
     <script>
         // Enhanced answer checking functions for interactive lessons
@@ -2924,6 +3347,47 @@ app.get('/mathematics', (c) => {
     <title>IGCSE Mathematics Dashboard - Study Buddy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .lightbox-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox-content {
+            background: white;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .topic-card:hover {
+            transform: translateY(-2px);
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen">
@@ -2962,7 +3426,7 @@ app.get('/mathematics', (c) => {
                     </h2>
                     <div class="space-y-3">
                         ${topics.filter(t => t.order_index >= 1 && t.order_index <= 5).map(topic => `
-                            <a href="/topic/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
+                            <div onclick="openLightbox(${topic.id})" class="topic-card block bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <h3 class="font-semibold text-gray-800">${topic.title}</h3>
@@ -2978,7 +3442,7 @@ app.get('/mathematics', (c) => {
                                     </div>
                                     <div class="text-2xl">${topic.order_index}</div>
                                 </div>
-                            </a>
+                            </div>
                         `).join('')}
                     </div>
                 </div>
@@ -2991,7 +3455,7 @@ app.get('/mathematics', (c) => {
                     </h2>
                     <div class="space-y-3">
                         ${topics.filter(t => t.order_index >= 6 && t.order_index <= 10).map(topic => `
-                            <a href="/topic/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all">
+                            <div onclick="openLightbox(${topic.id})" class="topic-card block bg-white rounded-lg p-4 border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all">
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <h3 class="font-semibold text-gray-800">${topic.title}</h3>
@@ -3007,7 +3471,7 @@ app.get('/mathematics', (c) => {
                                     </div>
                                     <div class="text-2xl">${topic.order_index}</div>
                                 </div>
-                            </a>
+                            </div>
                         `).join('')}
                     </div>
                 </div>
@@ -3020,7 +3484,7 @@ app.get('/mathematics', (c) => {
                     </h2>
                     <div class="space-y-3">
                         ${topics.filter(t => t.order_index >= 11 && t.order_index <= 15).map(topic => `
-                            <a href="/topic/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-green-300 hover:shadow-md transition-all">
+                            <div onclick="openLightbox(${topic.id})" class="topic-card block bg-white rounded-lg p-4 border border-gray-200 hover:border-green-300 hover:shadow-md transition-all">
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <h3 class="font-semibold text-gray-800">${topic.title}</h3>
@@ -3036,7 +3500,7 @@ app.get('/mathematics', (c) => {
                                     </div>
                                     <div class="text-2xl">${topic.order_index}</div>
                                 </div>
-                            </a>
+                            </div>
                         `).join('')}
                     </div>
                 </div>
@@ -3049,7 +3513,7 @@ app.get('/mathematics', (c) => {
                     </h2>
                     <div class="space-y-3">
                         ${topics.filter(t => t.order_index >= 16 && t.order_index <= 21).map(topic => `
-                            <a href="/topic/${topic.id}" class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-orange-300 hover:shadow-md transition-all">
+                            <div onclick="openLightbox(${topic.id})" class="topic-card block bg-white rounded-lg p-4 border border-gray-200 hover:border-orange-300 hover:shadow-md transition-all">
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <h3 class="font-semibold text-gray-800">${topic.title}</h3>
@@ -3065,13 +3529,131 @@ app.get('/mathematics', (c) => {
                                     </div>
                                     <div class="text-2xl">${topic.order_index}</div>
                                 </div>
-                            </a>
+                            </div>
                         `).join('')}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Lightbox Modal -->
+    <div id="topicLightbox" class="lightbox-overlay" onclick="closeLightbox(event)">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 id="lightbox-title" class="text-2xl font-bold text-gray-900"></h2>
+                    <button onclick="closeLightbox()" class="text-gray-500 hover:text-gray-700 text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="lightbox-body" class="space-y-4">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const topics = ${JSON.stringify(topics)};
+        
+        function openLightbox(topicId) {
+            const topic = topics.find(t => t.id === topicId);
+            if (!topic) return;
+            
+            const lightbox = document.getElementById('topicLightbox');
+            const title = document.getElementById('lightbox-title');
+            const body = document.getElementById('lightbox-body');
+            
+            title.textContent = topic.title;
+            
+            // Get category color
+            let categoryColor = 'blue';
+            if (topic.category === 'Algebra') categoryColor = 'purple';
+            else if (topic.category === 'Geometry') categoryColor = 'green';
+            else if (topic.category === 'Statistics' || topic.category === 'Probability') categoryColor = 'orange';
+            
+            // Get difficulty color
+            let difficultyColor = topic.difficulty_level === 'beginner' ? 'green' : 
+                                 topic.difficulty_level === 'intermediate' ? 'yellow' : 'red';
+            
+            body.innerHTML = \`
+                <div class="bg-\${categoryColor}-50 p-4 rounded-lg border border-\${categoryColor}-200">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="px-3 py-1 bg-\${categoryColor}-100 text-\${categoryColor}-800 text-sm rounded-full font-medium">
+                            \${topic.category}
+                        </span>
+                        <span class="px-3 py-1 bg-\${difficultyColor}-100 text-\${difficultyColor}-800 text-sm rounded-full font-medium">
+                            \${topic.difficulty_level}
+                        </span>
+                        <span class="text-sm text-gray-600">
+                            <i class="fas fa-clock"></i> \${topic.estimated_duration} min
+                        </span>
+                    </div>
+                    <p class="text-gray-700 text-lg">\${topic.description}</p>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-book-open text-\${categoryColor}-600 mr-2"></i>
+                        What You'll Learn
+                    </h3>
+                    <p class="text-gray-700">
+                        This topic covers essential \${topic.category.toLowerCase()} concepts needed for IGCSE Mathematics. 
+                        You'll gain practical skills and understanding through interactive lessons and practice problems.
+                    </p>
+                </div>
+                
+                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <h3 class="font-bold text-yellow-800 mb-2 flex items-center">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        Study Tips
+                    </h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>Set aside \${topic.estimated_duration} minutes for this lesson</li>
+                        <li>Take notes on key formulas and concepts</li>
+                        <li>Practice with the interactive exercises</li>
+                        <li>Complete the quiz to test your understanding</li>
+                    </ul>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <a href="/topic/\${topic.id}" class="flex-1 bg-\${categoryColor}-600 text-white px-6 py-3 rounded-lg text-center font-semibold hover:bg-\${categoryColor}-700 transition-colors">
+                        <i class="fas fa-book-reader mr-2"></i>Start Lesson
+                    </a>
+                    <a href="/quiz/\${topic.id}" class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg text-center font-semibold hover:bg-green-700 transition-colors">
+                        <i class="fas fa-pencil-alt mr-2"></i>Take Quiz
+                    </a>
+                </div>
+                
+                <div class="text-center">
+                    <p class="text-sm text-gray-500">
+                        Topic \${topic.order_index} of 21 • Difficulty: \${topic.difficulty_level}
+                    </p>
+                </div>
+            \`;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox(event) {
+            if (event && event.target !== event.currentTarget && event.currentTarget.id !== 'topicLightbox') {
+                return;
+            }
+            
+            const lightbox = document.getElementById('topicLightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
 </body>
 </html>
     `);
@@ -3683,5 +4265,626 @@ app.get('/test-progression', (c) => {
 </body>
 </html>`);
 })
+
+// ============================================================================
+// ADMIN CMS ROUTES FOR CONTENT MANAGEMENT
+// ============================================================================
+
+// Admin CMS Dashboard
+app.get('/admin/cms', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin CMS - Study Buddy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            transition: all 0.3s;
+        }
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .tab-active {
+            border-bottom: 3px solid #3b82f6;
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cog text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">Content Management System</h1>
+                            <p class="text-sm text-gray-500">Upload and manage learning resources</p>
+                        </div>
+                    </div>
+                    <a href="/dashboard" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <!-- Tabs -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+                <div class="flex border-b border-gray-200">
+                    <button onclick="switchTab('infographics')" id="tab-infographics" class="flex-1 px-6 py-4 font-semibold tab-active">
+                        <i class="fas fa-images mr-2"></i>Infographics
+                    </button>
+                    <button onclick="switchTab('videos')" id="tab-videos" class="flex-1 px-6 py-4 font-semibold text-gray-600">
+                        <i class="fas fa-video mr-2"></i>Videos
+                    </button>
+                    <button onclick="switchTab('pdfs')" id="tab-pdfs" class="flex-1 px-6 py-4 font-semibold text-gray-600">
+                        <i class="fas fa-file-pdf mr-2"></i>PDFs
+                    </button>
+                    <button onclick="switchTab('manage')" id="tab-manage" class="flex-1 px-6 py-4 font-semibold text-gray-600">
+                        <i class="fas fa-list mr-2"></i>Manage
+                    </button>
+                </div>
+            </div>
+
+            <!-- Infographics Upload Tab -->
+            <div id="content-infographics" class="tab-content">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Upload Infographic</h2>
+                    
+                    <form id="infographic-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Topic</label>
+                                <select name="topic_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select Topic...</option>
+                                    ${Array.from({length: 21}, (_, i) => {
+                                      const topicId = i + 1;
+                                      return `<option value="${topicId}">Topic ${topicId}</option>`;
+                                    }).join('')}
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Resource Type</label>
+                                <select name="resource_type_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="1">Key Concepts</option>
+                                    <option value="2">Formula Sheet</option>
+                                    <option value="3">Worked Examples</option>
+                                    <option value="4">Study Tips</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                            <input type="text" name="title" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., Number Operations - Key Concepts">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Brief description of the infographic content"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-4">Upload Image</label>
+                            <div class="upload-area rounded-lg p-8 text-center" ondrop="handleDrop(event, 'infographic')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                                <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-600 mb-2">Drag and drop your image here</p>
+                                <p class="text-sm text-gray-500 mb-4">or</p>
+                                <input type="file" id="infographic-file" name="file" accept="image/*" class="hidden" onchange="handleFileSelect(event, 'infographic')">
+                                <button type="button" onclick="document.getElementById('infographic-file').click()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                                    Browse Files
+                                </button>
+                                <p class="text-xs text-gray-500 mt-4">Supported: JPG, PNG, GIF (Max 5MB)</p>
+                            </div>
+                            <div id="infographic-preview" class="mt-4 hidden">
+                                <img id="infographic-preview-img" class="max-h-64 rounded-lg mx-auto">
+                                <p id="infographic-filename" class="text-sm text-gray-600 text-center mt-2"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">
+                                <i class="fas fa-upload mr-2"></i>Upload Infographic
+                            </button>
+                            <button type="reset" onclick="resetForm('infographic')" class="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600">
+                                <i class="fas fa-times mr-2"></i>Clear Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Videos Upload Tab -->
+            <div id="content-videos" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Add Video Resource</h2>
+                    
+                    <form id="video-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Topic</label>
+                                <select name="topic_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select Topic...</option>
+                                    ${Array.from({length: 21}, (_, i) => {
+                                      const topicId = i + 1;
+                                      return `<option value="${topicId}">Topic ${topicId}</option>`;
+                                    }).join('')}
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Video Type</label>
+                                <select name="resource_type_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="5">Introduction</option>
+                                    <option value="6">Worked Examples</option>
+                                    <option value="7">Practice Problems</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                            <input type="text" name="title" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., Introduction to Number Operations">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Brief description of the video content"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Video Platform</label>
+                            <select name="video_platform" required onchange="toggleVideoInput(this.value)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="youtube">YouTube</option>
+                                <option value="vimeo">Vimeo</option>
+                                <option value="custom">Custom URL</option>
+                            </select>
+                        </div>
+                        
+                        <div id="youtube-input">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">YouTube Video ID or URL</label>
+                            <input type="text" name="video_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="dQw4w9WgXcQ or https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                            <p class="text-xs text-gray-500 mt-1">Enter the video ID or full YouTube URL</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Duration (minutes)</label>
+                            <input type="number" name="video_duration" min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., 8">
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">
+                                <i class="fas fa-save mr-2"></i>Save Video
+                            </button>
+                            <button type="reset" class="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600">
+                                <i class="fas fa-times mr-2"></i>Clear Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- PDFs Upload Tab -->
+            <div id="content-pdfs" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Upload PDF Resource</h2>
+                    <p class="text-gray-600 mb-6">Upload practice worksheets, study notes, or reference materials</p>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <p class="text-yellow-800"><i class="fas fa-info-circle mr-2"></i>PDF upload functionality coming soon</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Resources Tab -->
+            <div id="content-manage" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Manage Resources</h2>
+                    
+                    <div id="resources-list" class="space-y-4">
+                        <p class="text-gray-600">Loading resources...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+        
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.classList.remove('tab-active', 'text-blue-600');
+                el.classList.add('text-gray-600');
+            });
+            
+            // Show selected tab
+            document.getElementById('content-' + tabName).classList.remove('hidden');
+            document.getElementById('tab-' + tabName).classList.add('tab-active', 'text-blue-600');
+            document.getElementById('tab-' + tabName).classList.remove('text-gray-600');
+            
+            if (tabName === 'manage') {
+                loadResources();
+            }
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+        
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+        
+        function handleDrop(e, type) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0], type);
+            }
+        }
+        
+        function handleFileSelect(e, type) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                handleFile(files[0], type);
+            }
+        }
+        
+        function handleFile(file, type) {
+            selectedFile = file;
+            const preview = document.getElementById(type + '-preview');
+            const previewImg = document.getElementById(type + '-preview-img');
+            const filename = document.getElementById(type + '-filename');
+            
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    filename.textContent = file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function resetForm(type) {
+            selectedFile = null;
+            document.getElementById(type + '-preview').classList.add('hidden');
+        }
+        
+        function toggleVideoInput(platform) {
+            // You can add logic here to show different input fields based on platform
+        }
+        
+        // Handle infographic form submission
+        document.getElementById('infographic-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!selectedFile) {
+                alert('Please select an image file');
+                return;
+            }
+            
+            const formData = new FormData(e.target);
+            formData.append('file', selectedFile);
+            
+            try {
+                const response = await fetch('/api/admin/resources/infographic', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('Infographic uploaded successfully!');
+                    e.target.reset();
+                    resetForm('infographic');
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error uploading infographic: ' + error.message);
+            }
+        });
+        
+        // Handle video form submission
+        document.getElementById('video-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('/api/admin/resources/video', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('Video added successfully!');
+                    e.target.reset();
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error saving video: ' + error.message);
+            }
+        });
+        
+        async function loadResources() {
+            try {
+                const response = await fetch('/api/admin/resources/list');
+                const resources = await response.json();
+                
+                const container = document.getElementById('resources-list');
+                if (resources.length === 0) {
+                    container.innerHTML = '<p class="text-gray-600">No resources uploaded yet.</p>';
+                    return;
+                }
+                
+                container.innerHTML = resources.map(resource => \`
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-semibold text-gray-900">\${resource.title}</h3>
+                                <p class="text-sm text-gray-600">Topic \${resource.topic_id} • \${resource.resource_type}</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="editResource(\${resource.id})" class="text-blue-600 hover:text-blue-700">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteResource(\${resource.id})" class="text-red-600 hover:text-red-700">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                \`).join('');
+            } catch (error) {
+                console.error('Error loading resources:', error);
+            }
+        }
+        
+        function editResource(id) {
+            alert('Edit functionality coming soon');
+        }
+        
+        async function deleteResource(id) {
+            if (!confirm('Are you sure you want to delete this resource?')) return;
+            
+            try {
+                const response = await fetch(\`/api/admin/resources/\${id}\`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('Resource deleted successfully');
+                    loadResources();
+                } else {
+                    alert('Error deleting resource');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>`);
+});
+
+// API endpoint to upload infographic to R2
+app.post('/api/admin/resources/infographic', async (c) => {
+  try {
+    const formData = await c.req.formData();
+    const file = formData.get('file') as File;
+    const topic_id = formData.get('topic_id') as string;
+    const resource_type_id = formData.get('resource_type_id') as string;
+    const title = formData.get('title') as string;
+    const description = formData.get('description') as string;
+    
+    if (!file) {
+      return c.json({ error: 'No file provided' }, 400);
+    }
+    
+    // Generate unique key for R2
+    const timestamp = Date.now();
+    const fileExt = file.name.split('.').pop();
+    const r2Key = \`infographics/topic-\${topic_id}/\${timestamp}.\${fileExt}\`;
+    
+    // Upload to R2
+    const arrayBuffer = await file.arrayBuffer();
+    await c.env.LEARNING_RESOURCES.put(r2Key, arrayBuffer, {
+      httpMetadata: {
+        contentType: file.type,
+      },
+    });
+    
+    // Save metadata to D1
+    const result = await c.env.DB.prepare(
+      \`INSERT INTO learning_resources 
+       (topic_id, resource_type_id, title, description, image_key, image_size, is_active, created_at) 
+       VALUES (?, ?, ?, ?, ?, ?, 1, datetime('now'))\`
+    ).bind(topic_id, resource_type_id, title, description, r2Key, file.size).run();
+    
+    return c.json({ 
+      success: true, 
+      resource_id: result.meta.last_row_id,
+      message: 'Infographic uploaded successfully' 
+    });
+  } catch (error) {
+    console.error('Error uploading infographic:', error);
+    return c.json({ error: 'Failed to upload infographic' }, 500);
+  }
+});
+
+// API endpoint to add video resource
+app.post('/api/admin/resources/video', async (c) => {
+  try {
+    const data = await c.req.json();
+    const { topic_id, resource_type_id, title, description, video_url, video_platform, video_duration } = data;
+    
+    // Extract YouTube video ID if full URL provided
+    let videoId = video_url;
+    if (video_platform === 'youtube' && video_url.includes('youtube.com')) {
+      const urlParams = new URLSearchParams(new URL(video_url).search);
+      videoId = urlParams.get('v') || video_url;
+    }
+    
+    // Generate embed code
+    let embedCode = '';
+    if (video_platform === 'youtube') {
+      embedCode = \`https://www.youtube.com/embed/\${videoId}\`;
+    } else if (video_platform === 'vimeo') {
+      embedCode = \`https://player.vimeo.com/video/\${videoId}\`;
+    } else {
+      embedCode = video_url;
+    }
+    
+    // Save to D1
+    const result = await c.env.DB.prepare(
+      \`INSERT INTO learning_resources 
+       (topic_id, resource_type_id, title, description, video_url, video_embed_code, video_duration, video_platform, is_active, created_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))\`
+    ).bind(topic_id, resource_type_id, title, description, videoId, embedCode, video_duration ? video_duration * 60 : null, video_platform).run();
+    
+    return c.json({ 
+      success: true, 
+      resource_id: result.meta.last_row_id,
+      message: 'Video added successfully' 
+    });
+  } catch (error) {
+    console.error('Error adding video:', error);
+    return c.json({ error: 'Failed to add video' }, 500);
+  }
+});
+
+// API endpoint to list all resources
+app.get('/api/admin/resources/list', async (c) => {
+  try {
+    const result = await c.env.DB.prepare(
+      \`SELECT lr.*, rt.name as resource_type 
+       FROM learning_resources lr 
+       JOIN resource_types rt ON lr.resource_type_id = rt.id 
+       ORDER BY lr.topic_id, lr.resource_type_id, lr.created_at DESC\`
+    ).all();
+    
+    return c.json(result.results || []);
+  } catch (error) {
+    console.error('Error listing resources:', error);
+    return c.json({ error: 'Failed to load resources' }, 500);
+  }
+});
+
+// API endpoint to delete resource
+app.delete('/api/admin/resources/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    
+    // Get resource details first
+    const resource = await c.env.DB.prepare(
+      'SELECT * FROM learning_resources WHERE id = ?'
+    ).bind(id).first();
+    
+    if (!resource) {
+      return c.json({ error: 'Resource not found' }, 404);
+    }
+    
+    // Delete from R2 if it's an image
+    if (resource.image_key) {
+      await c.env.LEARNING_RESOURCES.delete(resource.image_key);
+    }
+    
+    // Delete from D1
+    await c.env.DB.prepare('DELETE FROM learning_resources WHERE id = ?').bind(id).run();
+    
+    return c.json({ success: true, message: 'Resource deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting resource:', error);
+    return c.json({ error: 'Failed to delete resource' }, 500);
+  }
+});
+
+// API endpoint to get resources for a specific topic (for the lightbox)
+app.get('/api/resources/topic/:topicId', async (c) => {
+  try {
+    const topicId = c.req.param('topicId');
+    
+    const result = await c.env.DB.prepare(
+      \`SELECT lr.*, rt.name as resource_type, rt.icon 
+       FROM learning_resources lr 
+       JOIN resource_types rt ON lr.resource_type_id = rt.id 
+       WHERE lr.topic_id = ? AND lr.is_active = 1 
+       ORDER BY lr.display_order, lr.created_at DESC\`
+    ).bind(topicId).all();
+    
+    // For images, generate public URLs from R2
+    const resources = await Promise.all((result.results || []).map(async (resource: any) => {
+      if (resource.image_key) {
+        // Generate signed URL or public URL for R2 object
+        const object = await c.env.LEARNING_RESOURCES.get(resource.image_key);
+        if (object) {
+          // Convert to data URL or use R2 public URL if configured
+          resource.image_url = \`/api/resources/image/\${resource.id}\`;
+        }
+      }
+      return resource;
+    }));
+    
+    return c.json(resources);
+  } catch (error) {
+    console.error('Error fetching resources:', error);
+    return c.json({ error: 'Failed to load resources' }, 500);
+  }
+});
+
+// API endpoint to serve images from R2
+app.get('/api/resources/image/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    
+    const resource = await c.env.DB.prepare(
+      'SELECT image_key FROM learning_resources WHERE id = ?'
+    ).bind(id).first();
+    
+    if (!resource || !resource.image_key) {
+      return c.notFound();
+    }
+    
+    const object = await c.env.LEARNING_RESOURCES.get(resource.image_key);
+    if (!object) {
+      return c.notFound();
+    }
+    
+    const headers = new Headers();
+    object.writeHttpMetadata(headers);
+    headers.set('Cache-Control', 'public, max-age=31536000');
+    
+    return new Response(object.body, { headers });
+  } catch (error) {
+    console.error('Error serving image:', error);
+    return c.notFound();
+  }
+});
 
 export default app
