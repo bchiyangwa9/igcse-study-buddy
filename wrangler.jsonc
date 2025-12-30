@@ -17,9 +17,20 @@
     }
   ],
   
+  // R2 Storage for learning resources (images, videos, PDFs)
+  "r2_buckets": [
+    {
+      "binding": "LEARNING_RESOURCES",
+      "bucket_name": "studybuddy-resources",
+      "preview_bucket_name": "studybuddy-resources-preview"
+    }
+  ],
+  
   // Environment variables for API integrations
   "vars": {
     "ENVIRONMENT": "development",
-    "APP_NAME": "Study Buddy Mobile"
+    "APP_NAME": "Study Buddy Mobile",
+    "ADMIN_USERNAME": "admin",
+    "ADMIN_PASSWORD_HASH": "$2b$10$placeholder"
   }
 }
