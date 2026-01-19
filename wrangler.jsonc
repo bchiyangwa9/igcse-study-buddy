@@ -6,12 +6,14 @@
   "compatibility_flags": ["nodejs_compat"],
 
   "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "studybuddy-production",
-      "database_id": "placeholder-will-be-set-after-creation"
-    }
-  ],
+  {
+    "binding": "DB",
+    "database_name": "studybuddy-production",
+    "database_id": "4dd7ec16-caa5-49e4-86dd-5c7ac12a1932"
+  }
+]
+
+
 
   "vars": {
     "ENVIRONMENT": "development",
