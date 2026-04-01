@@ -17,6 +17,35 @@ const app = new Hono<{ Bindings: Bindings }>()
 app.use('/api/*', cors())
 app.use(renderer)
 
+// =============================================
+// AUTO-MIGRATION: run on cold start (idempotent)
+// =============================================
+app.use('*', async (c, next) => {
+  try {
+    const db = c.env?.DB
+    if (db) {
+      await db.prepare(`CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`).run()
+      await db.prepare(`CREATE TABLE IF NOT EXISTS sessions (
+        id TEXT PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        expires_at TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )`).run()
+    }
+  } catch (_) {
+    // Tables already exist — ignore
+  }
+  return next()
+})
+
+
 // Enhanced Quiz Route with Examination Techniques (Fixed Version)
 app.get('/quiz/algebra-enhanced', (c) => {
   const correctAnswers = ['c', 'b', 'a', 'c', 'b', 'a', 'c', 'b', 'a', 'b'];
