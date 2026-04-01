@@ -3162,6 +3162,523 @@ app.get('/', async (c) => {
   )
 })
 
+
+// =============================================
+// AUTH UTILITIES
+// =============================================
+
+async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  // Use a simple but effective approach: PBKDF2 via Web Crypto
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']
+  );
+  const salt = encoder.encode('studybuddy-salt-v1');
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+    keyMaterial, 256
+  );
+  return btoa(String.fromCharCode(...new Uint8Array(bits)));
+}
+
+async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  const computed = await hashPassword(password);
+  return computed === hash;
+}
+
+function generateSessionId(): string {
+  const arr = new Uint8Array(32);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function sessionExpiryDate(): string {
+  const d = new Date();
+  d.setDate(d.getDate() + 30);
+  return d.toISOString();
+}
+
+// =============================================
+// AUTH ROUTES
+// =============================================
+
+// Sign-up page
+app.get('/signup', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account — Study Buddy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--midnight:#1A2034;--orange:#D47E3D;--copper:#8E452C;--ivory:#F2E9D9;--stone:#D0BFB0;--graphite:#5B5F63;--white:#fff;--font:'Montserrat',sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:var(--font);background:var(--ivory);color:var(--midnight);min-height:100vh;display:flex;flex-direction:column;}
+    a{text-decoration:none;color:inherit;}
+    nav{background:var(--midnight);height:64px;display:flex;align-items:center;padding:0 32px;justify-content:space-between;}
+    .nav-logo{display:flex;align-items:center;gap:10px;}
+    .nav-logo svg{width:34px;height:34px;}
+    .nav-logo-text{font-size:1.05rem;font-weight:700;color:var(--white);}
+    .nav-logo-text span{color:var(--orange);}
+    .nav-back{color:var(--stone);font-size:0.8rem;font-weight:600;transition:color .2s;}
+    .nav-back:hover{color:var(--white);}
+    .page{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;}
+    .card{background:var(--white);border-radius:24px;padding:48px 40px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(26,32,52,.10);}
+    .card-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;}
+    .card-logo svg{width:56px;height:56px;margin-bottom:12px;}
+    .card-logo h1{font-size:1.5rem;color:var(--midnight);}
+    .card-logo h1 span{color:var(--orange);}
+    .card-logo p{font-size:0.85rem;color:var(--graphite);margin-top:4px;}
+    .form-group{margin-bottom:18px;}
+    label{display:block;font-size:0.8rem;font-weight:700;color:var(--midnight);margin-bottom:7px;letter-spacing:.03em;}
+    input{width:100%;padding:13px 16px;border:2px solid rgba(26,32,52,.12);border-radius:12px;font-family:var(--font);font-size:0.9rem;color:var(--midnight);background:var(--white);transition:border-color .2s,box-shadow .2s;outline:none;}
+    input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(212,126,61,.12);}
+    input::placeholder{color:var(--stone);}
+    input.invalid{border-color:#dc2626;}
+    .field-hint{font-size:0.72rem;color:var(--graphite);margin-top:5px;}
+    .field-hint.error{color:#dc2626;}
+    .error-box{display:none;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.25);border-radius:10px;padding:12px 16px;font-size:0.82rem;color:#dc2626;margin-bottom:20px;}
+    .error-box.show{display:block;}
+    .success-box{display:none;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.25);border-radius:10px;padding:12px 16px;font-size:0.82rem;color:#16a34a;margin-bottom:20px;text-align:center;}
+    .success-box.show{display:block;}
+    .btn-submit{width:100%;background:var(--orange);color:var(--white);font-family:var(--font);font-weight:700;font-size:1rem;padding:14px;border:none;border-radius:50px;cursor:pointer;transition:all .2s;margin-top:4px;}
+    .btn-submit:hover{background:var(--copper);transform:translateY(-1px);box-shadow:0 8px 24px rgba(212,126,61,.3);}
+    .btn-submit:disabled{opacity:.6;transform:none;cursor:not-allowed;}
+    .password-strength{height:4px;border-radius:2px;margin-top:6px;background:rgba(26,32,52,.1);overflow:hidden;}
+    .password-strength-fill{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0;}
+    .divider{display:flex;align-items:center;gap:12px;margin:24px 0;}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(26,32,52,.1);}
+    .divider span{font-size:0.75rem;color:var(--stone);font-weight:600;}
+    .card-footer{text-align:center;margin-top:24px;font-size:0.82rem;color:var(--graphite);}
+    .card-footer a{color:var(--orange);font-weight:700;}
+    .card-footer a:hover{color:var(--copper);}
+    .spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:var(--white);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .terms{font-size:0.75rem;color:var(--graphite);text-align:center;margin-top:16px;line-height:1.5;}
+    @media(max-width:480px){.card{padding:32px 24px;}}
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo">
+      <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#1A2034"/><circle cx="20" cy="16" r="7" fill="none" stroke="#D47E3D" stroke-width="2.5"/><rect x="17" y="22" width="6" height="4" rx="1" fill="#D47E3D"/><rect x="18" y="26" width="4" height="2.5" rx=".5" fill="#D47E3D"/><line x1="20" y1="7" x2="20" y2="5" stroke="#D47E3D" stroke-width="2" stroke-linecap="round"/><line x1="26.5" y1="9.5" x2="27.9" y2="8.1" stroke="#D47E3D" stroke-width="1.5" stroke-linecap="round"/><line x1="13.5" y1="9.5" x2="12.1" y2="8.1" stroke="#D47E3D" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span class="nav-logo-text">study <span>buddy</span></span>
+    </a>
+    <a href="/" class="nav-back">&#8592; Back to home</a>
+  </nav>
+
+  <div class="page">
+    <div class="card">
+      <div class="card-logo">
+        <svg viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="28" fill="#1A2034"/><circle cx="28" cy="22" r="10" fill="none" stroke="#D47E3D" stroke-width="3"/><rect x="23" y="31" width="10" height="6" rx="2" fill="#D47E3D"/><rect x="25" y="37" width="6" height="4" rx="1" fill="#D47E3D"/><line x1="28" y1="10" x2="28" y2="7" stroke="#D47E3D" stroke-width="2.5" stroke-linecap="round"/><line x1="37" y1="13" x2="39" y2="11" stroke="#D47E3D" stroke-width="2" stroke-linecap="round"/><line x1="19" y1="13" x2="17" y2="11" stroke="#D47E3D" stroke-width="2" stroke-linecap="round"/></svg>
+        <h1>study <span>buddy</span></h1>
+        <p>Create your free account</p>
+      </div>
+
+      <div class="error-box" id="errorBox"></div>
+      <div class="success-box" id="successBox">🎉 Account created! Redirecting you to the dashboard...</div>
+
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="name">Full name</label>
+          <input type="text" id="name" name="name" placeholder="e.g. Julfe Phiri" required autocomplete="name"/>
+        </div>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email"/>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="At least 8 characters" required autocomplete="new-password" minlength="8"/>
+          <div class="password-strength"><div class="password-strength-fill" id="strengthFill"></div></div>
+          <div class="field-hint" id="strengthText">Choose a strong password</div>
+        </div>
+        <div class="form-group">
+          <label for="confirm">Confirm password</label>
+          <input type="password" id="confirm" name="confirm" placeholder="Repeat your password" required autocomplete="new-password"/>
+          <div class="field-hint" id="confirmHint"></div>
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span id="btnText">Create Account</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+        <p class="terms">By creating an account you agree to our Terms of Service.</p>
+      </form>
+
+      <div class="divider"><span>ALREADY HAVE AN ACCOUNT?</span></div>
+      <div class="card-footer"><a href="/signin">Sign in here</a></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('signupForm');
+    const errorBox = document.getElementById('errorBox');
+    const successBox = document.getElementById('successBox');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const spinner = document.getElementById('spinner');
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    const confirmHint = document.getElementById('confirmHint');
+
+    function setLoading(on) {
+      submitBtn.disabled = on;
+      btnText.style.display = on ? 'none' : 'inline';
+      spinner.style.display = on ? 'block' : 'none';
+    }
+    function showError(msg) { errorBox.textContent = msg; errorBox.classList.add('show'); successBox.classList.remove('show'); }
+    function clearError() { errorBox.classList.remove('show'); }
+
+    // Password strength
+    passwordInput.addEventListener('input', () => {
+      const v = passwordInput.value;
+      let score = 0;
+      if (v.length >= 8) score++;
+      if (v.length >= 12) score++;
+      if (/[A-Z]/.test(v)) score++;
+      if (/[0-9]/.test(v)) score++;
+      if (/[^A-Za-z0-9]/.test(v)) score++;
+      const pct = (score / 5) * 100;
+      const colors = ['#dc2626','#f59e0b','#f59e0b','#16a34a','#16a34a','#16a34a'];
+      const labels = ['Too short','Weak','Fair','Good','Strong','Very strong'];
+      strengthFill.style.width = pct + '%';
+      strengthFill.style.background = colors[score] || '#16a34a';
+      strengthText.textContent = labels[score] || 'Very strong';
+      strengthText.className = 'field-hint' + (score < 2 ? ' error' : '');
+    });
+
+    // Confirm match
+    confirmInput.addEventListener('input', () => {
+      if (confirmInput.value && confirmInput.value !== passwordInput.value) {
+        confirmHint.textContent = 'Passwords do not match';
+        confirmHint.className = 'field-hint error';
+        confirmInput.classList.add('invalid');
+      } else {
+        confirmHint.textContent = confirmInput.value ? '✓ Passwords match' : '';
+        confirmHint.className = 'field-hint';
+        confirmInput.classList.remove('invalid');
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+      if (passwordInput.value !== confirmInput.value) { showError('Passwords do not match.'); return; }
+      if (passwordInput.value.length < 8) { showError('Password must be at least 8 characters.'); return; }
+      setLoading(true);
+      try {
+        const res = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: document.getElementById('name').value.trim(),
+            email: document.getElementById('email').value.trim().toLowerCase(),
+            password: passwordInput.value
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          successBox.classList.add('show');
+          setTimeout(() => window.location.href = '/dashboard', 1500);
+        } else {
+          showError(data.error || 'Could not create account. Please try again.');
+        }
+      } catch (err) {
+        showError('Something went wrong. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
+`)
+})
+
+// Sign-in page
+app.get('/signin', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In — Study Buddy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--midnight:#1A2034;--orange:#D47E3D;--copper:#8E452C;--ivory:#F2E9D9;--stone:#D0BFB0;--graphite:#5B5F63;--white:#fff;--font:'Montserrat',sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:var(--font);background:var(--ivory);color:var(--midnight);min-height:100vh;display:flex;flex-direction:column;}
+    a{text-decoration:none;color:inherit;}
+
+    /* NAV */
+    nav{background:var(--midnight);height:64px;display:flex;align-items:center;padding:0 32px;justify-content:space-between;}
+    .nav-logo{display:flex;align-items:center;gap:10px;}
+    .nav-logo svg{width:34px;height:34px;}
+    .nav-logo-text{font-size:1.05rem;font-weight:700;color:var(--white);}
+    .nav-logo-text span{color:var(--orange);}
+    .nav-back{color:var(--stone);font-size:0.8rem;font-weight:600;transition:color .2s;}
+    .nav-back:hover{color:var(--white);}
+
+    /* LAYOUT */
+    .page{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;}
+    .card{background:var(--white);border-radius:24px;padding:48px 40px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(26,32,52,.10);}
+
+    /* LOGO TOP */
+    .card-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;}
+    .card-logo svg{width:56px;height:56px;margin-bottom:12px;}
+    .card-logo h1{font-size:1.5rem;color:var(--midnight);}
+    .card-logo h1 span{color:var(--orange);}
+    .card-logo p{font-size:0.85rem;color:var(--graphite);margin-top:4px;}
+
+    /* FORM */
+    .form-group{margin-bottom:20px;}
+    label{display:block;font-size:0.8rem;font-weight:700;color:var(--midnight);margin-bottom:8px;letter-spacing:.03em;}
+    input{width:100%;padding:13px 16px;border:2px solid rgba(26,32,52,.12);border-radius:12px;font-family:var(--font);font-size:0.9rem;color:var(--midnight);background:var(--white);transition:border-color .2s,box-shadow .2s;outline:none;}
+    input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(212,126,61,.12);}
+    input::placeholder{color:var(--stone);}
+
+    /* ERROR */
+    .error-box{display:none;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.25);border-radius:10px;padding:12px 16px;font-size:0.82rem;color:#dc2626;margin-bottom:20px;}
+    .error-box.show{display:block;}
+
+    /* SUBMIT */
+    .btn-submit{width:100%;background:var(--orange);color:var(--white);font-family:var(--font);font-weight:700;font-size:1rem;padding:14px;border:none;border-radius:50px;cursor:pointer;transition:all .2s;margin-top:4px;}
+    .btn-submit:hover{background:var(--copper);transform:translateY(-1px);box-shadow:0 8px 24px rgba(212,126,61,.3);}
+    .btn-submit:disabled{opacity:.6;transform:none;cursor:not-allowed;}
+
+    /* DIVIDER */
+    .divider{display:flex;align-items:center;gap:12px;margin:24px 0;}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(26,32,52,.1);}
+    .divider span{font-size:0.75rem;color:var(--stone);font-weight:600;}
+
+    /* FOOTER LINK */
+    .card-footer{text-align:center;margin-top:24px;font-size:0.82rem;color:var(--graphite);}
+    .card-footer a{color:var(--orange);font-weight:700;}
+    .card-footer a:hover{color:var(--copper);}
+
+    /* LOADING SPINNER */
+    .spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:var(--white);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @media(max-width:480px){.card{padding:32px 24px;}}
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo">
+      <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#1A2034"/><circle cx="20" cy="16" r="7" fill="none" stroke="#D47E3D" stroke-width="2.5"/><rect x="17" y="22" width="6" height="4" rx="1" fill="#D47E3D"/><rect x="18" y="26" width="4" height="2.5" rx=".5" fill="#D47E3D"/><line x1="20" y1="7" x2="20" y2="5" stroke="#D47E3D" stroke-width="2" stroke-linecap="round"/><line x1="26.5" y1="9.5" x2="27.9" y2="8.1" stroke="#D47E3D" stroke-width="1.5" stroke-linecap="round"/><line x1="13.5" y1="9.5" x2="12.1" y2="8.1" stroke="#D47E3D" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span class="nav-logo-text">study <span>buddy</span></span>
+    </a>
+    <a href="/" class="nav-back">&#8592; Back to home</a>
+  </nav>
+
+  <div class="page">
+    <div class="card">
+      <div class="card-logo">
+        <svg viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="28" fill="#1A2034"/><circle cx="28" cy="22" r="10" fill="none" stroke="#D47E3D" stroke-width="3"/><rect x="23" y="31" width="10" height="6" rx="2" fill="#D47E3D"/><rect x="25" y="37" width="6" height="4" rx="1" fill="#D47E3D"/><line x1="28" y1="10" x2="28" y2="7" stroke="#D47E3D" stroke-width="2.5" stroke-linecap="round"/><line x1="37" y1="13" x2="39" y2="11" stroke="#D47E3D" stroke-width="2" stroke-linecap="round"/><line x1="19" y1="13" x2="17" y2="11" stroke="#D47E3D" stroke-width="2" stroke-linecap="round"/></svg>
+        <h1>study <span>buddy</span></h1>
+        <p>Sign in to continue learning</p>
+      </div>
+
+      <div class="error-box" id="errorBox"></div>
+
+      <form id="signinForm">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email"/>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Your password" required autocomplete="current-password"/>
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span id="btnText">Sign In</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+      </form>
+
+      <div class="divider"><span>OR</span></div>
+
+      <div class="card-footer">
+        Don't have an account? <a href="/signup">Create one free</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('signinForm');
+    const errorBox = document.getElementById('errorBox');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const spinner = document.getElementById('spinner');
+
+    function setLoading(on) {
+      submitBtn.disabled = on;
+      btnText.style.display = on ? 'none' : 'inline';
+      spinner.style.display = on ? 'block' : 'none';
+    }
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.add('show');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.classList.remove('show');
+      setLoading(true);
+      try {
+        const res = await fetch('/api/auth/signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('email').value.trim().toLowerCase(),
+            password: document.getElementById('password').value
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          window.location.href = '/dashboard';
+        } else {
+          showError(data.error || 'Invalid email or password.');
+        }
+      } catch (err) {
+        showError('Something went wrong. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
+`)
+})
+
+// API: Sign up
+app.post('/api/auth/signup', async (c) => {
+  try {
+    const { name, email, password } = await c.req.json<{ name: string; email: string; password: string }>()
+
+    if (!name || !email || !password) {
+      return c.json({ success: false, error: 'Name, email and password are required.' }, 400)
+    }
+    if (password.length < 8) {
+      return c.json({ success: false, error: 'Password must be at least 8 characters.' }, 400)
+    }
+
+    const db = c.env.DB
+
+    // Check if email already exists
+    const existing = await db.prepare('SELECT id FROM users WHERE email = ?').bind(email.toLowerCase()).first()
+    if (existing) {
+      return c.json({ success: false, error: 'An account with this email already exists.' }, 409)
+    }
+
+    const passwordHash = await hashPassword(password)
+    const result = await db.prepare(
+      'INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)'
+    ).bind(name.trim(), email.toLowerCase(), passwordHash).run()
+
+    const userId = result.meta.last_row_id
+
+    // Create session
+    const sessionId = generateSessionId()
+    const expiresAt = sessionExpiryDate()
+    await db.prepare(
+      'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)'
+    ).bind(sessionId, userId, expiresAt).run()
+
+    const response = c.json({ success: true, user: { id: userId, name: name.trim(), email: email.toLowerCase() } })
+    const headers = new Headers(response.headers)
+    headers.append('Set-Cookie', \`sb_session=\${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000\`)
+    return new Response(response.body, { status: 200, headers })
+  } catch (err: any) {
+    console.error('Signup error:', err)
+    return c.json({ success: false, error: 'Something went wrong. Please try again.' }, 500)
+  }
+})
+
+// API: Sign in
+app.post('/api/auth/signin', async (c) => {
+  try {
+    const { email, password } = await c.req.json<{ email: string; password: string }>()
+
+    if (!email || !password) {
+      return c.json({ success: false, error: 'Email and password are required.' }, 400)
+    }
+
+    const db = c.env.DB
+    const user = await db.prepare(
+      'SELECT id, name, email, password_hash FROM users WHERE email = ?'
+    ).bind(email.toLowerCase()).first<{ id: number; name: string; email: string; password_hash: string }>()
+
+    if (!user) {
+      return c.json({ success: false, error: 'Invalid email or password.' }, 401)
+    }
+
+    const valid = await verifyPassword(password, user.password_hash)
+    if (!valid) {
+      return c.json({ success: false, error: 'Invalid email or password.' }, 401)
+    }
+
+    const sessionId = generateSessionId()
+    const expiresAt = sessionExpiryDate()
+    await db.prepare(
+      'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)'
+    ).bind(sessionId, user.id, expiresAt).run()
+
+    const response = c.json({ success: true, user: { id: user.id, name: user.name, email: user.email } })
+    const headers = new Headers(response.headers)
+    headers.append('Set-Cookie', \`sb_session=\${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000\`)
+    return new Response(response.body, { status: 200, headers })
+  } catch (err: any) {
+    console.error('Signin error:', err)
+    return c.json({ success: false, error: 'Something went wrong. Please try again.' }, 500)
+  }
+})
+
+// API: Sign out
+app.post('/api/auth/signout', async (c) => {
+  try {
+    const cookie = c.req.header('Cookie') || ''
+    const match = cookie.match(/sb_session=([a-f0-9]+)/)
+    if (match) {
+      await c.env.DB.prepare('DELETE FROM sessions WHERE id = ?').bind(match[1]).run()
+    }
+    const response = c.json({ success: true })
+    const headers = new Headers(response.headers)
+    headers.append('Set-Cookie', 'sb_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0')
+    return new Response(response.body, { status: 200, headers })
+  } catch {
+    return c.json({ success: true })
+  }
+})
+
+// API: Get current user
+app.get('/api/auth/me', async (c) => {
+  try {
+    const cookie = c.req.header('Cookie') || ''
+    const match = cookie.match(/sb_session=([a-f0-9]+)/)
+    if (!match) return c.json({ user: null })
+
+    const session = await c.env.DB.prepare(
+      'SELECT s.user_id, u.name, u.email FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.id = ? AND s.expires_at > datetime(\'now\')'
+    ).bind(match[1]).first<{ user_id: number; name: string; email: string }>()
+
+    if (!session) return c.json({ user: null })
+    return c.json({ user: { id: session.user_id, name: session.name, email: session.email } })
+  } catch {
+    return c.json({ user: null })
+  }
+})
+
 // Dashboard route for complete curriculum
 app.get('/dashboard', (c) => {
   return c.html(`<!DOCTYPE html>
