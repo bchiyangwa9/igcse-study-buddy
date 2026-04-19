@@ -5182,4 +5182,210 @@ app.get('/test-progression', (c) => {
 </html>`);
 })
 
+// =============================================
+// WHATSAPP WEBHOOK (Twilio)
+// POST /wp-json/study-buddy/v1/whatsapp  — kept same path for Twilio config
+// Also available at: /api/whatsapp/incoming
+// =============================================
+
+// Helper: validate Twilio signature
+async function validateTwilioSignature(
+  authToken: string,
+  signature: string,
+  url: string,
+  params: Record<string, string>
+): Promise<boolean> {
+  // Build the string to sign: URL + sorted params concatenated
+  const sortedKeys = Object.keys(params).sort()
+  let strToSign = url
+  for (const key of sortedKeys) {
+    strToSign += key + params[key]
+  }
+  const encoder = new TextEncoder()
+  const key = await crypto.subtle.importKey(
+    'raw', encoder.encode(authToken),
+    { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']
+  )
+  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(strToSign))
+  const expected = btoa(String.fromCharCode(...new Uint8Array(sig)))
+  return expected === signature
+}
+
+// Helper: build TwiML response
+function twimlResponse(message: string): Response {
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Message>${message.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</Message>
+</Response>`
+  return new Response(xml, {
+    status: 200,
+    headers: { 'Content-Type': 'text/xml' }
+  })
+}
+
+// Shared webhook handler
+async function handleWhatsAppWebhook(c: any): Promise<Response> {
+  try {
+    const db = (c.env as any)?.DB
+    const authToken = (c.env as any)?.TWILIO_AUTH_TOKEN || ''
+
+    // Parse form body from Twilio
+    const body = await c.req.text()
+    const params: Record<string, string> = {}
+    for (const pair of body.split('&')) {
+      const [k, v] = pair.split('=')
+      if (k) params[decodeURIComponent(k)] = decodeURIComponent((v || '').replace(/\+/g, ' '))
+    }
+
+    const from     = params['From']     || ''
+    const msgBody  = params['Body']     || ''
+    const mediaUrl = params['MediaUrl0'] || ''
+    const to       = params['To']       || ''
+
+    // Validate Twilio signature (skip if no auth token configured)
+    if (authToken) {
+      const signature = c.req.header('X-Twilio-Signature') || ''
+      const url = c.req.url
+      const valid = await validateTwilioSignature(authToken, signature, url, params)
+      if (!valid) {
+        return new Response('Forbidden', { status: 403 })
+      }
+    }
+
+    // Log to DB if available
+    if (db) {
+      try {
+        await db.prepare(`
+          CREATE TABLE IF NOT EXISTS sb_whatsapp_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            from_number TEXT NOT NULL,
+            to_number TEXT,
+            message_body TEXT,
+            media_url TEXT,
+            status TEXT DEFAULT 'received',
+            received_at TEXT DEFAULT (datetime('now'))
+          )
+        `).run()
+        await db.prepare(`
+          INSERT INTO sb_whatsapp_messages (from_number, to_number, message_body, media_url)
+          VALUES (?, ?, ?, ?)
+        `).bind(from, to, msgBody, mediaUrl).run()
+      } catch (_) { /* non-fatal */ }
+    }
+
+    // Auto-reply logic
+    const lower = msgBody.toLowerCase().trim()
+
+    if (lower === '' && mediaUrl) {
+      return twimlResponse('Thanks for the image! 📸 Study Buddy received it. How can I help you today?')
+    }
+
+    if (/^(hi|hello|hey|hie|howdy|sup|greetings)/.test(lower)) {
+      return twimlResponse(
+        '👋 Hello! Welcome to *Study Buddy* — your O-Level learning companion!\n\n' +
+        'I can help you with:\n' +
+        '📐 *MATHS* — send "maths" to start\n' +
+        '📖 *ENGLISH* — send "english" to start\n' +
+        '📚 *SUBJECTS* — see all subjects\n' +
+        '🔗 *WEBSITE* — get the link\n\n' +
+        'What would you like to study today?'
+      )
+    }
+
+    if (/maths|math|mathematics|algebra|geometry/.test(lower)) {
+      return twimlResponse(
+        '📐 *IGCSE Mathematics*\n\n' +
+        'We cover 21 topics including:\n' +
+        '• Number & Algebra\n' +
+        '• Geometry & Trigonometry\n' +
+        '• Statistics & Probability\n\n' +
+        '👉 Start here: https://www.study-buddy.tech/mathematics\n\n' +
+        'Reply with a topic name to get a quick lesson!'
+      )
+    }
+
+    if (/english|reading|writing|grammar/.test(lower)) {
+      return twimlResponse(
+        '📖 *Cambridge IGCSE English (0500)*\n\n' +
+        'Our English module covers:\n' +
+        '• Paper 1: Reading comprehension\n' +
+        '• Paper 2: Creative & formal writing\n' +
+        '• Exam preparation\n\n' +
+        '👉 Start here: https://www.study-buddy.tech/english\n\n' +
+        'Take the diagnostic assessment to get your personalised 24-week plan!'
+      )
+    }
+
+    if (/website|link|url|site/.test(lower)) {
+      return twimlResponse(
+        '🔗 *Study Buddy Website*\n\n' +
+        'Visit us at: https://www.study-buddy.tech\n\n' +
+        'You\'ll find:\n' +
+        '• Interactive lessons\n' +
+        '• Practice quizzes\n' +
+        '• Your progress dashboard\n\n' +
+        'Works great on mobile! 📱'
+      )
+    }
+
+    if (/subjects?|topics?|courses?/.test(lower)) {
+      return twimlResponse(
+        '📚 *Study Buddy Subjects*\n\n' +
+        '✅ Mathematics (21 topics)\n' +
+        '✅ English Language (19 topics)\n' +
+        '🔜 Biology\n' +
+        '🔜 Chemistry\n' +
+        '🔜 Physics\n' +
+        '🔜 Geography\n' +
+        '🔜 History\n\n' +
+        'Reply with a subject name to get started!'
+      )
+    }
+
+    if (/help|\?/.test(lower)) {
+      return twimlResponse(
+        '🤖 *Study Buddy Help*\n\n' +
+        'Commands you can try:\n' +
+        '• *hi* — welcome message\n' +
+        '• *maths* — mathematics help\n' +
+        '• *english* — english help\n' +
+        '• *subjects* — all subjects\n' +
+        '• *website* — get the link\n\n' +
+        'Or just ask me anything about your studies! 📚'
+      )
+    }
+
+    // Default reply
+    return twimlResponse(
+      '📚 *Study Buddy* here!\n\n' +
+      'I didn\'t quite catch that. Try:\n' +
+      '• *hi* — get started\n' +
+      '• *maths* — mathematics\n' +
+      '• *english* — english\n' +
+      '• *help* — see all commands\n\n' +
+      'Or visit: https://www.study-buddy.tech'
+    )
+
+  } catch (err: any) {
+    console.error('WhatsApp webhook error:', err)
+    // Always return 200 to Twilio to prevent retries
+    return twimlResponse('Sorry, something went wrong. Please try again shortly.')
+  }
+}
+
+// Mount on both paths so existing Twilio config works either way
+app.post('/wp-json/study-buddy/v1/whatsapp', handleWhatsAppWebhook)
+app.post('/api/whatsapp/incoming', handleWhatsAppWebhook)
+
+// GET endpoint to confirm webhook is live (useful for Twilio validation)
+app.get('/api/whatsapp/status', (c) => {
+  return c.json({
+    status: 'online',
+    service: 'Study Buddy WhatsApp Webhook',
+    endpoint: '/api/whatsapp/incoming',
+    altEndpoint: '/wp-json/study-buddy/v1/whatsapp',
+    timestamp: new Date().toISOString()
+  })
+})
+
 export default app
