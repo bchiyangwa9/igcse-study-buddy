@@ -18,13 +18,49 @@ app.use('/api/*', cors())
 app.use(renderer)
 
 // Branded campaign route for the October Mathematics Resit Pilot.
-// Keep this on the public website because www.study-buddy.tech is served by this Cloudflare app.
-app.get('/maths', (c) =>
-  c.redirect(
-    'https://study-buddy-app-git-agent-october-maths-pil-5ab655-study-buddy2.vercel.app/october-maths',
-    302
-  )
-)
+// The landing page is authored in the Study Buddy app, but is served through this
+// Cloudflare route so the campaign URL remains study-buddy.tech/maths.
+const MATHS_PILOT_ORIGIN = 'https://study-buddy-app.vercel.app'
+
+app.get('/maths', async (c) => {
+  try {
+    const upstream = await fetch(`${MATHS_PILOT_ORIGIN}/maths`, {
+      headers: {
+        'User-Agent': 'StudyBuddy-Public-Site/1.0',
+        'Accept': 'text/html',
+      },
+    })
+
+    if (!upstream.ok) {
+      throw new Error(`Mathematics pilot upstream returned ${upstream.status}`)
+    }
+
+    let html = await upstream.text()
+
+    // Next.js assets must continue to load from the app origin.
+    html = html
+      .replace(/(src|href)="\/_next\//g, `$1="${MATHS_PILOT_ORIGIN}/_next/`)
+      .replace(/href="\/register/g, 'href="https://app.study-buddy.tech/register')
+      .replace(/href="\/login/g, 'href="https://app.study-buddy.tech/login')
+      .replace(/href="\/mathematics"/g, 'href="https://www.study-buddy.tech/mathematics"')
+      .replace(/href="\/" class=/g, 'href="https://www.study-buddy.tech/" class=')
+
+    return new Response(html, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=UTF-8',
+        'Cache-Control': 'public, max-age=120, s-maxage=300',
+        'X-Robots-Tag': 'index, follow',
+      },
+    })
+  } catch (error) {
+    console.error('Mathematics pilot proxy error', error)
+    return c.redirect(
+      'https://study-buddy-app.vercel.app/maths',
+      302
+    )
+  }
+})
 
 // =============================================
 // AUTO-MIGRATION — idempotent, runs on cold start
