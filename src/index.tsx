@@ -17,6 +17,15 @@ const app = new Hono<{ Bindings: Bindings }>()
 app.use('/api/*', cors())
 app.use(renderer)
 
+// Branded campaign route for the October Mathematics Resit Pilot.
+// Keep this on the public website because www.study-buddy.tech is served by this Cloudflare app.
+app.get('/maths', (c) =>
+  c.redirect(
+    'https://study-buddy-app-git-agent-october-maths-pil-5ab655-study-buddy2.vercel.app/october-maths',
+    302
+  )
+)
+
 // =============================================
 // AUTO-MIGRATION — idempotent, runs on cold start
 // =============================================
