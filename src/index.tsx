@@ -2991,6 +2991,17 @@ app.get('/mathematics', (c) => {
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
+    <div class="bg-orange-500 text-white">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-widest text-orange-100">Limited October Mathematics Resit Pilot</p>
+          <p class="mt-1 text-lg font-bold">Is your child resitting Cambridge Mathematics this October?</p>
+        </div>
+        <a href="/maths" class="inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-3 font-bold text-white hover:bg-slate-800">
+          View the six-week pilot — $10 →
+        </a>
+      </div>
+    </div>
     <div class="min-h-screen">
         <header class="bg-white shadow-sm border-b border-gray-200 mb-8">
             <div class="max-w-7xl mx-auto px-4 py-6">
