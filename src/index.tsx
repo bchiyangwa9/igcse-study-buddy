@@ -20,11 +20,11 @@ app.use(renderer)
 // Branded campaign route for the October Mathematics Resit Pilot.
 // The landing page is authored in the Study Buddy app, but is served through this
 // Cloudflare route so the campaign URL remains study-buddy.tech/maths.
-const MATHS_PILOT_ORIGIN = 'https://study-buddy-app.vercel.app'
+const MATHS_PILOT_ORIGIN = 'https://study-buddy-app-git-agent-october-maths-pil-5ab655-study-buddy2.vercel.app'
 
 app.get('/maths', async (c) => {
   try {
-    const upstream = await fetch(`${MATHS_PILOT_ORIGIN}/maths`, {
+    const upstream = await fetch(`${MATHS_PILOT_ORIGIN}/october-maths`, {
       headers: {
         'User-Agent': 'StudyBuddy-Public-Site/1.0',
         'Accept': 'text/html',
@@ -56,7 +56,7 @@ app.get('/maths', async (c) => {
   } catch (error) {
     console.error('Mathematics pilot proxy error', error)
     return c.redirect(
-      'https://study-buddy-app.vercel.app/maths',
+      'https://study-buddy-app-git-agent-october-maths-pil-5ab655-study-buddy2.vercel.app/october-maths',
       302
     )
   }
