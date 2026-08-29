@@ -3809,16 +3809,16 @@ app.get('/', (c) => {
           </div>
           <div class="hero-stats">
             <div>
-              <div class="hero-stat-num">10,000+</div>
-              <div class="hero-stat-label">Happy Students</div>
-            </div>
-            <div>
-              <div class="hero-stat-num">98%</div>
-              <div class="hero-stat-label">Success Rate</div>
-            </div>
-            <div>
               <div class="hero-stat-num">7</div>
               <div class="hero-stat-label">Core Subjects</div>
+            </div>
+            <div>
+              <div class="hero-stat-num">Mobile</div>
+              <div class="hero-stat-label">Friendly Learning</div>
+            </div>
+            <div>
+              <div class="hero-stat-num">Personal</div>
+              <div class="hero-stat-label">Study Plans</div>
             </div>
           </div>
         </div>
@@ -4124,52 +4124,6 @@ app.get('/', (c) => {
     </div>
   </section>
 
-  <!-- ===== SOCIAL PROOF ===== -->
-  <section class="section social-proof" id="testimonials">
-    <div class="container">
-      <div class="proof-grid">
-        <div class="stats-block fade-up">
-          <div class="section-tag">Proven Results</div>
-          <h2 style="font-size: clamp(2rem,4vw,2.75rem); margin-bottom: 40px;">Students who <span class="text-orange">trust Study Buddy</span></h2>
-          <div class="stat-row">
-            <div class="stat-icon">🎓</div>
-            <div>
-              <div class="stat-big">10,000+</div>
-              <div class="stat-desc">Happy students across Africa</div>
-            </div>
-          </div>
-          <div class="stat-row">
-            <div class="stat-icon">✅</div>
-            <div>
-              <div class="stat-big">98%</div>
-              <div class="stat-desc">Student success rate</div>
-            </div>
-          </div>
-          <div class="stat-row">
-            <div class="stat-icon">📱</div>
-            <div>
-              <div class="stat-big">iPad Ready</div>
-              <div class="stat-desc">Optimised for school tablet programmes</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card fade-up delay-2">
-          <p class="testimonial-text">
-            "Since using Study Buddy, I've excelled in all my subjects! The interactive quizzes make revision actually fun, and the personalised plan keeps me on track."
-          </p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">J</div>
-            <div>
-              <div class="testimonial-name">Julfe P.</div>
-              <div class="testimonial-role">O-Level Student</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ===== WHATSAPP CTA ===== -->
   <section class="section whatsapp-section" id="whatsapp">
     <div class="container">
@@ -4205,7 +4159,7 @@ app.get('/', (c) => {
             </svg>
             <span class="logo-mark-text">study <span>buddy</span></span>
           </div>
-          <p>Your Smart Learning Companion for O-Level success. Trusted by 10,000+ students across Africa.</p>
+          <p>Your Smart Learning Companion for structured O-Level learning and exam preparation.</p>
         </div>
         <div class="footer-col">
           <h4>Platform</h4>
