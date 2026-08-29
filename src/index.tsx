@@ -4178,6 +4178,9 @@ app.get('/', (c) => {
           </ul>
         </div>
       </div>
+      <p style="margin: 24px 0 16px; max-width: 900px; color: rgba(255,255,255,.58); font-size: .78rem; line-height: 1.7;">
+        Study Buddy is an independent revision programme. It is not affiliated with, endorsed by, sponsored by, or an official product of Cambridge International Education or Cambridge University Press &amp; Assessment.
+      </p>
       <div class="footer-bottom">
         <p>© 2026 Study Buddy. All rights reserved.</p>
         <p>Built for O-Level students across Africa 🌍</p>
