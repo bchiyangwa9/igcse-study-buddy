@@ -3212,6 +3212,7 @@ app.get('/', (c) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Study Buddy — Your Smart Learning Companion</title>
   <meta name="description" content="Study Buddy helps O-Level students master their subjects with interactive lessons, personalised study plans, and gamified quizzes." />
+  <meta name="facebook-domain-verification" content="7jlr9di7w6vevfvyqdh0jps18sfwwb" />
   <meta name="keywords" content="O-Level, study, education, learning, Mathematics, Science, Biology, Chemistry, Physics, Geography, History" />
   <meta property="og:title" content="Study Buddy — Your Smart Learning Companion" />
   <meta property="og:description" content="Master your O-Level studies with interactive lessons, personalised study plans, and gamified quizzes." />
