@@ -45,6 +45,14 @@ app.get('/maths', async (c) => {
       )
     }
 
+    // Add the canonical public privacy-policy link to the campaign footer.
+    if (!html.includes('href="https://www.study-buddy.tech/privacy"')) {
+      html = html.replace(
+        '</footer>',
+        '<div style="text-align:center;padding:0 20px 24px;background:#071A31"><a href="https://www.study-buddy.tech/privacy" style="color:#d5dce6;font-size:14px;text-decoration:underline">Privacy Policy</a></div></footer>'
+      )
+    }
+
     // Next.js assets must continue to load from the app origin.
     html = html
       .replace(/(src|href)="\/_next\//g, `$1="${MATHS_PILOT_ORIGIN}/_next/`)
@@ -3203,6 +3211,90 @@ app.get('/mathematics', (c) => {
 // AUTH ROUTES
 // =============================================
 
+
+// =============================================
+// PRIVACY POLICY
+// =============================================
+app.get('/privacy', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy | Study Buddy</title>
+  <meta name="description" content="How Study Buddy collects, uses and protects personal information." />
+  <meta name="facebook-domain-verification" content="7jlr9di7w6vevfvyqdh0jps18sfwwb" />
+  <style>
+    :root { --navy:#102A4C; --orange:#E48135; --cream:#F6F2EA; --ink:#22334A; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--cream); color:var(--ink); font-family:Arial,Helvetica,sans-serif; line-height:1.7; }
+    header { background:var(--navy); color:white; padding:20px; }
+    header div { max-width:900px; margin:auto; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    header a { color:white; text-decoration:none; font-weight:700; }
+    .brand { font-size:1.25rem; }
+    main { max-width:900px; margin:40px auto; padding:0 20px 60px; }
+    article { background:white; padding:clamp(24px,5vw,52px); border-radius:24px; box-shadow:0 12px 35px rgba(16,42,76,.08); }
+    h1,h2 { color:var(--navy); line-height:1.25; }
+    h1 { font-size:clamp(2rem,6vw,3rem); margin-top:0; }
+    h2 { margin-top:34px; font-size:1.3rem; }
+    a { color:#145DA0; }
+    .updated { color:#667085; }
+    .notice { margin-top:32px; padding:18px; border-left:4px solid var(--orange); background:#FFF7ED; }
+    footer { text-align:center; padding:24px; background:#071A31; color:#B8C3D1; font-size:.85rem; }
+  </style>
+</head>
+<body>
+  <header><div><a class="brand" href="/">Study Buddy</a><a href="/">Return to home</a></div></header>
+  <main>
+    <article>
+      <p class="updated">Effective date: 29 August 2026</p>
+      <h1>Privacy Policy</h1>
+      <p>This policy explains how Study Buddy collects, uses, stores and shares personal information when learners, parents, guardians, schools and visitors use our website, learning application, assessments and communication services.</p>
+
+      <h2>1. Information we may collect</h2>
+      <p>We may collect names, age or age range, contact details, parent or guardian details, school and subject information, account credentials, examination dates, study availability, diagnostic and assessment responses, scores, progress, schedules, messages, consent records, payment status and technical information such as device, browser, IP address and service logs.</p>
+
+      <h2>2. How we use information</h2>
+      <p>We use information to create and secure accounts; provide learning resources; generate study schedules; mark assessments; report progress and exam readiness; provide remediation; send requested email or WhatsApp learning notifications; process enrolment and payments; support users; prevent misuse; improve the service; and meet legal or safeguarding obligations.</p>
+
+      <h2>3. Children and parent or guardian involvement</h2>
+      <p>Study Buddy serves school-age learners. Where required, we request parent or guardian contact, permission or involvement before collecting or using a learner's contact details. Learning notifications and optional marketing consent are treated separately. Parents and guardians should contact us if they believe a child's information was provided without appropriate authority.</p>
+
+      <h2>4. Communications</h2>
+      <p>With appropriate permission, we may send account, schedule, missed-work, assessment-result and service messages by email or WhatsApp. Optional promotional messages require separate consent and can be stopped using the unsubscribe or opt-out method provided.</p>
+
+      <h2>5. Payments and service providers</h2>
+      <p>Payments may be processed by third-party payment providers such as Stripe. We do not intend to store complete payment-card details. We may also use service providers for hosting, video delivery, email, messaging, analytics, security and customer support. These providers process information only for the relevant service, subject to their terms and privacy practices.</p>
+
+      <h2>6. Sharing information</h2>
+      <p>We may share relevant learner information with an authorised parent, guardian, school or teacher; with service providers supporting Study Buddy; where necessary to protect users or the service; or where required by law. We do not sell children's personal information.</p>
+
+      <h2>7. International processing and security</h2>
+      <p>Our service and providers may process information in countries other than the user's country. We take reasonable organisational and technical steps to protect information, restrict access and use appropriate service-provider safeguards. No online service can guarantee absolute security.</p>
+
+      <h2>8. Retention</h2>
+      <p>We retain information only for as long as reasonably required to provide the service, maintain learning and transaction records, resolve disputes, protect the platform and comply with applicable obligations. Information may then be deleted or anonymised.</p>
+
+      <h2>9. Your choices and rights</h2>
+      <p>Depending on applicable law, users or their authorised parents or guardians may request access to, correction of, deletion of, restriction of, or a copy of personal information, and may withdraw consent where processing depends on consent. Some records may need to be retained for legal, security or transactional reasons.</p>
+
+      <h2>10. Cookies and technical data</h2>
+      <p>Study Buddy may use essential cookies or similar storage for sign-in, security, preferences and service operation. Analytics or advertising technologies should be used only in accordance with applicable consent requirements and the settings presented to users.</p>
+
+      <h2>11. Changes to this policy</h2>
+      <p>We may update this policy as the service, providers or legal requirements change. The effective date above will be updated when material changes are published.</p>
+
+      <h2>12. Contact us</h2>
+      <p>For privacy questions or requests, email <a href="mailto:hello@study-buddy.tech">hello@study-buddy.tech</a>. Please do not send passwords or payment-card details by email or WhatsApp.</p>
+
+      <div class="notice"><strong>Independence notice:</strong> Study Buddy is an independent revision programme. It is not affiliated with, endorsed by, sponsored by, or an official product of Cambridge International Education or Cambridge University Press &amp; Assessment.</div>
+    </article>
+  </main>
+  <footer>© 2026 Study Buddy · <a href="/privacy" style="color:white">Privacy Policy</a></footer>
+</body>
+</html>`)
+})
+
 // Landing page (brand-aligned)
 app.get('/', (c) => {
   return c.html(`<!DOCTYPE html>
@@ -4175,6 +4267,7 @@ app.get('/', (c) => {
           <ul>
             <li><a href="https://wa.me/447469520923" target="_blank">WhatsApp Support</a></li>
             <li><a href="mailto:hello@study-buddy.tech">Email Us</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
           </ul>
         </div>
       </div>
