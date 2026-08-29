@@ -12,6 +12,9 @@ export const renderer = jsxRenderer(({ children }) => {
         <meta name="description" content="Study Buddy - Interactive O-Level learning platform with mobile-first design, comprehensive curriculum, and WhatsApp integration." />
         <meta name="keywords" content="O-Level, education, mobile learning, study platform, mathematics, english, science" />
         <meta name="author" content="Study Buddy Team" />
+
+        {/* Facebook domain verification */}
+        <meta name="facebook-domain-verification" content="7jlr9di7w6vevfvyqdh0jps18sfwwb" />
         
         {/* Open Graph Meta Tags */}
         <meta property="og:title" content="Study Buddy - O-Level Learning Platform" />
