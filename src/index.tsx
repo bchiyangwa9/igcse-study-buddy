@@ -37,6 +37,14 @@ app.get('/maths', async (c) => {
 
     let html = await upstream.text()
 
+    // Keep Facebook domain verification available on the proxied campaign page too.
+    if (!html.includes('facebook-domain-verification')) {
+      html = html.replace(
+        '</head>',
+        '<meta name="facebook-domain-verification" content="7jlr9di7w6vevfvyqdh0jps18sfwwb" /></head>'
+      )
+    }
+
     // Next.js assets must continue to load from the app origin.
     html = html
       .replace(/(src|href)="\/_next\//g, `$1="${MATHS_PILOT_ORIGIN}/_next/`)
