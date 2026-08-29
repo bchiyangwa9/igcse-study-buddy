@@ -3809,7 +3809,7 @@ app.get('/', (c) => {
           </div>
           <div class="hero-stats">
             <div>
-              <div class="hero-stat-num">7</div>
+              <div class="hero-stat-num">10</div>
               <div class="hero-stat-label">Core Subjects</div>
             </div>
             <div>
